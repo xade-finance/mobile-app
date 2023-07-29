@@ -1,0 +1,85 @@
+try {
+    
+      const txString = await clearingHouse.methods
+        .openPosition(
+          Amm,
+          side,
+          quoteAssetAmount,
+          leverage,
+          baseAssetAmountLimit,
+        )
+        .send({from: authAddress, contractAddress: clearingHouseAddress});
+      console.log('String:', txString);
+
+      // navigation.navigate('Successful', txString);
+    } catch (error) {
+      console.log('Could not process transaction!');
+      console.log('error', error);
+      // navigation.navigate('Unsuccessful');
+    }
+
+    // try {
+    //   const txString = await clearingHouse.methods.openPosition(
+    //     Amm,
+    //     side,
+    //     quoteAssetAmount,
+    //     leverage,
+    //     baseAssetAmountLimit,
+    //   );
+    //   console.log('String:', txString);
+
+    // const txHash = txString.send({
+    //   from: authAddress,
+    //   gas: 80000,
+    //   maxPriorityFeePerGas: '5000000000', // Max priority fee per gas
+    //   maxFeePerGas: '6000000000000',
+    // });
+
+    // console.log('String:', txString);
+    // navigation.navigate('Successful', txString);
+    // const txResult = global.withAuth
+    //   ? await particleAuth.signAndSendTransaction(txString)
+    //   : await particleConnect.signAndSendTransaction(txString);
+
+    // console.log(txResult);
+    // } catch (error) {
+    // console.log('Could not process transaction!');
+    // console.log('error', error);
+    //   navigation.navigate('Unsuccessful');
+    // }
+
+    // .then(async () => {
+    // const response = await axios.post(
+    //   'https://rpc.particle.network/evm-chain',
+    //   {
+    //     chainId: 80001,
+    //     jsonrpc: '2.0',
+    //     id: 1,
+    //     method: 'particle_abi_encodeFunctionCall',
+    //     params: [
+    //       clearingHouseAddress,
+    //       'custom_openPosition',
+    //       [Amm, side, quoteAssetAmount, leverage, baseAssetAmountLimit],
+    //     ],
+    //   },
+    //   {
+    //     auth: {
+    //       username: PARTICLE_USERNAME,
+    //       password: PARTICLE_PASSWORD,
+    //     },
+    //   },
+    // );
+    // const txString = response.data;
+    // console.log(txString);
+
+    // try {
+    //   console.log(txString);
+    //   const txResult = global.withAuth
+    //     ? await particleAuth.signAndSendTransaction(txString)
+    //     : await particleConnect.signAndSendTransaction(txString);
+    //   console.log(txResult);
+    //   return txResult;
+    // } catch (error) {
+    //   console.log(error);
+    //   return 0;
+    // }

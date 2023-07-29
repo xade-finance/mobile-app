@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "181188258120",
+    "project_id": "xadefinance",
+    "storage_bucket": "xadefinance.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:181188258120:android:a7e6abb7ed8751ed8f6b7d",
+        "android_client_info": {
+          "package_name": "com.org.xadefinance"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "181188258120-mocbanl8dh2uio1b0o06v6ssk2r4o817.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAES3gAnqcQd7D-COpB6bd9sEL2_x8qSv4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "181188258120-mocbanl8dh2uio1b0o06v6ssk2r4o817.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

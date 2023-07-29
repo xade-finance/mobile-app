@@ -1,0 +1,73 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/Benzin-Medium.otf",
+      "sha1": "da12dab6ca134f29ccfb387758eebc04b3959b98"
+    },
+    {
+      "path": "assets/fonts/EuclidCircularA-Bold.otf",
+      "sha1": "3209badfc2811a7a116224e7632180e5990fd729"
+    },
+    {
+      "path": "assets/fonts/EuclidCircularA-Medium.otf",
+      "sha1": "3a313cb8dbbc97e90d57c039d2d58808c602bf67"
+    },
+    {
+      "path": "assets/fonts/EuclidCircularA-Regular.otf",
+      "sha1": "9c431a74ecc3ed3e7df87d4c1c65411cface572d"
+    },
+    {
+      "path": "assets/fonts/EuclidCircularA-SemiBold.otf",
+      "sha1": "e65e89d2e27d999322e12026eea4a30f0342e243"
+    },
+    {
+      "path": "assets/fonts/Inter-Regular.otf",
+      "sha1": "8b4f761ea24ae0d0d173795d55c105e7af8ea892"
+    },
+    {
+      "path": "assets/fonts/LemonMilk-Bold.otf",
+      "sha1": "91cef6e742a3816c1f01f41ad039dc401bf6c968"
+    },
+    {
+      "path": "assets/fonts/LemonMilk-Regular.otf",
+      "sha1": "1f660845f7fe40ee482aa7ccda7d101d20d870fa"
+    },
+    {
+      "path": "assets/fonts/NeueMachina-UltraBold.otf",
+      "sha1": "c155e76c72de772a8b166edc9d814bf734e38054"
+    },
+    {
+      "path": "assets/fonts/NeueMontreal-Bold.otf",
+      "sha1": "8a9ff2b61316994234dae5eaaaa2b99de1b29205"
+    },
+    {
+      "path": "assets/fonts/VelaSans-Bold.otf",
+      "sha1": "e09740859708e17363219d1294b166bf7c85f7d2"
+    },
+    {
+      "path": "assets/fonts/VelaSans-ExtraBold.otf",
+      "sha1": "3931d6700ea8632464120747b77f74bf60bf179d"
+    },
+    {
+      "path": "assets/fonts/VelaSans-ExtraLight.otf",
+      "sha1": "1376805a0f520901a0f876234986e91d8064eb5f"
+    },
+    {
+      "path": "assets/fonts/VelaSans-Light.otf",
+      "sha1": "12d9dbb94d18fa44f7918984ee8caccac785cbad"
+    },
+    {
+      "path": "assets/fonts/VelaSans-Medium.otf",
+      "sha1": "98962a449050690ece631fe4904af45a07df8215"
+    },
+    {
+      "path": "assets/fonts/VelaSans-Regular.otf",
+      "sha1": "b29f524a4eb1b73a6f5d5fd6e8365cd445ae5e91"
+    },
+    {
+      "path": "assets/fonts/VelaSans-SemiBold.otf",
+      "sha1": "36e3d8fec2287e7bee4618abf0b94101935c6d0a"
+    }
+  ]
+}

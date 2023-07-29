@@ -1,0 +1,12 @@
+diff --git a/node_modules/jwa/index.js b/node_modules/jwa/index.js
+index e71e6d1..933cad2 100644
+--- a/node_modules/jwa/index.js
++++ b/node_modules/jwa/index.js
+@@ -1,6 +1,6 @@
+ var bufferEqual = require('buffer-equal-constant-time');
+ var Buffer = require('safe-buffer').Buffer;
+-var crypto = require('crypto');
++var crypto = require('react-native-crypto');
+ var formatEcdsa = require('ecdsa-sig-formatter');
+ var util = require('util');
+ 

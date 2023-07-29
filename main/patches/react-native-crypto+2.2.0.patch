@@ -1,0 +1,12 @@
+diff --git a/node_modules/react-native-crypto/index.js b/node_modules/react-native-crypto/index.js
+index f644543..5c6dc23 100644
+--- a/node_modules/react-native-crypto/index.js
++++ b/node_modules/react-native-crypto/index.js
+@@ -1,6 +1,6 @@
+ 'use strict'
+ 
+-import { randomBytes } from 'react-native-randombytes'
++import { randomBytes } from 'react-native-get-random-values'
+ exports.randomBytes = exports.rng = exports.pseudoRandomBytes = exports.prng = randomBytes
+ 
+ // implement window.getRandomValues(), for packages that rely on it

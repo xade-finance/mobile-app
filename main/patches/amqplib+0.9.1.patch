@@ -1,0 +1,18 @@
+diff --git a/node_modules/amqplib/lib/connect.js b/node_modules/amqplib/lib/connect.js
+index 478dd76..8b8ae8b 100644
+--- a/node_modules/amqplib/lib/connect.js
++++ b/node_modules/amqplib/lib/connect.js
+@@ -162,10 +162,11 @@ function connect(url, socketOptions, openCallback) {
+   }
+ 
+   if (protocol === 'amqp:') {
+-    sock = require('net').connect(sockopts, onConnect);
++    const net = require('react-native-tcp');
++    sock = net.connect(sockopts, onConnect);
+   }
+   else if (protocol === 'amqps:') {
+-    sock = require('tls').connect(sockopts, onConnect);
++    sock = require('react-native-tcp').connect(sockopts, onConnect);
+   }
+   else {
+     throw new Error("Expected amqp: or amqps: as the protocol; got " + protocol);

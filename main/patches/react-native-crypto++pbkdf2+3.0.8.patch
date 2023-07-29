@@ -1,0 +1,11 @@
+diff --git a/node_modules/react-native-crypto/node_modules/pbkdf2/browser.js b/node_modules/react-native-crypto/node_modules/pbkdf2/browser.js
+index e07b5ad..67fe8c2 100644
+--- a/node_modules/react-native-crypto/node_modules/pbkdf2/browser.js
++++ b/node_modules/react-native-crypto/node_modules/pbkdf2/browser.js
+@@ -1,5 +1,6 @@
+ var createHmac = require('create-hmac')
+ var checkParameters = require('./precondition')
++var process = require("process");
+ 
+ exports.pbkdf2 = function (password, salt, iterations, keylen, digest, callback) {
+   if (typeof digest === 'function') {
