@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
   },
 
   balanceContainer: {
-    width: '50%',
+    width: '100%',
     paddingLeft: '6%',
   },
 
@@ -43,13 +43,13 @@ const styles = StyleSheet.create({
   },
 
   exploreContainer: {
-    marginTop: '5%',
+    // marginTop: '5%',
     width: '100%',
     flexDirection: 'column',
   },
 
   transactionContainer: {
-    marginTop: '10%',
+    marginTop: '5%',
     width: '100%',
     flexDirection: 'column',
     paddingBottom: 200,
@@ -263,6 +263,36 @@ const styles = StyleSheet.create({
   // buttonText: {
   //   marginRight: '20%',
   // },
+
+
+  paymentActionContainer: {
+    marginTop: '5%',
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly', 
+    marginVertical: 10
+  },
+
+  paymentActionButton : {
+    padding: 20,
+    borderRadius: 20
+  },
+
+  transferButton : {
+    backgroundColor: '#230D0F',
+    color: '#DD6060'
+  },
+
+  depositButton : {
+    backgroundColor: '#0E2216',
+    color: '#66FF88'
+  },
+
+  scanQRButton : {
+    backgroundColor: '#230E1D',
+    color: '#FC66FF'
+  }
+
 });
 
 export default styles;

@@ -88,33 +88,40 @@ Download Now: https://bit.ly/xadefinance
           flexDirection: 'row',
           width: DEVICE_WIDTH,
         }}>
-        {images.map(imageGroups =>
-          imageGroups.map(image => (
-            <View style={styles.depWith}>
-              <TouchableOpacity
-                style={styles.depFurther}
-                key={image.name}
-                onPress={() => {
-                  image.name == 'Referrals'
-                    ? this.func()
-                    : image.name == 'Review'
-                    ? this.review()
-                    : Linking.openURL(image.link);
-                }}>
-                <FastImage
-                  source={{
-                    uri: image.image,
-                  }}
-                  resizeMode="cover"
-                  style={{
-                    width: 180,
-                    height: 180,
-                    borderRadius: 10,
-                  }}
-                />
+        {images.map(image => (
+          <View key={image.key} style={styles.depWith}>
+            <TouchableOpacity
+              style={styles.depFurther}
+              key={image.name}
+              onPress={() => {
+                image.name == 'Referrals'
+                  ? this.func()
+                  : image.name == 'Review'
+                  ? this.review()
+                  : Linking.openURL(image.link);
+              }}>
+                <View style={styles.actionContainer}>
+                  <View style={styles.textContainer}>
+                    <Text style={styles.titleText}>
+                      {image.name}
+                    </Text>
+                    <Text style={styles.descriptionText}>
+                      {image.details}
+                    </Text>
+                  </View>
+                  <FastImage
+                    source={require('./icon/quest.png')}
+                    resizeMode="cover"
+                    style={{
+                      width: 60,
+                      height: 60,
+                      borderRadius: 10, 
+                    }}
+                  />
+                </View>
               </TouchableOpacity>
             </View>
-          )),
+          ),
         )}
       </ScrollView>
     );
@@ -126,8 +133,34 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
-    width: DEVICE_WIDTH / 2,
+    width: DEVICE_WIDTH - '40',
+    marginHorizontal: 20,
+    marginVertical: 10,
+    paddingVertical: 10,
+    borderStyle: 'dashed',
+    borderWidth: 1,
+    borderColor: '#8e8e8e',
+    borderRadius: 10
   },
+  titleText: {
+    fontSize: 16,
+    color: '#ffffff',
+    fontFamily: `EuclidCircularA-Medium`,
+  },
+  descriptionText: {
+    fontSize: 14,
+    color: '#b9b9b9',
+    fontFamily: `EuclidCircularA-Medium`,
+  },
+  actionContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+  },
+  textContainer: {
+    flexDirection: 'column',
+    justifyContent: 'space-evenly',
+    width: '70%'
+  }
 });
 
 export {EventsCarousel};

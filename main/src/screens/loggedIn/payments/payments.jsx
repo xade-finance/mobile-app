@@ -26,6 +26,7 @@ import createProvider from '../../../particle-auth';
 import getOnlyProvider from '../../../particle-auth';
 import createConnectProvider from '../../../particle-connect';
 import {EventsCarousel} from './eventsCarousel';
+import {BreakdownCarousel} from './breakdownCarousel';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import XUSD_ABI from './XUSD';
 import USDC_ABI from './USDC';
@@ -50,6 +51,7 @@ import {ethers} from 'ethers';
 import {transferUSDC} from './remmitexv1';
 
 import images from './img/images';
+import breakdowns from './breakdown/breakdown';
 
 let web3;
 const REMMITEX_CONTRACT = '0xf1Ff5c85df29f573003328c783b8c6f8cC326EB7';
@@ -79,6 +81,7 @@ const PaymentsComponent = ({navigation}) => {
   const [balance, setBalance] = useState('0');
   const [transactionVisible, setTransactionVisible] = useState(false);
   const [mainnet, setMainnet] = useState(false);
+  const DEVICE_WIDTH = Dimensions.get('window').width;
 
   async function call() {
     const address = global.withAuth
@@ -155,18 +158,11 @@ const PaymentsComponent = ({navigation}) => {
       style={{
         width: '100%',
         height: '100%',
-        alignSelf: 'center',
+        alignSelf: 'flex-start',
       }}>
       <View style={styles.remmitexContainer}>
         <View style={styles.balanceContainer}>
-          <Text
-            style={{
-              color: 'grey',
-              fontFamily: 'EuclidCircularA-Medium',
-              fontSize: 18,
-            }}>
-            Total Balance
-          </Text>
+          
           <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
             <Text
               style={{
@@ -188,8 +184,16 @@ const PaymentsComponent = ({navigation}) => {
               </Text>
             </Text>
           </View>
+          <Text
+            style={{
+              color: 'grey',
+              fontFamily: 'EuclidCircularA-Medium',
+              fontSize: 18,
+            }}>
+            Total Balance in USD
+          </Text>
         </View>
-        <View style={styles.sendRequest}>
+        {/* <View style={styles.sendRequest}>
           <TouchableOpacity
             style={styles.sendButton}
             onPress={() => {
@@ -229,10 +233,100 @@ const PaymentsComponent = ({navigation}) => {
               Deposit
             </Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
       <View style={styles.exploreContainer}>
-        <Text
+        <BreakdownCarousel
+          breakdowns={breakdowns}
+          navigation={navigation}
+          key={breakdowns}
+        />
+      </View>
+
+      <View style={styles.paymentActionContainer}>
+        <TouchableOpacity
+          style={[styles.paymentActionButton, styles.transferButton]}
+          onPress={() => {
+            navigation.push('SendEmail');
+          }}>
+          <View>
+            <FastImage
+              source={require('../../../../assets/transfer.png')}
+              resizeMode="cover"
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 10, 
+                margin: 5
+              }}
+            />
+            <Text style={{
+              color: '#FF6766',
+              fontFamily: 'EuclidCircularA-Medium',
+              fontSize: 14,
+            }}>Transfer</Text>
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={[styles.paymentActionButton, styles.depositButton]}
+          onPress={() => {
+            {
+              {
+                global.mainnet
+                  ? navigation.push('FiatRamps')
+                  : addXUSD(
+                      navigation,
+                      global.withAuth
+                        ? global.loginAccount.scw
+                        : global.connectAccount.publicAddress,
+                    );
+              }
+            }
+          }}>
+          <View>
+            <FastImage
+              source={ require('../../../../assets/request.png')}
+              resizeMode="cover"
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 10, 
+                margin:5
+              }}
+            />
+            <Text style={{
+              color: '#66FF88',
+              fontFamily: 'EuclidCircularA-Medium',
+              fontSize: 14,
+            }}>Request</Text>
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={[styles.paymentActionButton, styles.scanQRButton]}
+        >
+          <View>
+            <FastImage
+              source={require('../../../../assets/qr.png')}
+              resizeMode="cover"
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 10, 
+                margin:5
+              }}
+            />
+            <Text style={{
+              color: '#FC66FF',
+              fontFamily: 'EuclidCircularA-Medium',
+              fontSize: 14,
+            }}>Scan QR</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.exploreContainer}>
+        {/* <Text
           style={{
             color: 'white',
             fontSize: 22,
@@ -240,7 +334,7 @@ const PaymentsComponent = ({navigation}) => {
             paddingLeft: '4%',
           }}>
           Suggested For You 🔥
-        </Text>
+        </Text> */}
         <EventsCarousel
           images={images}
           navigation={navigation}
@@ -261,7 +355,8 @@ const PaymentsComponent = ({navigation}) => {
               fontFamily: 'EuclidCircularA-SemiBold',
               paddingLeft: '4%',
             }}>
-            Recent Transactions 💰
+            Transactions 
+            {/* 💰 */}
           </Text>
           <TouchableOpacity
             onPress={() => {
