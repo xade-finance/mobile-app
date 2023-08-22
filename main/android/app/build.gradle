@@ -91,6 +91,13 @@ def reactNativeArchitectures() {
 }
 
 android {
+
+    configurations { 
+        all*.exclude module: 'conceal'
+        all*.exclude module: 'bcprov-jdk15on'
+        all*.exclude module: 'commons-codec'
+    }
+
     ndkVersion rootProject.ext.ndkVersion
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -115,7 +122,7 @@ android {
         abi {
             reset()
             enable enableSeparateBuildPerCPUArchitecture
-            universalApk true  // If true, also generate a universal APK
+            universalApk false  // If true, also generate a universal APK
             include (*reactNativeArchitectures())
         }
     }
