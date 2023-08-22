@@ -67,6 +67,10 @@ import messaging from '@react-native-firebase/messaging';
 import {requestUserPermission, generateTopic} from './utils/push';
 import {getDeviceToken} from 'react-native-device-info';
 import FastImage from 'react-native-fast-image';
+import AddBankAccount from './screens/loggedIn/card/bankAccount/addBankAccount';
+import ListBankAccounts from './screens/loggedIn/card/bankAccount/listBankAccount';
+import AddFund from './screens/loggedIn/card/fund/addFund';
+import CardInfo from './screens/loggedIn/card/info/cardInfo';
 
 function PreLaunchLoad({navigation}) {
   return (
@@ -405,6 +409,54 @@ function XadeCard({navigation}) {
   );
 }
 
+function AddFundToCard({navigation}) {
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* <TopBar navigation={navigation} headers={'Bank Account'} /> */}
+      <ScrollView style={{height: '100%'}}>
+        <AddFund navigation={navigation} />
+      </ScrollView>
+      {/* <BottomNavbar navigation={navigation} selected="Card" /> */}
+    </SafeAreaView>
+  );
+}
+
+function CardInfoScreen({navigation}) {
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* <TopBar navigation={navigation} headers={'Bank Account'} /> */}
+      <ScrollView style={{height: '100%'}}>
+        <CardInfo navigation={navigation} />
+      </ScrollView>
+      {/* <BottomNavbar navigation={navigation} selected="Card" /> */}
+    </SafeAreaView>
+  );
+}
+
+function CreateBankAccount({navigation}) {
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* <TopBar navigation={navigation} headers={'Bank Account'} /> */}
+      <ScrollView style={{height: '100%'}}>
+        <AddBankAccount navigation={navigation} />
+      </ScrollView>
+      {/* <BottomNavbar navigation={navigation} selected="Card" /> */}
+    </SafeAreaView>
+  );
+}
+
+function ListBankAccount({navigation}) {
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* <TopBar navigation={navigation} headers={'Bank Account'} /> */}
+      <ScrollView style={{height: '100%'}}>
+        <ListBankAccounts navigation={navigation} />
+      </ScrollView>
+      {/* <BottomNavbar navigation={navigation} selected="Card" /> */}
+    </SafeAreaView>
+  );
+}
+
 function ViewTransaction({navigation, route}) {
   return (
     <ScrollView>
@@ -640,6 +692,30 @@ export default function App({navigation}) {
         <Stack.Screen
           name="ReferralCode"
           component={ReferCode}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="CreateBankAccount"
+          component={CreateBankAccount}
+          navigation={navigation}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="ListBankAccount"
+          component={ListBankAccount}
+          navigation={navigation}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="AddFund"
+          component={AddFundToCard}
+          navigation={navigation}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="CardInfo"
+          component={CardInfoScreen}
+          navigation={navigation}
           options={{headerShown: false}}
         />
       </Stack.Navigator>
