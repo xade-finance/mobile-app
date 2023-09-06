@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Pressable } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Pressable, AppRegistry } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {Icon} from 'react-native-elements';
@@ -12,12 +12,14 @@ import {
 import FastImage from 'react-native-fast-image';
 import Modal from 'react-native-modal';
 import LinearGradient from 'react-native-linear-gradient';
+import Snackbar from 'react-native-snackbar';
 
 const ListBankAccounts = ({navigation}) => {
 
     const [loading, setLoading] = useState(true);
     const [bankAccountList, setBankAccountList] = useState([]);
     const [selectedBankAccountId, setSelectedBankAccountId] = useState(null);
+    const [apiKey, setApiKey] = useState(null);
 
     const [isModalVisible, setModalVisible] = useState(false);
 
@@ -30,7 +32,13 @@ const ListBankAccounts = ({navigation}) => {
         // Implement your confirmation logic here
         try{
             console.log(selectedBankAccountId);
+            client.setApiKey(apiKey);
             await client.bankAccount.delete(selectedBankAccountId);
+            Snackbar.show({
+                text: 'Bank Account removed successfully',
+                duration: Snackbar.LENGTH_SHORT,
+            })
+            fetchBankAccounts();
         }catch(e){
             console.log(e);
         }
@@ -44,8 +52,11 @@ const ListBankAccounts = ({navigation}) => {
         integrationKey: SPRITZ_INTEGRATION_KEY,
     });
 
-    const fetchBankAccounts = async () => {
+    const fetchBankAccounts = async (api_key) => {
         try{
+            console.log(api_key);
+            client.setApiKey(api_key);
+            console.log(client);
             const bankAccounts = await client.bankAccount.list();
             console.log(bankAccounts);
             setBankAccountList(bankAccounts);
@@ -56,31 +67,37 @@ const ListBankAccounts = ({navigation}) => {
         }
     }
     
-    async function init() {
-        try{
-          const api_key = await AsyncStorage.getItem('spritzAPI');
-          console.log(api_key);
-          if (api_key === null) {
-            navigation.push('Card');
-          }else{
-            client.setApiKey(api_key);
-            
-            await fetchBankAccounts();
-          }
-        }catch(err){
-          console.log(err);
-          navigation.push('Card');
-        }
-    }
-
     useEffect(() => {
+
+        async function init() {
+            try{
+              const api_key = await AsyncStorage.getItem('spritzAPI');
+              console.log(api_key);
+              if (api_key === null) {
+                navigation.push('Card');
+              }else{
+                setApiKey(api_key);
+                client.setApiKey(api_key);
+                console.log("--------");
+                console.log("13333332");
+                console.log(client);
+                console.log(apiKey);
+                await fetchBankAccounts(api_key);
+              }
+            }catch(err){
+              console.log(err);
+              navigation.push('Card');
+            }
+        }
+        
         setLoading(true);
         init();
     }, []);
 
     const renderCard = ({ item }) => (
-       
-            <LinearGradient colors={['#C3338A', '#FE2C5E']} style={styles.linearGradient}>
+        
+            <LinearGradient colors={['#1D2426', '#383838']} style={styles.linearGradient}>
+            {/* <LinearGradient colors={['#C3338A', '#FE2C5E']} style={styles.linearGradient}> */}
                 <View style={styles.bankAccountSubTypeContainer}>
                     <Text style={styles.actionText}>{item.bankAccountSubType}</Text>
                 </View>
@@ -201,6 +218,8 @@ const styles = StyleSheet.create({
     noAccountText : {
         color: '#f0f0f0',
         fontSize: 18,
+        fontFamily: `EuclidCircularA-Medium`,
+        fontWeight: 400,
     },
     image: {
         width: 200,

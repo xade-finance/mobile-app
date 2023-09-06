@@ -6,22 +6,31 @@ import {
   Platform,
   TouchableOpacity,
   Image,
+  Linking,
 } from 'react-native';
 import {Icon} from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {POINTS_KEY} from '@env';
 import FastImage from 'react-native-fast-image';
+import Svg, {Path} from 'react-native-svg';
+// import RedeemSvg from './redeem.svg';
+
 // const points = 12040;
 const starIcon = require('./coins.png');
-const scanIcon = require('./scan.png');
+// const scanIcon = require('./scan.png');
 
 const addPoints = async () => {
   try {
-    const address = global.withAuth
-      ? global.loginAccount.scw
-      : global.connectAccount.publicAddress;
+    // const address = global.withAuth
+    //   ? global.loginAccount.scw
+    //   : global.connectAccount.publicAddress;
+    console.log("--------------------------------");
+    console.log(global.connectAccount);
+    console.log(global);
+    const address = ''
     const inputValue = {
-      userId: address.toLowerCase(),
+      userId: address,
+      // userId: address.toLowerCase(),
       transactionAmount: 0,
       key: POINTS_KEY,
     };
@@ -37,6 +46,7 @@ const addPoints = async () => {
     if (data.points > 0) return data.points.toFixed(0).toLocaleString();
     else return 0;
   } catch (err) {
+    console.log("xxxxxxxxxxxxxxxxxxxxxxxx");
     console.error(err);
   }
 };
@@ -81,7 +91,7 @@ function TopBar({navigation, headers}) {
             </View>
           </TouchableOpacity>
         )} */}
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => setInfoVisible(!infoVisible)}
           activeOpacity={0.8}
           style={{marginRight: 15}}>
@@ -89,8 +99,31 @@ function TopBar({navigation, headers}) {
             <FastImage source={starIcon} style={styles.pointsIcon} />
             <Text style={styles.pointsText}>{points}</Text>
           </View>
-        </TouchableOpacity>
-        <View style={{marginTop: 2}}>
+        </TouchableOpacity> */}
+        <View style={{margin: 5,padding: 10}}>
+          {/* <RedeemSvg width={25} height={25} /> */}
+          <TouchableOpacity
+            onPress={() => 
+              Linking.openURL('https://tally.so/r/wA2aze')
+              // setInfoVisible(!infoVisible)            
+            }
+            activeOpacity={0.8}
+            style={{marginRight: 15}}>
+            <View style={[styles.pointsContainer, {marginBottom: 0, padding: 5}]}>
+              <FastImage source={starIcon} style={styles.pointsIcon} />
+              <Text style={styles.pointsText}>{points}</Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* <Icon
+            onPress={() => navigation.navigate('Redeem')}
+            name={'settings'}
+            size={25}
+            color={'#fff'}
+            type="material"
+          /> */}
+        </View>
+        <View style={{backgroundColor: '#1e1e1e', padding: 10, marginVertical: 15, borderRadius: 50}}>
           <Icon
             onPress={() => navigation.navigate('Settings')}
             name={'settings'}
@@ -133,13 +166,13 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     paddingBottom: 10,
   },
-  container: {
+  container: { 
     backgroundColor: '#0c0c0c',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    // paddingVertical: 5,
     border: 'none',
   },
   pointsContainer: {

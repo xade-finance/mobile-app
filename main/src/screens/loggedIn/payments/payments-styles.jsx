@@ -10,14 +10,16 @@ const styles = StyleSheet.create({
 
   remmitexContainer: {
     width: '100%',
-    marginTop: '2%',
+    marginVertical: '2%',
     flexDirection: 'row',
     justifyContent: 'space-evenly',
   },
 
   balanceContainer: {
     width: '100%',
-    paddingLeft: '6%',
+    // paddingLeft: '6%',
+    alignItems: 'center',
+    paddingBottom:'2%'
   },
 
   sendRequest: {
@@ -81,7 +83,7 @@ const styles = StyleSheet.create({
   transactionRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: '24%',
+    width: '30%',
     justifyContent: 'space-between',
   },
 
@@ -99,7 +101,7 @@ const styles = StyleSheet.create({
   depWith: {
     flexDirection: 'row',
     height: '100%',
-    width: '30%',
+    width: '35%',
     borderRadius: 20,
   },
 
@@ -108,9 +110,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderRadius: 10,
     alignItems: 'center',
-    justifyContent: 'space-around',
-    paddingLeft: '1%',
-    paddingRight: '1%',
+    justifyContent: 'space-evenly',
+    paddingHorizontal: '1%',
+    backgroundColor: '#131313',
   },
 
   noTransaction: {

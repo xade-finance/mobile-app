@@ -10,6 +10,8 @@ import {
     Environment,
 } from '../../../../../node_modules/@spritz-finance/api-client/dist/spritz-api-client.mjs';
 
+import LinearGradient from 'react-native-linear-gradient';
+
 const CardInfo = ({navigation}) => {
 
     const [loading, setLoading] = useState(true);
@@ -47,15 +49,13 @@ const CardInfo = ({navigation}) => {
             const virtualCard = await client.virtualCard.fetch();
             setVirtualCardInfo(virtualCard);
 
-            console.log(api_key);
-            console.log(virtualCard);
-            console.log(virtualCard.renderSecret);
 
             setLoading(false);
           }
         }catch(err){
           console.log(err);
           navigation.push('Card');
+          setLoading(false);
         }
     }
 
@@ -103,138 +103,159 @@ const CardInfo = ({navigation}) => {
                     {
                         (verificationStatus === 'ACTIVE') && 
                         <View style={styles.cardDetailContainer}>
-                            <View style={styles.cardDetailRow}>
-                                <Text style={styles.cardDetailLabel}>
-                                    Card Type
-                                </Text>
-                                <Text style={styles.cardDetailValue}>
-                                    {virtualCardInfo.type}
-                                </Text>
-                            </View>
-
-                            {
-                                virtualCardInfo.type === 'VirtualCard' &&
+                            <LinearGradient
+                                colors={['#1D2426', '#383838']}
+                                useAngle
+                                angle={45}
+                                angleCenter={{x: 0.5, y: 0.5}} 
+                                style={styles.cardInformationContainer}>
+                                <View style={styles.sectionHeadingContainer}>
+                                    <Text style={styles.sectionHeading}>Card Information</Text>
+                                </View>
                                 <View style={styles.cardDetailRow}>
                                     <Text style={styles.cardDetailLabel}>
-                                        Virtual Card Type
+                                        Balance
                                     </Text>
                                     <Text style={styles.cardDetailValue}>
-                                        {virtualCardInfo.virtualCardType}
+                                        {virtualCardInfo.balance}
                                     </Text>
                                 </View>
-                            }
 
-                            <View style={styles.cardDetailRow}>
-                                <Text style={styles.cardDetailLabel}>
-                                    Balance
-                                </Text>
-                                <Text style={styles.cardDetailValue}>
-                                    {virtualCardInfo.balance}
-                                </Text>
-                            </View>
-
-                            <View style={styles.cardDetailRow}>
-                                <Text style={styles.cardDetailLabel}>
-                                    Currency
-                                </Text>
-                                <Text style={styles.cardDetailValue}>
-                                    {virtualCardInfo.currency}
-                                </Text>
-                            </View>
-
-                            <View style={styles.cardDetailRow}>
-                                <Text style={styles.cardDetailLabel}>
-                                    Country
-                                </Text>
-                                <Text style={styles.cardDetailValue}>
-                                    {virtualCardInfo.country}
-                                </Text>
-                            </View>
-
-
-                            <View style={styles.cardDetailRow}>
-                                <Text style={styles.cardDetailLabel}>
-                                    Card Holder Name 
-                                </Text>
-                                <Text style={styles.cardDetailValue}>
-                                    {virtualCardInfo.billingInfo.holder}
-                                </Text>
-                            </View>
-
-                            <View style={styles.cardDetailRow}>
-                                <Text style={styles.cardDetailLabel}>
-                                    Email 
-                                </Text>
-                                <Text style={styles.cardDetailValue}>
-                                    {virtualCardInfo.billingInfo.email}
-                                </Text>
-                            </View>
-
-                            <View style={styles.cardDetailRow}>
-                                <Text style={styles.cardDetailLabel}>
-                                    Phone 
-                                </Text>
-                                <Text style={styles.cardDetailValue}>
-                                    {virtualCardInfo.billingInfo.phone}
-                                </Text>
-                            </View>
-
-                            <View style={styles.cardDetailRow}>
-                                <Text style={styles.cardDetailLabel}>
-                                    Street Address 
-                                </Text>
-                                <Text style={styles.cardDetailValue}>
-                                    {virtualCardInfo.billingInfo.address.street}
-                                </Text>
-                            </View>
-
-                            {
-                                virtualCardInfo.billingInfo.address.street2 !== null &&
                                 <View style={styles.cardDetailRow}>
                                     <Text style={styles.cardDetailLabel}>
-                                        Street Line 2 
+                                        Currency
                                     </Text>
                                     <Text style={styles.cardDetailValue}>
-                                        {virtualCardInfo.billingInfo.address.street2}
+                                        {virtualCardInfo.currency}
                                     </Text>
                                 </View>
-                            }
 
-                            <View style={styles.cardDetailRow}>
-                                <Text style={styles.cardDetailLabel}>
-                                    City 
-                                </Text>
-                                <Text style={styles.cardDetailValue}>
-                                    {virtualCardInfo.billingInfo.address.city}
-                                </Text>
-                            </View>
+                                <View style={styles.cardDetailRow}>
+                                    <Text style={styles.cardDetailLabel}>
+                                        Card Type
+                                    </Text>
+                                    <Text style={styles.cardDetailValue}>
+                                        {virtualCardInfo.type}
+                                    </Text>
+                                </View>
 
-                            <View style={styles.cardDetailRow}>
-                                <Text style={styles.cardDetailLabel}>
-                                    Subdivision 
-                                </Text>
-                                <Text style={styles.cardDetailValue}>
-                                    {virtualCardInfo.billingInfo.address.subdivision}
-                                </Text>
-                            </View>
+                                {
+                                    virtualCardInfo.type === 'VirtualCard' &&
+                                    <View style={styles.cardDetailRow}>
+                                        <Text style={styles.cardDetailLabel}>
+                                            Virtual Card Type
+                                        </Text>
+                                        <Text style={styles.cardDetailValue}>
+                                            {virtualCardInfo.virtualCardType}
+                                        </Text>
+                                    </View>
+                                }
+                            </LinearGradient>
 
-                            <View style={styles.cardDetailRow}>
-                                <Text style={styles.cardDetailLabel}>
-                                    Country Code
-                                </Text>
-                                <Text style={styles.cardDetailValue}>
-                                    {virtualCardInfo.billingInfo.address.countryCode}
-                                </Text>
-                            </View>
+                            <LinearGradient
+                                colors={['#1D2426', '#383838']}
+                                useAngle
+                                angle={45}
+                                angleCenter={{x: 0.5, y: 0.5}} 
+                                style={styles.personalInformationContainer}>
+                                <View style={styles.sectionHeadingContainer}>
+                                    <Text style={styles.sectionHeading}>Personal Information</Text>
+                                </View>
+                                <View style={styles.cardDetailRow}>
+                                    <Text style={styles.cardDetailLabel}>
+                                        Card Holder Name 
+                                    </Text>
+                                    <Text style={styles.cardDetailValue}>
+                                        {virtualCardInfo.billingInfo.holder}
+                                    </Text>
+                                </View>
 
-                            <View style={styles.cardDetailRow}>
-                                <Text style={styles.cardDetailLabel}>
-                                    Postal Code 
-                                </Text>
-                                <Text style={styles.cardDetailValue}>
-                                    {virtualCardInfo.billingInfo.address.postalCode}
-                                </Text>
-                            </View>
+                                <View style={styles.cardDetailRow}>
+                                    <Text style={styles.cardDetailLabel}>
+                                        Email 
+                                    </Text>
+                                    <Text style={styles.cardDetailValue}>
+                                        {virtualCardInfo.billingInfo.email}
+                                    </Text>
+                                </View>
+
+                                <View style={styles.cardDetailRow}>
+                                    <Text style={styles.cardDetailLabel}>
+                                        Phone 
+                                    </Text>
+                                    <Text style={styles.cardDetailValue}>
+                                        {virtualCardInfo.billingInfo.phone}
+                                    </Text>
+                                </View>
+                            </LinearGradient>
+
+                            <LinearGradient
+                                colors={['#1D2426', '#383838']}
+                                useAngle
+                                angle={45}
+                                angleCenter={{x: 0.5, y: 0.5}} 
+                                style={styles.billingInformationContainer}>
+                                <View style={styles.sectionHeadingContainer}>
+                                    <Text style={styles.sectionHeading}>Billing Information</Text>
+                                </View>
+
+                                <View style={styles.cardDetailRow}>
+                                    <Text style={styles.cardDetailLabel}>
+                                        Street Address 
+                                    </Text>
+                                    <Text style={styles.cardDetailValue}>
+                                        {virtualCardInfo.billingInfo.address.street}
+                                    </Text>
+                                </View>
+
+                                {
+                                    virtualCardInfo.billingInfo.address.street2 !== null &&
+                                    <View style={styles.cardDetailRow}>
+                                        <Text style={styles.cardDetailLabel}>
+                                            Street Line 2 
+                                        </Text>
+                                        <Text style={styles.cardDetailValue}>
+                                            {virtualCardInfo.billingInfo.address.street2}
+                                        </Text>
+                                    </View>
+                                }
+
+                                <View style={styles.cardDetailRow}>
+                                    <Text style={styles.cardDetailLabel}>
+                                        City 
+                                    </Text>
+                                    <Text style={styles.cardDetailValue}>
+                                        {virtualCardInfo.billingInfo.address.city}
+                                    </Text>
+                                </View>
+
+                                <View style={styles.cardDetailRow}>
+                                    <Text style={styles.cardDetailLabel}>
+                                        Subdivision 
+                                    </Text>
+                                    <Text style={styles.cardDetailValue}>
+                                        {virtualCardInfo.billingInfo.address.subdivision}
+                                    </Text>
+                                </View>
+
+                                <View style={styles.cardDetailRow}>
+                                    <Text style={styles.cardDetailLabel}>
+                                        Country
+                                    </Text>
+                                    <Text style={styles.cardDetailValue}>
+                                        {virtualCardInfo.country}
+                                    </Text>
+                                </View>
+
+                                <View style={styles.cardDetailRow}>
+                                    <Text style={styles.cardDetailLabel}>
+                                        Postal Code 
+                                    </Text>
+                                    <Text style={styles.cardDetailValue}>
+                                        {virtualCardInfo.billingInfo.address.postalCode}
+                                    </Text>
+                                </View>
+                            </LinearGradient>
 
                             <View style={styles.cardDetailRow}>
                                 <Text style={styles.cardDetailLabel}>
@@ -278,127 +299,6 @@ const styles = StyleSheet.create({
         fontWeight: 500,
         marginLeft: 50
     },
-    listContainer : {
-        width: '100%', 
-        marginTop: 10,
-        // backgroundColor: '#fff'
-    },
-    noAccountContainer : {
-        flexDirection : 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%',
-        marginTop: 200
-    },  
-    noAccountText : {
-        color: '#f0f0f0',
-        fontSize: 18,
-    },
-    image: {
-        width: 200,
-        height: 200,
-        borderRadius: 20
-    },
-    listItemContainer : {
-        width: '100%',
-        margin: 10,
-        padding: 10,
-        height: 100,
-        // backgroundColor: '#4f4f4f',
-    },
-    cardContainer: {
-        padding: 5,
-        backgroundColor: '#3f3f3f',
-        marginVertical: 5,
-        borderRadius: 8,
-        
-    },
-      cardTitle: {
-        fontSize: 14,
-        fontWeight: 'bold',
-        marginBottom: 8,
-        color: '#fff',
-        fontFamily: `EuclidCircularA-Medium`,
-        fontWeight: 500,
-        marginTop: 30,
-      },
-      cardText: {
-        fontSize: 14,
-        marginBottom: 8,
-        color: '#fff',
-        fontFamily: `EuclidCircularA-Medium`,
-        fontWeight: 400,
-      },
-      buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        marginTop: 10,
-      },
-      actionButton: {
-        backgroundColor: '#007bff',
-        borderRadius: 5,
-        paddingVertical: 5,
-        paddingHorizontal: 10,
-        marginLeft: 10,
-      },
-      buttonText: {
-        color: '#fff',
-        fontSize: 14,
-        fontWeight: 'bold',
-      },
-      linearGradient: {
-        flex: 1,
-        padding: 16,
-        borderRadius: 8,
-        marginVertical: 10
-        // paddingLeft: 15,
-        // paddingRight: 15,
-        // borderRadius: 5
-      },
-      bankAccountSubTypeContainer: {
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        elevation: 100,
-        zIndex: 100,
-        backgroundColor: 'green',
-        padding: 8,
-        borderRadius: 5,
-        // transform: [{ rotate: '-14deg' }]
-        // borderRadius: 20,
-        // width: 120,
-        // height: 30,
-        // backgroundColor: 'transparent',
-        // borderWidth: 1,
-        // borderColor: '#8f8f8f',
-        // padding: 4,
-        // flexDirection: 'row',
-        // justifyContent: 'center',
-        // marginBottom: 10
-      },
-      listItemActionContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        marginTop: 20
-      },
-      listItemActionButton : {
-        borderRadius: 20,
-        width: 120,
-        height: 30,
-        backgroundColor: 'transparent',
-        borderWidth: 1,
-        borderColor: '#7f7f8f',
-        padding: 4,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        marginBottom: 10,
-      },
-      actionText: {
-        fontSize: 14,
-        color: '#fff',
-        fontFamily: `EuclidCircularA-Medium`,
-        fontWeight: 400,
-      },  
 
       kycContainer: {
         width: '100%',
@@ -433,24 +333,66 @@ const styles = StyleSheet.create({
       },
 
       cardDetailRow :{
-        flexDirection: 'row',
-        justifyContent: 'space-between',    
+        flexDirection: 'column',
+        justifyContent: 'center',    
         marginVertical: 10    
       },
       cardDetailLabel : {
-        fontSize: 16,
+        fontSize: 13,
         fontFamily : 'EuclidCircularA-Medium',
         fontWeight: 500,
         color: '#8f8f8f',
-        width: '40%'
+        width: '100%'
       },
       cardDetailValue : {
         fontSize: 16,
         fontFamily : 'EuclidCircularA-Medium',
         fontWeight: 500,
         color: '#fff',
-        width: '60%',
-        textAlign: 'right'
+        width: '100%',
+        textAlign: 'left'
+      },
+      cardInformationContainer: {
+        borderRadius: 10,
+        backgroundColor: '#131313',
+        elevation: 10,
+        padding:10,
+        marginVertical: 10,
+        paddingTop: 30,
+      },
+      personalInformationContainer: {
+        borderRadius: 10,
+        // backgroundColor: '#131313',
+        elevation: 10,
+        padding:10,
+        marginVertical: 10,
+        paddingTop: 30,
+      },
+      billingInformationContainer: {
+        borderRadius: 10,
+        // backgroundColor: '#131313',
+        elevation: 10,
+        padding:10,
+        marginVertical: 10,
+        paddingTop: 30,
+        backgroundColor: 'red'
+      },
+      sectionHeadingContainer: {
+        left: 0,
+        position: 'absolute',
+        top: 0,
+        backgroundColor: 'green',         
+        elevation: 100,
+        zIndex: 100,
+        backgroundColor: 'green',
+        padding: 8,
+        borderRadius: 5,       
+      },
+      sectionHeading: {
+        fontSize: 14,
+        fontWeight: 400,
+        color: '#fff',
+        fontFamily: `EuclidCircularA-Medium`,
       }
 });
 

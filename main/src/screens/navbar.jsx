@@ -10,42 +10,73 @@ import LinearGradient from 'react-native-linear-gradient';
 import FastImage from 'react-native-fast-image';
 
 const windowHeight = Dimensions.get('window').height;
-const selectedIcon = '#fff';
+const selectedIcon = '#FE2C5E';
 const icon = '#9D9D9D';
 const BottomNavbar = ({navigation, selected}) => {
   return (
     // <View style = {{height: windowHeight * 0.3}}>
-    <View style={[styles.container, {paddingBottom: 25}]}>
-      <View
+    <View style={[styles.container, {paddingBottom: 10}]}>
+
+      <View 
         style={{
           flexDirection: 'row',
           width: '100%',
           justifyContent: 'space-around',
         }}>
-        <View style={styles.navItem}>
-          {/* <Icon
-            name="home"
-            type="octicon"
-            size={26}
-            // style={selected == 'Payments'?selectedIcon:icon}
-            onPress={() => navigation.push('Payments')}
-            color={selected == 'Payments' ? selectedIcon : icon}
-          /> */}
+        <View>
+
           <TouchableOpacity onPress={() => navigation.push('Payments')}>
-            {selected == 'Payments' ? (
-              <FastImage
-                source={require(`./navbar-images/home-selected.png`)}
-                style={styles.icon}
+            <View style={styles.navItem}>
+              <Icon
+                name="home"
+                type="feather"
+                size={24}
+                color={selected == 'Payments' ? selectedIcon : icon}
               />
-            ) : (
-              <FastImage
-                source={require(`./navbar-images/home.png`)}
-                style={styles.icon}
-              />
-            )}
+              {/* {selected == 'Payments' ? (
+                <FastImage
+                  source={require(`./navbar-images/home-selected.png`)}
+                  style={styles.icon}
+                />
+              ) : (
+                <FastImage
+                  source={require(`./navbar-images/home.png`)}
+                  style={styles.icon}
+                />
+              )} */}
+
+              <Text style={selected == 'Payments' ? styles.navItemLabelSelected : styles.navItemLabel}>Home</Text>
+            </View>
           </TouchableOpacity>
         </View>
-        <View style={styles.navItem}>
+
+        <View>
+          <TouchableOpacity onPress={() => navigation.push('Card')}>
+            <View style={styles.navItem}>
+              <Icon
+                name="credit-card"
+                type="feather"
+                size={24}
+                color={selected == 'Card' ? selectedIcon : icon}
+              />
+              {/* {selected == 'Card' ? (
+                <FastImage
+                  source={require(`./navbar-images/card-selected.png`)}
+                  style={styles.cardIcon}
+                />
+              ) : (
+                <FastImage
+                  source={require(`./navbar-images/card.png`)}
+                  style={styles.cardIcon}
+                />
+              )} */}
+
+              <Text style={selected == 'Card' ? styles.navItemLabelSelected : styles.navItemLabel}>Card</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        <View >
           {/* <Icon
             name="piggy-bank-outline"
             type="material-community"
@@ -54,6 +85,7 @@ const BottomNavbar = ({navigation, selected}) => {
             color={selected == 'Savings' ? selectedIcon : icon}
           /> */}
           <TouchableOpacity onPress={() => navigation.push('Savings')}>
+            <View style={styles.navItem}>            
             {selected == 'Savings' ? (
               <FastImage
                 source={require(`./navbar-images/savings-selected.png`)}
@@ -65,9 +97,11 @@ const BottomNavbar = ({navigation, selected}) => {
                 style={styles.icon}
               />
             )}
+              <Text style={selected == 'Savings' ? styles.navItemLabelSelected : styles.navItemLabel}>Save</Text>
+            </View>
           </TouchableOpacity>
         </View>
-        <View style={styles.navItem}>
+        <View>
           {/* <Icon
             name="stats-chart"
             type="ionicon"
@@ -76,49 +110,30 @@ const BottomNavbar = ({navigation, selected}) => {
             color={selected == 'Investments' ? selectedIcon : icon}
           /> */}
           <TouchableOpacity onPress={() => navigation.push('Investments')}>
-            {selected == 'Investments' ? (
-              <FastImage
-                source={require(`./navbar-images/investments-selected.png`)}
-                style={styles.icon}
+            <View style={styles.navItem}> 
+              <Icon
+                name="pie-chart"
+                type="feather"
+                size={24}
+                color={selected == 'Investments' ? selectedIcon : icon}
               />
-            ) : (
-              <FastImage
-                source={require(`./navbar-images/investments.png`)}
-                style={styles.icon}
-              />
-            )}
+              {/* {selected == 'Investments' ? (
+                <FastImage
+                  source={require(`./navbar-images/investments-selected.png`)}
+                  style={styles.icon}
+                />
+              ) : (
+                <FastImage
+                  source={require(`./navbar-images/investments.png`)}
+                  style={styles.icon}
+                />
+              )} */}
+              <Text style={selected == 'Investments' ? styles.navItemLabelSelected : styles.navItemLabel}>Trade</Text>
+            </View>
           </TouchableOpacity>
         </View>
-        <View style={styles.navItem}>
-          {/* <Icon
-            name="shopping-bag"
-            type="feather"
-            size={25}
-            onPress={() => navigation.push('Card')}
-            color={selected == 'Card' ? selectedIcon : icon}
-          /> */}
-          <TouchableOpacity onPress={() => navigation.push('Card')}>
-            {selected == 'Card' ? (
-              <FastImage
-                source={require(`./navbar-images/card-selected.png`)}
-                style={styles.cardIcon}
-              />
-            ) : (
-              <FastImage
-                source={require(`./navbar-images/card.png`)}
-                style={styles.cardIcon}
-              />
-            )}
-          </TouchableOpacity>
-        </View>
-        <View style={styles.navItem}>
-          {/* <Icon
-            name="shopping-bag"
-            type="feather"
-            size={25}
-            onPress={() => navigation.push('Card')}
-            color={selected == 'Card' ? selectedIcon : icon}
-          /> */}
+        
+        {/* <View style={styles.navItem}>
           <TouchableOpacity onPress={() => navigation.push('Redeem')}>
             {selected == 'Redeem' ? (
               <FastImage
@@ -132,7 +147,7 @@ const BottomNavbar = ({navigation, selected}) => {
               />
             )}
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
     </View>
     // </View>
@@ -157,6 +172,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: '2%',
   },
   navItem: {
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -165,11 +181,41 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
   },
+  iconSelected: {
+    color: '#FE2C5E',
+    width: 24,
+    height: 24,
+  },
   cardIcon: {
     color: '#9D9D9D',
     width: 24,
     height: 18,
+    marginVertical: 3
   },
+  navIconSelected : {
+    color: '#FE2C5E',
+    width: 24,
+    height: 24,
+  },
+  navIcon: {
+    color: '#9D9D9D',
+    width: 24,
+    height: 24,
+  },
+  navItemLabel: {
+    color: '#9D9D9D',
+    fontSize: 11,
+    fontFamily: 'EuclidCircularA-Medium',
+    fontWeight: 400,
+    paddingTop: 4,
+  },
+  navItemLabelSelected: {
+    color: '#FE2C5E',
+    fontSize: 11,
+    fontFamily: 'EuclidCircularA-Medium',
+    fontWeight: 400,
+    paddingTop: 4,
+  }
 });
 
 export default BottomNavbar;

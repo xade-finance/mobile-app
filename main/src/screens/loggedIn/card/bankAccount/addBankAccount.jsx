@@ -22,6 +22,7 @@ const AddBankAccount = ({navigation}) => {
 
     const [ownedByUser, setOwnedByUser] = useState(true);
     const [loading, setLoading] = useState(false);
+    const [apiKey, setApiKey] = useState(null);
 
     const [selectedBankAccountSubType, setSelectedBankAccountSubType] = useState(BankAccountSubType.Savings);
     const bankAccountSubTypeOptions = [BankAccountSubType.Savings, BankAccountSubType.Business, BankAccountSubType.Checking];
@@ -37,6 +38,13 @@ const AddBankAccount = ({navigation}) => {
     const handleFormSubmit = async () => {
         setLoading(true);
         try{
+            console.log("@2222222222");
+            client.setApiKey(apiKey);
+            console.log(client);
+
+            console.log(formData.routingNumber);
+            console.log(formData);
+
             const bankAccounts = await client.bankAccount.create(BankAccountType.USBankAccount, {
                 accountNumber: formData.accountNumber,
                 routingNumber: formData.routingNumber,
@@ -46,6 +54,8 @@ const AddBankAccount = ({navigation}) => {
                 ownedByUser: ownedByUser,
                 subType: selectedBankAccountSubType,
             })
+
+            console.log(client);
  
             Snackbar.show({
                 text: 'Bank Account added successfully',
@@ -65,26 +75,46 @@ const AddBankAccount = ({navigation}) => {
         }
     };
 
-    async function init() {
-        try{
-          const api_key = await AsyncStorage.getItem('spritzAPI');
-          console.log(api_key);
-          if (api_key === null) {
-            navigation.push('Card');
-          }else{
-            client.setApiKey(api_key);
-            const userData = await client.user.getCurrentUser()
-            console.log(userData);    
-            setFormData({ ...formData, email: userData.email, holder: userData.firstName + " " + userData.lastName });            
-            // setFormData({ ...formData, holder: userData.firstName + " " + userData.lastName });
-          }
-        }catch(err){
-          console.log(err);
-          navigation.push('Card');
-        }
-    }
-
     useEffect(() => {
+
+        async function init() {
+            try{
+              const api_key = await AsyncStorage.getItem('spritzAPI');
+              console.log(api_key);
+              if (api_key === null) {
+                console.log("-----------2");
+                navigation.push('Card');
+              }else{
+                console.log("-----------");
+                client.setApiKey(api_key);
+                setApiKey(api_key);
+                console.log(api_key);
+                console.log(client);
+                const userData = await client.user.getCurrentUser()
+                console.log(userData);    
+                setFormData({ ...formData, email: userData.email, holder: userData.firstName + " " + userData.lastName });            
+                // setFormData({ ...formData, holder: userData.firstName + " " + userData.lastName });
+
+
+                // const bankAccounts = await client.bankAccount.create(BankAccountType.USBankAccount, {
+                //     accountNumber: '123456789',
+                //     routingNumber: '00000123',
+                //     email: 'ayugupta.jpr+1@gmail.com',
+                //     holder: 'Leslie Knope',
+                //     name: 'Savings',
+                //     ownedByUser: true,
+                //     subType: BankAccountSubType.Savings,
+                // });
+
+                // console.log(bankAccounts);
+              }
+            }catch(err){
+                console.log(13132);
+              console.log(err);
+              navigation.push('Card');
+            }
+        }
+
         init();
     }, []);
 

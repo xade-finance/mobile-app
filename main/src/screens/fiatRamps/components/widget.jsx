@@ -19,6 +19,7 @@ const {width, height} = Dimensions.get('window');
 const BuyCryptoPage = ({uri, onClose, widget, name, address}) => {
   const [showBuyCryptoModal, setShowBuyCryptoModal] = useState(false);
   const [add, setAdd] = useState('0x');
+  const [email, setEmail] = useState('');
 
   const [modalVisible, setModalVisible] = useState(true);
 
@@ -46,6 +47,15 @@ const BuyCryptoPage = ({uri, onClose, widget, name, address}) => {
       setAdd(global.loginAccount.scw);
     } else setAdd(global.connectAccount.address);
   }, []);
+
+  useEffect(() => {
+    if (global.withAuth) {
+      setEmail(global.loginAccount.phoneEmail);
+    } else {
+      // setAdd(global.connectAccount.address);
+    }
+  }, []);
+
   return (
     <Modal animationType="slide" transparent={false} visible={modalVisible}>
       <View
@@ -80,7 +90,17 @@ const BuyCryptoPage = ({uri, onClose, widget, name, address}) => {
                   // .....
                   // For the full list of react-native-webview props refer Props section below
                 />
-              ) : (
+              ) : 
+                widget == 'kado' ? 
+                (
+                  <WebView 
+                    source={{
+                      uri: `https://app.kado.money/?apiKey=e55d6f82-6421-495f-928d-c9f5b39f0aae&onToAddress=${add}&network=POLYGON&email=${email}`,
+                    }}
+                    style={styles.webView}                  
+                  />
+                )
+                : (
                 <WebView
                   source={{
                     uri: `https://onramp.money/main/buy/?appId=251363&walletAddress=${add}`,

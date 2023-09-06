@@ -58,6 +58,7 @@ const REMMITEX_CONTRACT = '0xf1Ff5c85df29f573003328c783b8c6f8cC326EB7';
 const windowHeight = Dimensions.get('window').height;
 import {POLYGON_API_KEY} from '@env';
 import {registerFcmToken} from '../../../utils/push';
+import TransactionReceipt from '../transactions/transactionReceipt';
 const contractAddress = '0xA3C957f5119eF3304c69dBB61d878798B3F239D9';
 const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
 
@@ -147,11 +148,22 @@ const PaymentsComponent = ({navigation}) => {
     }
   }
 
+
+  
+  const [showTxnReceiptModal, setShowTxnReceiptModal] = useState(false);
+  const [transactionData, setTransactionData] = useState();
+
+  const handleCloseTransactionReceiptModal = () => {
+    setShowTxnReceiptModal(false);
+  }
+
   useEffect(() => {
     console.log('Is Auth:', global.withAuth);
 
     call();
   }, []);
+
+
   const t = true;
   return (
     <SafeAreaView
@@ -160,7 +172,108 @@ const PaymentsComponent = ({navigation}) => {
         height: '100%',
         alignSelf: 'flex-start',
       }}>
+      
       <View style={styles.remmitexContainer}>
+        <View style={styles.balanceContainer}>
+          
+          <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
+            <Text
+              style={{
+                color: '#fff',
+                fontFamily: 'EuclidCircularA-Medium',
+                fontSize: 42,
+                fontWeight: 500,
+                marginTop: '1%',
+              }}>
+              ${balance.split('.')[0]}
+              <Text
+                style={{
+                  color: '#fff',
+                  fontFamily: 'EuclidCircularA-Medium',
+                  fontSize: 42,
+                  fontWeight: 500,
+                  marginTop: '1%',
+                }}>
+                {'.'}
+                {balance.split('.')[1] ? balance.split('.')[1] : '00'}
+              </Text>
+            </Text>
+          </View>
+          <Text
+            style={{
+              color: '#969696',
+              fontFamily: 'EuclidCircularA-Medium',
+              fontSize: 18,
+              fontWeight: 400,
+            }}>
+            Your total balance
+          </Text>
+        </View>
+      </View>
+
+        <View
+          style={{
+            flexDirection: 'row',
+            // width: '80%',
+            height: 50,
+            justifyContent: 'space-evenly',
+            flexDirection: 'row',
+            marginTop: '2%'
+          }}>
+          <TouchableOpacity
+            style={styles.depWith}
+            onPress={() => {
+              navigation.push('SendEmail');
+            }}>
+            <View
+              style={styles.innerDep}>
+              <Icon
+                // style={styles.tup}
+                name={'arrow-up-right'}
+                // size={40}
+                color={'#fff'}
+                type="feather"
+              />
+              <Text style={{color: '#fff', fontSize: 16, fontFamily: 'EuclidCircularA-Medium', fontWeight: 500}}>
+                Transfer
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.depWith}
+            onPress={() => {
+              {
+                {
+                  global.mainnet
+                    ? navigation.push('FiatRamps')
+                    : addXUSD(
+                        navigation,
+                        global.withAuth
+                          ? global.loginAccount.scw
+                          : global.connectAccount.publicAddress,
+                      );
+                }
+              }
+            }}>
+            <View
+              style={styles.innerDep}>
+              <Icon
+                // style={styles.tup}
+                name={'arrow-down-left'}
+                color={'#fff'}
+                // size={40}
+                // color={t?'green': 'red'}
+                type="feather"
+              />
+              <Text style={{color: '#fff', fontSize: 16, fontFamily: 'EuclidCircularA-Medium', fontWeight: 500}}>
+                Deposit
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+
+      {/* <View style={styles.remmitexContainer}>
         <View style={styles.balanceContainer}>
           
           <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
@@ -193,7 +306,7 @@ const PaymentsComponent = ({navigation}) => {
             Total Balance in USD
           </Text>
         </View>
-        {/* <View style={styles.sendRequest}>
+        <View style={styles.sendRequest}>
           <TouchableOpacity
             style={styles.sendButton}
             onPress={() => {
@@ -233,7 +346,7 @@ const PaymentsComponent = ({navigation}) => {
               Deposit
             </Text>
           </TouchableOpacity>
-        </View> */}
+        </View>
       </View>
       <View style={styles.exploreContainer}>
         <BreakdownCarousel
@@ -242,6 +355,7 @@ const PaymentsComponent = ({navigation}) => {
           key={breakdowns}
         />
       </View>
+ 
 
       <View style={styles.paymentActionContainer}>
         <TouchableOpacity
@@ -324,17 +438,8 @@ const PaymentsComponent = ({navigation}) => {
             }}>Scan QR</Text>
           </View>
         </TouchableOpacity>
-      </View>
+      </View> */}
       <View style={styles.exploreContainer}>
-        {/* <Text
-          style={{
-            color: 'white',
-            fontSize: 22,
-            fontFamily: 'EuclidCircularA-SemiBold',
-            paddingLeft: '4%',
-          }}>
-          Suggested For You 🔥
-        </Text> */}
         <EventsCarousel
           images={images}
           navigation={navigation}
@@ -347,6 +452,13 @@ const PaymentsComponent = ({navigation}) => {
         />
       </View>
       <View style={styles.transactionContainer}>
+
+        {showTxnReceiptModal && (
+          <TransactionReceipt
+              transactionData={transactionData}
+              onClose={handleCloseTransactionReceiptModal}
+          />
+        )}
         <View style={styles.txHeading}>
           <Text
             style={{
@@ -360,13 +472,14 @@ const PaymentsComponent = ({navigation}) => {
           </Text>
           <TouchableOpacity
             onPress={() => {
-              Linking.openURL(
-                `https://${mainnet ? '' : 'mumbai.'}polygonscan.com/address/${
-                  global.withAuth
-                    ? global.loginAccount.scw
-                    : global.connectAccount.publicAddress
-                }`,
-              );
+              navigation.push('TransactionHistory');
+              // Linking.openURL(
+              //   `https://${mainnet ? '' : 'mumbai.'}polygonscan.com/address/${
+              //     global.withAuth
+              //       ? global.loginAccount.scw
+              //       : global.connectAccount.publicAddress
+              //   }`,
+              // );
             }}>
             <Text
               style={{
@@ -403,11 +516,15 @@ const PaymentsComponent = ({navigation}) => {
                 //   navigation.push('ViewTransaction', {json: json});
                 // }}
                 onPress={() => {
-                  Linking.openURL(
-                    `https://${mainnet ? '' : 'mumbai.'}polygonscan.com/tx/${
-                      json.hash
-                    }`,
-                  );
+                  setTransactionData(json);
+                  setShowTxnReceiptModal(true);
+
+                  
+                  // Linking.openURL(
+                  //   `https://${mainnet ? '' : 'mumbai.'}polygonscan.com/tx/${
+                  //     json.hash
+                  //   }`,
+                  // );
                 }}
                 style={styles.transactions}
                 key={state.indexOf(json)}>
@@ -433,7 +550,7 @@ const PaymentsComponent = ({navigation}) => {
                         style={{
                           color: 'white',
                           fontFamily: `EuclidCircularA-Medium`,
-                          fontSize: 17,
+                          fontSize: 14,
                         }}>
                         {(json.truth
                           ? json.from ==
@@ -451,7 +568,7 @@ const PaymentsComponent = ({navigation}) => {
                     <Text
                       style={{
                         color: '#7f7f7f',
-                        fontSize: 15,
+                        fontSize: 13,
                         fontFamily: `EuclidCircularA-Medium`,
                       }}>
                       {json.date}, {json.time}
@@ -463,7 +580,7 @@ const PaymentsComponent = ({navigation}) => {
                   <Text
                     style={{
                       color: json.truth ? '#7DFF68' : '#fff',
-                      fontSize: 18,
+                      fontSize: 16,
                       fontFamily: `EuclidCircularA-Medium`,
                     }}>
                     {json.truth != 0 && json.truth != 2 ? '+' : '-'}$

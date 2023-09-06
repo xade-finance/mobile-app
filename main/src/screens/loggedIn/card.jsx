@@ -168,6 +168,12 @@ const Card = ({navigation}) => {
       // }
 
       try{
+        await AsyncStorage.setItem('spritzAPI', 'ak_OWEyNWJhNmUtMTIyZC00NzFlLTlmN2ItNjVlNTA0MjhmYjg3');
+      }catch(e) {
+        console.log(e);
+      }
+
+      try{
         const api_key = await AsyncStorage.getItem('spritzAPI');
         console.log(api_key);
         if (api_key === null) {
@@ -257,7 +263,7 @@ const Card = ({navigation}) => {
           />
 
           {
-            (verificationStatus !== 'ACTIVE') && 
+            (verificationStatus != null && verificationStatus !== 'ACTIVE') && 
             <View style={styles.kycContainer}>
               <Text style={styles.verificationWarning}>Please complete verification to activate your card.</Text>
               
@@ -282,7 +288,7 @@ const Card = ({navigation}) => {
 
           <View style={styles.cardActionContainer}>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => {
                 navigation.push('ListBankAccount');
               }}>
@@ -338,7 +344,7 @@ const Card = ({navigation}) => {
                     type="material"
                   />
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             <TouchableOpacity
               onPress={() => {
@@ -369,7 +375,7 @@ const Card = ({navigation}) => {
               </View>
             </TouchableOpacity>
 
-            {/* <TouchableOpacity
+            <TouchableOpacity
               onPress={() => {
                 navigation.push('AddFund');
               }}>
@@ -396,7 +402,7 @@ const Card = ({navigation}) => {
                     type="material"
                   />
               </View>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
 
           </View>
 

@@ -28,6 +28,7 @@ import Investments from './screens/loggedIn/investments/investments';
 import SavingsComponent from './screens/loggedIn/savings/savings';
 import PaymentsComponent from './screens/loggedIn/payments/payments';
 import Transaction from './screens/loggedIn/payments/transactions/transactions';
+import TransactionList from './screens/loggedIn/transactions/transactionList';
 import EnterAmountComponent from './screens/enterAmount';
 import EnterSavingsAmountComponent from './screens/loggedIn/savings/savingStatus/enterSavingsAmount';
 import SendEmailComponent from './screens/loggedIn/send/sendEmail';
@@ -62,6 +63,7 @@ const bg = require('./../assets/bg.png');
 const particle = require('./../assets/particle.jpg');
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
+
 
 import messaging from '@react-native-firebase/messaging';
 import {requestUserPermission, generateTopic} from './utils/push';
@@ -471,6 +473,20 @@ function ViewTransaction({navigation, route}) {
   );
 }
 
+function TransactionHistory({navigation, route}) {
+  return (
+    <ScrollView>
+      <View style={styles.black}>
+        <SafeAreaView>
+          <View>
+            <TransactionList navigation={navigation} route={route} />
+          </View>
+        </SafeAreaView>
+      </View>
+    </ScrollView>
+  );
+}
+
 function ReferCode({navigation}) {
   return (
     <ScrollView>
@@ -662,6 +678,12 @@ export default function App({navigation}) {
         <Stack.Screen
           name="ViewTransaction"
           component={ViewTransaction}
+          navigation={navigation}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="TransactionHistory"
+          component={TransactionHistory}
           navigation={navigation}
           options={{headerShown: false}}
         />

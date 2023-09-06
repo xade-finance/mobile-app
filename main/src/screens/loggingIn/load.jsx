@@ -31,6 +31,17 @@ import {ethers} from 'ethers';
 import {err} from 'react-native-svg/lib/typescript/xml';
 
 var DeviceInfo = require('react-native-device-info');
+// const TextEncodingPolyfill = require('text-encoding');
+// const BigInt = require('big-integer');
+
+// Object.assign(global, {
+//   TextEncoder: TextEncodingPolyfill.TextEncoder,
+//   TextDecoder: TextEncodingPolyfill.TextDecoder,
+//   BigInt: BigInt,
+// });
+
+global.TextEncoder = require('text-encoding').TextEncoder;
+
 
 const optionalConfigObject = {
   title: 'Authentication Required To Login',
@@ -100,9 +111,14 @@ const LoginCheck = async ({navigation, setLoadingText}) => {
 
                 console.log('Phone/Email:', email);
 
+                console.log(account);
+                console.log("----------");
+
                 const uuid = account.wallets[0].uuid;
 
                 const address = await particleAuth.getAddress();
+
+                console.log(address);
 
                 await AsyncStorage.setItem('address', address);
 
