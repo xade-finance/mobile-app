@@ -24,9 +24,6 @@ const addPoints = async () => {
     // const address = global.withAuth
     //   ? global.loginAccount.scw
     //   : global.connectAccount.publicAddress;
-    console.log("--------------------------------");
-    console.log(global.connectAccount);
-    console.log(global);
     const address = ''
     const inputValue = {
       userId: address,
@@ -46,7 +43,6 @@ const addPoints = async () => {
     if (data.points > 0) return data.points.toFixed(0).toLocaleString();
     else return 0;
   } catch (err) {
-    console.log("xxxxxxxxxxxxxxxxxxxxxxxx");
     console.error(err);
   }
 };
@@ -100,7 +96,7 @@ function TopBar({navigation, headers}) {
             <Text style={styles.pointsText}>{points}</Text>
           </View>
         </TouchableOpacity> */}
-        <View style={{margin: 5,padding: 10}}>
+        {/* <View style={{margin: 5,padding: 10}}> */}
           {/* <RedeemSvg width={25} height={25} /> */}
           <TouchableOpacity
             onPress={() => 
@@ -109,7 +105,7 @@ function TopBar({navigation, headers}) {
             }
             activeOpacity={0.8}
             style={{marginRight: 15}}>
-            <View style={[styles.pointsContainer, {marginBottom: 0, padding: 5}]}>
+            <View style={[styles.pointsContainer, {marginBottom: 0}]}>
               <FastImage source={starIcon} style={styles.pointsIcon} />
               <Text style={styles.pointsText}>{points}</Text>
             </View>
@@ -122,8 +118,8 @@ function TopBar({navigation, headers}) {
             color={'#fff'}
             type="material"
           /> */}
-        </View>
-        <View style={{backgroundColor: '#1e1e1e', padding: 10, marginVertical: 15, borderRadius: 50}}>
+        {/* </View> */}
+        <View style={{marginTop:2}}>
           <Icon
             onPress={() => navigation.navigate('Settings')}
             name={'settings'}
@@ -167,7 +163,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   container: { 
-    backgroundColor: '#0c0c0c',
+    backgroundColor: '#000',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

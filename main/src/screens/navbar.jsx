@@ -10,8 +10,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import FastImage from 'react-native-fast-image';
 
 const windowHeight = Dimensions.get('window').height;
-const selectedIcon = '#FE2C5E';
-const icon = '#9D9D9D';
+const selectedIcon = '#A38CFF';
+const icon = '#979797';
 const BottomNavbar = ({navigation, selected}) => {
   return (
     // <View style = {{height: windowHeight * 0.3}}>
@@ -45,7 +45,7 @@ const BottomNavbar = ({navigation, selected}) => {
                 />
               )} */}
 
-              <Text style={selected == 'Payments' ? styles.navItemLabelSelected : styles.navItemLabel}>Home</Text>
+              {/* <Text style={selected == 'Payments' ? styles.navItemLabelSelected : styles.navItemLabel}>Home</Text> */}
             </View>
           </TouchableOpacity>
         </View>
@@ -71,7 +71,7 @@ const BottomNavbar = ({navigation, selected}) => {
                 />
               )} */}
 
-              <Text style={selected == 'Card' ? styles.navItemLabelSelected : styles.navItemLabel}>Card</Text>
+              {/* <Text style={selected == 'Card' ? styles.navItemLabelSelected : styles.navItemLabel}>Card</Text> */}
             </View>
           </TouchableOpacity>
         </View>
@@ -97,7 +97,7 @@ const BottomNavbar = ({navigation, selected}) => {
                 style={styles.icon}
               />
             )}
-              <Text style={selected == 'Savings' ? styles.navItemLabelSelected : styles.navItemLabel}>Save</Text>
+              {/* <Text style={selected == 'Savings' ? styles.navItemLabelSelected : styles.navItemLabel}>Save</Text> */}
             </View>
           </TouchableOpacity>
         </View>
@@ -111,13 +111,13 @@ const BottomNavbar = ({navigation, selected}) => {
           /> */}
           <TouchableOpacity onPress={() => navigation.push('Investments')}>
             <View style={styles.navItem}> 
-              <Icon
+              {/* <Icon
                 name="pie-chart"
                 type="feather"
                 size={24}
                 color={selected == 'Investments' ? selectedIcon : icon}
-              />
-              {/* {selected == 'Investments' ? (
+              /> */}
+              {selected == 'Investments' ? (
                 <FastImage
                   source={require(`./navbar-images/investments-selected.png`)}
                   style={styles.icon}
@@ -127,13 +127,13 @@ const BottomNavbar = ({navigation, selected}) => {
                   source={require(`./navbar-images/investments.png`)}
                   style={styles.icon}
                 />
-              )} */}
-              <Text style={selected == 'Investments' ? styles.navItemLabelSelected : styles.navItemLabel}>Trade</Text>
+              )}
+              {/* <Text style={selected == 'Investments' ? styles.navItemLabelSelected : styles.navItemLabel}>Trade</Text> */}
             </View>
           </TouchableOpacity>
         </View>
         
-        {/* <View style={styles.navItem}>
+        <View style={styles.navItem}>
           <TouchableOpacity onPress={() => navigation.push('Redeem')}>
             {selected == 'Redeem' ? (
               <FastImage
@@ -147,7 +147,7 @@ const BottomNavbar = ({navigation, selected}) => {
               />
             )}
           </TouchableOpacity>
-        </View> */}
+        </View>
       </View>
     </View>
     // </View>
@@ -205,15 +205,15 @@ const styles = StyleSheet.create({
   navItemLabel: {
     color: '#9D9D9D',
     fontSize: 11,
-    fontFamily: 'EuclidCircularA-Medium',
-    fontWeight: 400,
+    fontFamily: 'Sarala-Regular',
+    fontWeight: 700,
     paddingTop: 4,
   },
   navItemLabelSelected: {
-    color: '#FE2C5E',
+    color: '#A38CFF',
     fontSize: 11,
-    fontFamily: 'EuclidCircularA-Medium',
-    fontWeight: 400,
+    fontFamily: 'Sarala-Regular',
+    fontWeight: 700,
     paddingTop: 4,
   }
 });

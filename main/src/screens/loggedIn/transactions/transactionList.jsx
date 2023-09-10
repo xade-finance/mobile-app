@@ -60,12 +60,8 @@ const TransactionList = ({navigation, route}) => {
     const {txDates, txs} = await txHistoryLoad(address);
 
     setDates(txDates);
+
     setState(txs);
-
-    console.log(txs);
-
-    console.log("--------------------------------");
-
     console.log('Request being sent for registration');
     await registerFcmToken(global.withAuth ? global.loginAccount.scw : address);
 
@@ -159,7 +155,7 @@ const TransactionList = ({navigation, route}) => {
                 {state.length > 0 ? (
                     <Text
                         style={{
-                        fontFamily: 'EuclidCircularA-Medium',
+                        fontFamily: 'Sarala-Regular',
                         color: '#6f6f6f',
                         fontSize: 17,
                         marginLeft: '5%',
@@ -192,16 +188,34 @@ const TransactionList = ({navigation, route}) => {
                                 style={styles.transactions}
                                 key={state.indexOf(json)}>
                                 <View style={styles.transactionLeft}>
-                                <FastImage
-                                    style={{width: 50, height: 50, borderRadius: 5}}
+                                <View style={{
+                                  borderRadius: 50,
+                                  backgroundColor: '#A38CFF',
+                                  width: 40, height: 40,
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                }}>
+                                  {/* <FastImage
+                                    style={{width: 30, height: 30}}
                                     source={
-                                    json.truth == 2
-                                        ? require('../payments/icon/pending.png')
+                                      json.truth == 2
+                                        ? require('./icon/pending.png')
                                         : json.truth == 1
-                                        ? require('../payments/icon/positive.png')
-                                        : require('../payments/icon/negative.png')
+                                        ? require('./icon/positive.png')
+                                        : require('./icon/negative.png')
                                     }
-                                />
+                                  /> */}
+                                  <FastImage
+                                      style={{width: 20, height: 20, borderRadius: 5}}
+                                      source={
+                                      json.truth == 2
+                                          ? require('../payments/icon/pending.png')
+                                          : json.truth == 1
+                                          ? require('../payments/icon/positive.png')
+                                          : require('../payments/icon/negative.png')
+                                      }
+                                  />
+                                </View>
                                 <View style={styles.ttext}>
                                     <TouchableHighlight
                                     key={json.hash}
@@ -211,9 +225,9 @@ const TransactionList = ({navigation, route}) => {
                                     }}>
                                         <Text
                                             style={{
-                                            color: 'white',
-                                            fontFamily: `EuclidCircularA-Medium`,
-                                            fontSize: 14,
+                                            color: '#e9e9e9',
+                                            fontFamily: `Sarala-Regular`,
+                                            fontSize: 16,
                                             }}>
                                             {(json.truth
                                             ? json.from ==
@@ -231,8 +245,8 @@ const TransactionList = ({navigation, route}) => {
                                     <Text
                                         style={{
                                             color: '#7f7f7f',
-                                            fontSize: 13,
-                                            fontFamily: `EuclidCircularA-Medium`,
+                                            fontSize: 15,
+                                            fontFamily: `Sarala-Regular`,
                                         }}
                                     >
                                         {json.date}, {json.time}
@@ -243,20 +257,20 @@ const TransactionList = ({navigation, route}) => {
                                 <View style={styles.transactionRight}>
                                 <Text
                                     style={{
-                                    color: json.truth ? '#7DFF68' : '#fff',
-                                    fontSize: 16,
-                                    fontFamily: `EuclidCircularA-Medium`,
+                                    color: json.truth ? '#A38CFF' : '#fff',
+                                    fontSize: 17,
+                                    fontFamily: `Sarala-Regular`,
                                     }}>
                                     {json.truth != 0 && json.truth != 2 ? '+' : '-'}$
                                     {json.value.toFixed(3)}
                                 </Text>
-                                <Icon
+                                {/* <Icon
                                     // style={styles.tup}
                                     name={'chevron-small-right'}
                                     size={30}
                                     color={'#7f7f7f'}
                                     type="entypo"
-                                />
+                                /> */}
                                 </View>
                             </TouchableOpacity>
                         );
@@ -279,7 +293,7 @@ const styles = StyleSheet.create({
     heading : { 
         fontSize: 20,
         color: '#ffffff',
-        fontFamily: `EuclidCircularA-Medium`,
+        fontFamily: `Sarala-Regular`,
         fontWeight: 500,
         marginLeft: 30
     },
@@ -309,13 +323,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '30%',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
   },
   noTransaction: {
     color: '#d9d9d9',
     marginTop: '7%',
     textAlign: 'center',
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `Sarala-Regular`,
     fontSize: 17,
   },
   ttext: {

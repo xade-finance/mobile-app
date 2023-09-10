@@ -16,10 +16,18 @@ const styles = StyleSheet.create({
   },
 
   balanceContainer: {
-    width: '100%',
+    // width: '100%',
     // paddingLeft: '6%',
     alignItems: 'center',
-    paddingBottom:'2%'
+    // paddingBottom:'2%',
+    backgroundColor: '#131313',
+    marginHorizontal:25,
+    marginVertical: 5,
+    borderRadius: 10,
+    padding:20,
+    // paddingHorizontal: 20,
+    justifyContent: 'space-between',
+    flexDirection: 'row'
   },
 
   sendRequest: {
@@ -101,18 +109,22 @@ const styles = StyleSheet.create({
   depWith: {
     flexDirection: 'row',
     height: '100%',
-    width: '35%',
-    borderRadius: 20,
+    width: '40%',
+    borderRadius: 6,
+  },
+
+  innerDepColored: {
+    backgroundColor: '#5038E1'
   },
 
   innerDep: {
     width: '100%',
     flexDirection: 'row',
-    borderRadius: 10,
+    borderRadius: 6,
     alignItems: 'center',
     justifyContent: 'space-evenly',
     paddingHorizontal: '1%',
-    backgroundColor: '#131313',
+    backgroundColor: '#141414',
   },
 
   noTransaction: {

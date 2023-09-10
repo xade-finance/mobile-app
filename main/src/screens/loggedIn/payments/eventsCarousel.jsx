@@ -214,20 +214,21 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginVertical: 10,
     paddingVertical: 10,
-    borderStyle: 'dashed',
-    borderWidth: 1,
-    borderColor: '#8e8e8e',
-    borderRadius: 10
+    backgroundColor:'#131313',
+    // borderStyle: 'dashed',
+    // borderWidth: 1,
+    // borderColor: '#8e8e8e',
+    borderRadius: 20
   },
   titleText: {
     fontSize: 16,
     color: '#ffffff',
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `Sarala-Regular`,
   },
   descriptionText: {
     fontSize: 14,
     color: '#b9b9b9',
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `Sarala-Regular`,
   },
   actionContainer: {
     flexDirection: 'row',

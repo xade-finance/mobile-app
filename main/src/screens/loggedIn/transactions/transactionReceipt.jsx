@@ -126,7 +126,7 @@ const TransactionReceipt = ({transactionData, onClose}) => {
                         >
                             <Text style={styles.buttonText}>View on Polygonscan</Text>
 
-                            <View style={styles.bottomDots}>
+                            {/* <View style={styles.bottomDots}>
 								<View>
 									<View style={styles.dotsSpan}></View>
 									<View style={styles.dotsSpan}></View>
@@ -135,7 +135,7 @@ const TransactionReceipt = ({transactionData, onClose}) => {
 									<View style={styles.dotsSpan}></View>
 									<View style={styles.dotsSpan}></View>
                                 </View>
-                            </View>
+                            </View> */}
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -269,28 +269,28 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         padding:5
     },
-    bottomDots: {
-        position: 'absolute',
-        width: '100%',
-        // display: 'block',
-        top: 0,
+    // bottomDots: {
+    //     position: 'absolute',
+    //     width: '100%',
+    //     // display: 'block',
+    //     top: 0,
         
-        // transform: 'translateY(-50%)',
-        zIndex: 10
-    },
-    bottomDots: {
-        top: '100%'
-    },
-    dotsSpan: {
-        position: 'absolute',
-        width: 6,
-        height: 6,
-        // display: 'block',
-        borderRadius: '50',
-        top: 0,
-        // transform: 'translateY(-50%)',
-        backgroundColor: 'blue'
-    }
+    //     // transform: 'translateY(-50%)',
+    //     zIndex: 10
+    // },
+    // bottomDots: {
+    //     top: '100%'
+    // },
+    // dotsSpan: {
+    //     position: 'absolute',
+    //     width: 6,
+    //     height: 6,
+    //     // display: 'block',
+    //     borderRadius: '50',
+    //     top: 0,
+    //     // transform: 'translateY(-50%)',
+    //     backgroundColor: 'blue'
+    // }
     // .dots span:nth-child(1){
     //     width: 30px;
     //     height: 30px;

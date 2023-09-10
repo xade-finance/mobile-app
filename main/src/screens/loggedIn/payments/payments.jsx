@@ -13,6 +13,7 @@ import {
   Dimensions,
   RefreshControl,
   Platform,
+  StyleSheet,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {Text} from '@rneui/themed';
@@ -171,27 +172,36 @@ const PaymentsComponent = ({navigation}) => {
         width: '100%',
         height: '100%',
         alignSelf: 'flex-start',
+        backgroundColor: '#000'
       }}>
       
-      <View style={styles.remmitexContainer}>
+      {/* <View style={styles.remmitexContainer}>
         <View style={styles.balanceContainer}>
-          
+          <Text
+            style={{
+              color: '#757575',
+              fontFamily: 'Sarala-Regular',
+              fontSize: 16,
+              fontWeight: 400,
+            }}>
+            Your total balance
+          </Text>
           <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
             <Text
               style={{
                 color: '#fff',
-                fontFamily: 'EuclidCircularA-Medium',
-                fontSize: 42,
-                fontWeight: 500,
+                fontFamily: 'Sarala-Regular',
+                fontSize: 32,
+                fontWeight: 700,
                 marginTop: '1%',
               }}>
               ${balance.split('.')[0]}
               <Text
                 style={{
                   color: '#fff',
-                  fontFamily: 'EuclidCircularA-Medium',
-                  fontSize: 42,
-                  fontWeight: 500,
+                  fontFamily: 'Sarala-Regular',
+                  fontSize: 32,
+                  fontWeight: 700,
                   marginTop: '1%',
                 }}>
                 {'.'}
@@ -199,15 +209,76 @@ const PaymentsComponent = ({navigation}) => {
               </Text>
             </Text>
           </View>
-          <Text
-            style={{
-              color: '#969696',
-              fontFamily: 'EuclidCircularA-Medium',
-              fontSize: 18,
-              fontWeight: 400,
-            }}>
-            Your total balance
+          
+        </View>
+      </View> */}
+      <View style={{
+        marginHorizontal:30,
+        marginTop: 20
+      }}>
+        <Text
+          style={{
+            fontFamily: 'Sarala-Bold',
+            fontSize: 20,
+            color: "#fff",
+            fontWeight: 700,
+          }}
+        >Accounts</Text>
+      </View>
+      <View style={styles.balanceContainer}>
+        <View>
+          <Text style={{
+            fontSize:16,
+            fontWeight:400,
+            fontFamily: 'Sarala-Regular',
+            color: '#a1a1a1',
+          }}>
+            Commodities
           </Text>
+          <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
+            <Text
+              style={{
+                color: '#fff',
+                fontFamily: 'Sarala-Regular',
+                fontSize: 24,
+                fontWeight: 700,
+                marginTop: '1%',
+              }}>
+              ${balance.split('.')[0]}
+              <Text
+                style={{
+                  color: '#fff',
+                  fontFamily: 'Sarala-Regular',
+                  fontSize: 24,
+                  fontWeight: 700,
+                  marginTop: '1%',
+                }}>
+                {'.'}
+                {balance.split('.')[1] ? balance.split('.')[1] : '00'}
+              </Text>
+            </Text>
+          </View>
+        </View>
+
+        <View style={{
+          borderRadius: 50,
+          backgroundColor: '#5038E1',
+          height: 50,
+          width: 50,
+          justifyContent: 'center',
+          alignItems: 'center',
+          // padding:10
+        }}>
+          <FastImage
+            source={require('./icon/commodities.png')}
+            // resizeMode="cover"
+            style={{
+              width: 40,
+              height: 40,
+              // borderRadius: 10, 
+              // margin: 5
+            }}
+          />
         </View>
       </View>
 
@@ -220,26 +291,8 @@ const PaymentsComponent = ({navigation}) => {
             flexDirection: 'row',
             marginTop: '2%'
           }}>
-          <TouchableOpacity
-            style={styles.depWith}
-            onPress={() => {
-              navigation.push('SendEmail');
-            }}>
-            <View
-              style={styles.innerDep}>
-              <Icon
-                // style={styles.tup}
-                name={'arrow-up-right'}
-                // size={40}
-                color={'#fff'}
-                type="feather"
-              />
-              <Text style={{color: '#fff', fontSize: 16, fontFamily: 'EuclidCircularA-Medium', fontWeight: 500}}>
-                Transfer
-              </Text>
-            </View>
-          </TouchableOpacity>
 
+            
           <TouchableOpacity
             style={styles.depWith}
             onPress={() => {
@@ -257,20 +310,41 @@ const PaymentsComponent = ({navigation}) => {
               }
             }}>
             <View
-              style={styles.innerDep}>
-              <Icon
-                // style={styles.tup}
-                name={'arrow-down-left'}
-                color={'#fff'}
-                // size={40}
-                // color={t?'green': 'red'}
-                type="feather"
-              />
-              <Text style={{color: '#fff', fontSize: 16, fontFamily: 'EuclidCircularA-Medium', fontWeight: 500}}>
-                Deposit
+              style={[styles.innerDep, styles.innerDepColored]}>
+                
+                  <Icon
+                    // style={styles.tup}
+                    name={'arrow-down-circle'}
+                    color={'#fff'}
+                    size={18}
+                    // color={t?'green': 'red'}
+                    type="feather"
+                  />
+              <Text style={{color: '#fff', fontSize: 14, fontFamily: 'Sarala-Regular', fontWeight: 700}}>
+                Add cash
               </Text>
             </View>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.depWith}
+            onPress={() => {
+              navigation.push('SendEmail');
+            }}>
+            <View
+              style={styles.innerDep}>
+              <Icon
+                // style={styles.tup}
+                name={'arrow-right-circle'}
+                size={18}
+                color={'#fff'}
+                type="feather"
+              />
+              <Text style={{color: '#fff', fontSize: 14, fontFamily: 'Sarala-Regular', fontWeight: 700}}>
+                Transfer
+              </Text>
+            </View>
+          </TouchableOpacity>
+
         </View>
 
       {/* <View style={styles.remmitexContainer}>
@@ -280,7 +354,7 @@ const PaymentsComponent = ({navigation}) => {
             <Text
               style={{
                 color: '#fff',
-                fontFamily: 'EuclidCircularA-Medium',
+                fontFamily: 'Sarala-Regular',
                 fontSize: 40,
                 marginTop: '1%',
               }}>
@@ -288,7 +362,7 @@ const PaymentsComponent = ({navigation}) => {
               <Text
                 style={{
                   color: '#fff',
-                  fontFamily: 'EuclidCircularA-Medium',
+                  fontFamily: 'Sarala-Regular',
                   fontSize: 37,
                   marginTop: '1%',
                 }}>
@@ -300,7 +374,7 @@ const PaymentsComponent = ({navigation}) => {
           <Text
             style={{
               color: 'grey',
-              fontFamily: 'EuclidCircularA-Medium',
+              fontFamily: 'Sarala-Regular',
               fontSize: 18,
             }}>
             Total Balance in USD
@@ -315,7 +389,7 @@ const PaymentsComponent = ({navigation}) => {
             <Text
               style={{
                 color: '#0B84FE',
-                fontFamily: 'EuclidCircularA-Medium',
+                fontFamily: 'Sarala-Regular',
                 fontSize: 17,
               }}>
               Send
@@ -340,7 +414,7 @@ const PaymentsComponent = ({navigation}) => {
             <Text
               style={{
                 color: '#0B84FE',
-                fontFamily: 'EuclidCircularA-Medium',
+                fontFamily: 'Sarala-Regular',
                 fontSize: 17,
               }}>
               Deposit
@@ -376,7 +450,7 @@ const PaymentsComponent = ({navigation}) => {
             />
             <Text style={{
               color: '#FF6766',
-              fontFamily: 'EuclidCircularA-Medium',
+              fontFamily: 'Sarala-Regular',
               fontSize: 14,
             }}>Transfer</Text>
           </View>
@@ -411,7 +485,7 @@ const PaymentsComponent = ({navigation}) => {
             />
             <Text style={{
               color: '#66FF88',
-              fontFamily: 'EuclidCircularA-Medium',
+              fontFamily: 'Sarala-Regular',
               fontSize: 14,
             }}>Request</Text>
           </View>
@@ -433,7 +507,7 @@ const PaymentsComponent = ({navigation}) => {
             />
             <Text style={{
               color: '#FC66FF',
-              fontFamily: 'EuclidCircularA-Medium',
+              fontFamily: 'Sarala-Regular',
               fontSize: 14,
             }}>Scan QR</Text>
           </View>
@@ -464,7 +538,8 @@ const PaymentsComponent = ({navigation}) => {
             style={{
               color: 'white',
               fontSize: 22,
-              fontFamily: 'EuclidCircularA-SemiBold',
+              fontFamily: 'Sarala-Bold',
+              fontWeight: 700,
               paddingLeft: '4%',
             }}>
             Transactions 
@@ -483,8 +558,8 @@ const PaymentsComponent = ({navigation}) => {
             }}>
             <Text
               style={{
-                color: '#0B84FE',
-                fontFamily: 'EuclidCircularA-Medium',
+                color: '#A38CFF',
+                fontFamily: 'Sarala-Regular',
                 fontSize: 17,
                 marginRight: '5%',
                 paddingTop: 3,
@@ -496,7 +571,7 @@ const PaymentsComponent = ({navigation}) => {
         {state.length > 0 ? (
           <Text
             style={{
-              fontFamily: 'EuclidCircularA-Medium',
+              fontFamily: 'Sarala-Regular',
               color: '#6f6f6f',
               fontSize: 17,
               marginLeft: '5%',
@@ -529,16 +604,24 @@ const PaymentsComponent = ({navigation}) => {
                 style={styles.transactions}
                 key={state.indexOf(json)}>
                 <View style={styles.transactionLeft}>
-                  <FastImage
-                    style={{width: 50, height: 50, borderRadius: 5}}
-                    source={
-                      json.truth == 2
-                        ? require('./icon/pending.png')
-                        : json.truth == 1
-                        ? require('./icon/positive.png')
-                        : require('./icon/negative.png')
-                    }
-                  />
+                  <View style={{
+                    borderRadius: 50,
+                    backgroundColor: '#A38CFF',
+                    width: 40, height: 40,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                    <FastImage
+                      style={{width: 20, height: 20}}
+                      source={
+                        json.truth == 2
+                          ? require('./icon/pending.png')
+                          : json.truth == 1
+                          ? require('./icon/positive.png')
+                          : require('./icon/negative.png')
+                      }
+                    />
+                  </View>
                   <View style={styles.ttext}>
                     <TouchableHighlight
                       key={json.hash}
@@ -548,9 +631,10 @@ const PaymentsComponent = ({navigation}) => {
                       }}>
                       <Text
                         style={{
-                          color: 'white',
-                          fontFamily: `EuclidCircularA-Medium`,
-                          fontSize: 14,
+                          color: '#e9e9e9',
+                          fontFamily: `Sarala-Regular`,
+                          fontSize: 16,
+                          fontWeight: 700,
                         }}>
                         {(json.truth
                           ? json.from ==
@@ -568,8 +652,9 @@ const PaymentsComponent = ({navigation}) => {
                     <Text
                       style={{
                         color: '#7f7f7f',
-                        fontSize: 13,
-                        fontFamily: `EuclidCircularA-Medium`,
+                        fontSize: 16,
+                        fontWeight: 400,
+                        fontFamily: `Sarala-Regular`,
                       }}>
                       {json.date}, {json.time}
                     </Text>
@@ -579,20 +664,21 @@ const PaymentsComponent = ({navigation}) => {
                 <View style={styles.transactionRight}>
                   <Text
                     style={{
-                      color: json.truth ? '#7DFF68' : '#fff',
-                      fontSize: 16,
-                      fontFamily: `EuclidCircularA-Medium`,
+                      color: json.truth ? '#A38CFF' : '#fff',
+                      fontSize: 17,
+                      fontWeight:700,
+                      fontFamily: `Sarala-Regular`,
                     }}>
                     {json.truth != 0 && json.truth != 2 ? '+' : '-'}$
                     {json.value.toFixed(3)}
                   </Text>
-                  <Icon
+                  {/* <Icon
                     // style={styles.tup}
                     name={'chevron-small-right'}
                     size={30}
                     color={'#7f7f7f'}
                     type="entypo"
-                  />
+                  /> */}
                 </View>
               </TouchableOpacity>
             );
