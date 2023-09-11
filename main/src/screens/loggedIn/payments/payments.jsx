@@ -13,6 +13,7 @@ import {
   Dimensions,
   RefreshControl,
   Platform,
+  StyleSheet,
 } from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {Text} from '@rneui/themed';
@@ -26,6 +27,7 @@ import createProvider from '../../../particle-auth';
 import getOnlyProvider from '../../../particle-auth';
 import createConnectProvider from '../../../particle-connect';
 import {EventsCarousel} from './eventsCarousel';
+import {BreakdownCarousel} from './breakdownCarousel';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import XUSD_ABI from './XUSD';
 import USDC_ABI from './USDC';
@@ -50,12 +52,14 @@ import {ethers} from 'ethers';
 import {transferUSDC} from './remmitexv1';
 
 import images from './img/images';
+import breakdowns from './breakdown/breakdown';
 
 let web3;
 const REMMITEX_CONTRACT = '0xf1Ff5c85df29f573003328c783b8c6f8cC326EB7';
 const windowHeight = Dimensions.get('window').height;
 import {POLYGON_API_KEY} from '@env';
 import {registerFcmToken} from '../../../utils/push';
+import TransactionReceipt from '../transactions/transactionReceipt';
 const contractAddress = '0xA3C957f5119eF3304c69dBB61d878798B3F239D9';
 const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
 
@@ -79,6 +83,7 @@ const PaymentsComponent = ({navigation}) => {
   const [balance, setBalance] = useState('0');
   const [transactionVisible, setTransactionVisible] = useState(false);
   const [mainnet, setMainnet] = useState(false);
+  const DEVICE_WIDTH = Dimensions.get('window').width;
 
   async function call() {
     const address = global.withAuth
@@ -144,34 +149,212 @@ const PaymentsComponent = ({navigation}) => {
     }
   }
 
+
+  
+  const [showTxnReceiptModal, setShowTxnReceiptModal] = useState(false);
+  const [transactionData, setTransactionData] = useState();
+
+  const handleCloseTransactionReceiptModal = () => {
+    setShowTxnReceiptModal(false);
+  }
+
   useEffect(() => {
     console.log('Is Auth:', global.withAuth);
 
     call();
   }, []);
+
+
   const t = true;
   return (
     <SafeAreaView
       style={{
         width: '100%',
         height: '100%',
-        alignSelf: 'center',
+        alignSelf: 'flex-start',
+        backgroundColor: '#000'
       }}>
-      <View style={styles.remmitexContainer}>
+      
+      {/* <View style={styles.remmitexContainer}>
         <View style={styles.balanceContainer}>
           <Text
             style={{
-              color: 'grey',
-              fontFamily: 'EuclidCircularA-Medium',
-              fontSize: 18,
+              color: '#757575',
+              fontFamily: 'Sarala-Regular',
+              fontSize: 16,
+              fontWeight: 400,
             }}>
-            Total Balance
+            Your total balance
           </Text>
           <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
             <Text
               style={{
                 color: '#fff',
-                fontFamily: 'EuclidCircularA-Medium',
+                fontFamily: 'Sarala-Regular',
+                fontSize: 32,
+                fontWeight: 700,
+                marginTop: '1%',
+              }}>
+              ${balance.split('.')[0]}
+              <Text
+                style={{
+                  color: '#fff',
+                  fontFamily: 'Sarala-Regular',
+                  fontSize: 32,
+                  fontWeight: 700,
+                  marginTop: '1%',
+                }}>
+                {'.'}
+                {balance.split('.')[1] ? balance.split('.')[1] : '00'}
+              </Text>
+            </Text>
+          </View>
+          
+        </View>
+      </View> */}
+      <View style={{
+        marginHorizontal:30,
+        marginTop: 20
+      }}>
+        <Text
+          style={{
+            fontFamily: 'Sarala-Bold',
+            fontSize: 20,
+            color: "#fff",
+            fontWeight: 700,
+          }}
+        >Accounts</Text>
+      </View>
+      <View style={styles.balanceContainer}>
+        <View>
+          <Text style={{
+            fontSize:16,
+            fontWeight:400,
+            fontFamily: 'Sarala-Regular',
+            color: '#a1a1a1',
+          }}>
+            Commodities
+          </Text>
+          <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
+            <Text
+              style={{
+                color: '#fff',
+                fontFamily: 'Sarala-Regular',
+                fontSize: 24,
+                fontWeight: 700,
+                marginTop: '1%',
+              }}>
+              ${balance.split('.')[0]}
+              <Text
+                style={{
+                  color: '#fff',
+                  fontFamily: 'Sarala-Regular',
+                  fontSize: 24,
+                  fontWeight: 700,
+                  marginTop: '1%',
+                }}>
+                {'.'}
+                {balance.split('.')[1] ? balance.split('.')[1] : '00'}
+              </Text>
+            </Text>
+          </View>
+        </View>
+
+        <View style={{
+          borderRadius: 50,
+          backgroundColor: '#5038E1',
+          height: 50,
+          width: 50,
+          justifyContent: 'center',
+          alignItems: 'center',
+          // padding:10
+        }}>
+          <FastImage
+            source={require('./icon/commodities.png')}
+            // resizeMode="cover"
+            style={{
+              width: 40,
+              height: 40,
+              // borderRadius: 10, 
+              // margin: 5
+            }}
+          />
+        </View>
+      </View>
+
+        <View
+          style={{
+            flexDirection: 'row',
+            // width: '80%',
+            height: 50,
+            justifyContent: 'space-evenly',
+            flexDirection: 'row',
+            marginTop: '2%'
+          }}>
+
+            
+          <TouchableOpacity
+            style={styles.depWith}
+            onPress={() => {
+              {
+                {
+                  global.mainnet
+                    ? navigation.push('FiatRamps')
+                    : addXUSD(
+                        navigation,
+                        global.withAuth
+                          ? global.loginAccount.scw
+                          : global.connectAccount.publicAddress,
+                      );
+                }
+              }
+            }}>
+            <View
+              style={[styles.innerDep, styles.innerDepColored]}>
+                
+                  <Icon
+                    // style={styles.tup}
+                    name={'arrow-down-circle'}
+                    color={'#fff'}
+                    size={18}
+                    // color={t?'green': 'red'}
+                    type="feather"
+                  />
+              <Text style={{color: '#fff', fontSize: 14, fontFamily: 'Sarala-Regular', fontWeight: 700}}>
+                Add cash
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.depWith}
+            onPress={() => {
+              navigation.push('SendEmail');
+            }}>
+            <View
+              style={styles.innerDep}>
+              <Icon
+                // style={styles.tup}
+                name={'arrow-right-circle'}
+                size={18}
+                color={'#fff'}
+                type="feather"
+              />
+              <Text style={{color: '#fff', fontSize: 14, fontFamily: 'Sarala-Regular', fontWeight: 700}}>
+                Transfer
+              </Text>
+            </View>
+          </TouchableOpacity>
+
+        </View>
+
+      {/* <View style={styles.remmitexContainer}>
+        <View style={styles.balanceContainer}>
+          
+          <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
+            <Text
+              style={{
+                color: '#fff',
+                fontFamily: 'Sarala-Regular',
                 fontSize: 40,
                 marginTop: '1%',
               }}>
@@ -179,7 +362,7 @@ const PaymentsComponent = ({navigation}) => {
               <Text
                 style={{
                   color: '#fff',
-                  fontFamily: 'EuclidCircularA-Medium',
+                  fontFamily: 'Sarala-Regular',
                   fontSize: 37,
                   marginTop: '1%',
                 }}>
@@ -188,6 +371,14 @@ const PaymentsComponent = ({navigation}) => {
               </Text>
             </Text>
           </View>
+          <Text
+            style={{
+              color: 'grey',
+              fontFamily: 'Sarala-Regular',
+              fontSize: 18,
+            }}>
+            Total Balance in USD
+          </Text>
         </View>
         <View style={styles.sendRequest}>
           <TouchableOpacity
@@ -198,7 +389,7 @@ const PaymentsComponent = ({navigation}) => {
             <Text
               style={{
                 color: '#0B84FE',
-                fontFamily: 'EuclidCircularA-Medium',
+                fontFamily: 'Sarala-Regular',
                 fontSize: 17,
               }}>
               Send
@@ -223,7 +414,7 @@ const PaymentsComponent = ({navigation}) => {
             <Text
               style={{
                 color: '#0B84FE',
-                fontFamily: 'EuclidCircularA-Medium',
+                fontFamily: 'Sarala-Regular',
                 fontSize: 17,
               }}>
               Deposit
@@ -232,15 +423,97 @@ const PaymentsComponent = ({navigation}) => {
         </View>
       </View>
       <View style={styles.exploreContainer}>
-        <Text
-          style={{
-            color: 'white',
-            fontSize: 22,
-            fontFamily: 'EuclidCircularA-SemiBold',
-            paddingLeft: '4%',
+        <BreakdownCarousel
+          breakdowns={breakdowns}
+          navigation={navigation}
+          key={breakdowns}
+        />
+      </View>
+ 
+
+      <View style={styles.paymentActionContainer}>
+        <TouchableOpacity
+          style={[styles.paymentActionButton, styles.transferButton]}
+          onPress={() => {
+            navigation.push('SendEmail');
           }}>
-          Suggested For You 🔥
-        </Text>
+          <View>
+            <FastImage
+              source={require('../../../../assets/transfer.png')}
+              resizeMode="cover"
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 10, 
+                margin: 5
+              }}
+            />
+            <Text style={{
+              color: '#FF6766',
+              fontFamily: 'Sarala-Regular',
+              fontSize: 14,
+            }}>Transfer</Text>
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={[styles.paymentActionButton, styles.depositButton]}
+          onPress={() => {
+            {
+              {
+                global.mainnet
+                  ? navigation.push('FiatRamps')
+                  : addXUSD(
+                      navigation,
+                      global.withAuth
+                        ? global.loginAccount.scw
+                        : global.connectAccount.publicAddress,
+                    );
+              }
+            }
+          }}>
+          <View>
+            <FastImage
+              source={ require('../../../../assets/request.png')}
+              resizeMode="cover"
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 10, 
+                margin:5
+              }}
+            />
+            <Text style={{
+              color: '#66FF88',
+              fontFamily: 'Sarala-Regular',
+              fontSize: 14,
+            }}>Request</Text>
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={[styles.paymentActionButton, styles.scanQRButton]}
+        >
+          <View>
+            <FastImage
+              source={require('../../../../assets/qr.png')}
+              resizeMode="cover"
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 10, 
+                margin:5
+              }}
+            />
+            <Text style={{
+              color: '#FC66FF',
+              fontFamily: 'Sarala-Regular',
+              fontSize: 14,
+            }}>Scan QR</Text>
+          </View>
+        </TouchableOpacity>
+      </View> */}
+      <View style={styles.exploreContainer}>
         <EventsCarousel
           images={images}
           navigation={navigation}
@@ -253,30 +526,40 @@ const PaymentsComponent = ({navigation}) => {
         />
       </View>
       <View style={styles.transactionContainer}>
+
+        {showTxnReceiptModal && (
+          <TransactionReceipt
+              transactionData={transactionData}
+              onClose={handleCloseTransactionReceiptModal}
+          />
+        )}
         <View style={styles.txHeading}>
           <Text
             style={{
               color: 'white',
               fontSize: 22,
-              fontFamily: 'EuclidCircularA-SemiBold',
+              fontFamily: 'Sarala-Bold',
+              fontWeight: 700,
               paddingLeft: '4%',
             }}>
-            Recent Transactions 💰
+            Transactions 
+            {/* 💰 */}
           </Text>
           <TouchableOpacity
             onPress={() => {
-              Linking.openURL(
-                `https://${mainnet ? '' : 'mumbai.'}polygonscan.com/address/${
-                  global.withAuth
-                    ? global.loginAccount.scw
-                    : global.connectAccount.publicAddress
-                }`,
-              );
+              navigation.push('TransactionHistory');
+              // Linking.openURL(
+              //   `https://${mainnet ? '' : 'mumbai.'}polygonscan.com/address/${
+              //     global.withAuth
+              //       ? global.loginAccount.scw
+              //       : global.connectAccount.publicAddress
+              //   }`,
+              // );
             }}>
             <Text
               style={{
-                color: '#0B84FE',
-                fontFamily: 'EuclidCircularA-Medium',
+                color: '#A38CFF',
+                fontFamily: 'Sarala-Regular',
                 fontSize: 17,
                 marginRight: '5%',
                 paddingTop: 3,
@@ -288,7 +571,7 @@ const PaymentsComponent = ({navigation}) => {
         {state.length > 0 ? (
           <Text
             style={{
-              fontFamily: 'EuclidCircularA-Medium',
+              fontFamily: 'Sarala-Regular',
               color: '#6f6f6f',
               fontSize: 17,
               marginLeft: '5%',
@@ -308,25 +591,37 @@ const PaymentsComponent = ({navigation}) => {
                 //   navigation.push('ViewTransaction', {json: json});
                 // }}
                 onPress={() => {
-                  Linking.openURL(
-                    `https://${mainnet ? '' : 'mumbai.'}polygonscan.com/tx/${
-                      json.hash
-                    }`,
-                  );
+                  setTransactionData(json);
+                  setShowTxnReceiptModal(true);
+
+                  
+                  // Linking.openURL(
+                  //   `https://${mainnet ? '' : 'mumbai.'}polygonscan.com/tx/${
+                  //     json.hash
+                  //   }`,
+                  // );
                 }}
                 style={styles.transactions}
                 key={state.indexOf(json)}>
                 <View style={styles.transactionLeft}>
-                  <FastImage
-                    style={{width: 50, height: 50, borderRadius: 5}}
-                    source={
-                      json.truth == 2
-                        ? require('./icon/pending.png')
-                        : json.truth == 1
-                        ? require('./icon/positive.png')
-                        : require('./icon/negative.png')
-                    }
-                  />
+                  <View style={{
+                    borderRadius: 50,
+                    backgroundColor: '#A38CFF',
+                    width: 40, height: 40,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                    <FastImage
+                      style={{width: 20, height: 20}}
+                      source={
+                        json.truth == 2
+                          ? require('./icon/pending.png')
+                          : json.truth == 1
+                          ? require('./icon/positive.png')
+                          : require('./icon/negative.png')
+                      }
+                    />
+                  </View>
                   <View style={styles.ttext}>
                     <TouchableHighlight
                       key={json.hash}
@@ -336,9 +631,10 @@ const PaymentsComponent = ({navigation}) => {
                       }}>
                       <Text
                         style={{
-                          color: 'white',
-                          fontFamily: `EuclidCircularA-Medium`,
-                          fontSize: 17,
+                          color: '#e9e9e9',
+                          fontFamily: `Sarala-Regular`,
+                          fontSize: 16,
+                          fontWeight: 700,
                         }}>
                         {(json.truth
                           ? json.from ==
@@ -356,8 +652,9 @@ const PaymentsComponent = ({navigation}) => {
                     <Text
                       style={{
                         color: '#7f7f7f',
-                        fontSize: 15,
-                        fontFamily: `EuclidCircularA-Medium`,
+                        fontSize: 16,
+                        fontWeight: 400,
+                        fontFamily: `Sarala-Regular`,
                       }}>
                       {json.date}, {json.time}
                     </Text>
@@ -367,20 +664,21 @@ const PaymentsComponent = ({navigation}) => {
                 <View style={styles.transactionRight}>
                   <Text
                     style={{
-                      color: json.truth ? '#7DFF68' : '#fff',
-                      fontSize: 18,
-                      fontFamily: `EuclidCircularA-Medium`,
+                      color: json.truth ? '#A38CFF' : '#fff',
+                      fontSize: 17,
+                      fontWeight:700,
+                      fontFamily: `Sarala-Regular`,
                     }}>
                     {json.truth != 0 && json.truth != 2 ? '+' : '-'}$
                     {json.value.toFixed(3)}
                   </Text>
-                  <Icon
+                  {/* <Icon
                     // style={styles.tup}
                     name={'chevron-small-right'}
                     size={30}
                     color={'#7f7f7f'}
                     type="entypo"
-                  />
+                  /> */}
                 </View>
               </TouchableOpacity>
             );

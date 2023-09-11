@@ -28,6 +28,7 @@ import Investments from './screens/loggedIn/investments/investments';
 import SavingsComponent from './screens/loggedIn/savings/savings';
 import PaymentsComponent from './screens/loggedIn/payments/payments';
 import Transaction from './screens/loggedIn/payments/transactions/transactions';
+import TransactionList from './screens/loggedIn/transactions/transactionList';
 import EnterAmountComponent from './screens/enterAmount';
 import EnterSavingsAmountComponent from './screens/loggedIn/savings/savingStatus/enterSavingsAmount';
 import SendEmailComponent from './screens/loggedIn/send/sendEmail';
@@ -63,10 +64,15 @@ const particle = require('./../assets/particle.jpg');
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
 
+
 import messaging from '@react-native-firebase/messaging';
 import {requestUserPermission, generateTopic} from './utils/push';
 import {getDeviceToken} from 'react-native-device-info';
 import FastImage from 'react-native-fast-image';
+import AddBankAccount from './screens/loggedIn/card/bankAccount/addBankAccount';
+import ListBankAccounts from './screens/loggedIn/card/bankAccount/listBankAccount';
+import AddFund from './screens/loggedIn/card/fund/addFund';
+import CardInfo from './screens/loggedIn/card/info/cardInfo';
 
 function PreLaunchLoad({navigation}) {
   return (
@@ -405,6 +411,54 @@ function XadeCard({navigation}) {
   );
 }
 
+function AddFundToCard({navigation}) {
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* <TopBar navigation={navigation} headers={'Bank Account'} /> */}
+      <ScrollView style={{height: '100%'}}>
+        <AddFund navigation={navigation} />
+      </ScrollView>
+      {/* <BottomNavbar navigation={navigation} selected="Card" /> */}
+    </SafeAreaView>
+  );
+}
+
+function CardInfoScreen({navigation}) {
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* <TopBar navigation={navigation} headers={'Bank Account'} /> */}
+      <ScrollView style={{height: '100%'}}>
+        <CardInfo navigation={navigation} />
+      </ScrollView>
+      {/* <BottomNavbar navigation={navigation} selected="Card" /> */}
+    </SafeAreaView>
+  );
+}
+
+function CreateBankAccount({navigation}) {
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* <TopBar navigation={navigation} headers={'Bank Account'} /> */}
+      <ScrollView style={{height: '100%'}}>
+        <AddBankAccount navigation={navigation} />
+      </ScrollView>
+      {/* <BottomNavbar navigation={navigation} selected="Card" /> */}
+    </SafeAreaView>
+  );
+}
+
+function ListBankAccount({navigation}) {
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* <TopBar navigation={navigation} headers={'Bank Account'} /> */}
+      <ScrollView style={{height: '100%'}}>
+        <ListBankAccounts navigation={navigation} />
+      </ScrollView>
+      {/* <BottomNavbar navigation={navigation} selected="Card" /> */}
+    </SafeAreaView>
+  );
+}
+
 function ViewTransaction({navigation, route}) {
   return (
     <ScrollView>
@@ -412,6 +466,20 @@ function ViewTransaction({navigation, route}) {
         <SafeAreaView>
           <View>
             <Transaction navigation={navigation} route={route} />
+          </View>
+        </SafeAreaView>
+      </View>
+    </ScrollView>
+  );
+}
+
+function TransactionHistory({navigation, route}) {
+  return (
+    <ScrollView>
+      <View style={styles.black}>
+        <SafeAreaView>
+          <View>
+            <TransactionList navigation={navigation} route={route} />
           </View>
         </SafeAreaView>
       </View>
@@ -614,6 +682,12 @@ export default function App({navigation}) {
           options={{headerShown: false}}
         />
         <Stack.Screen
+          name="TransactionHistory"
+          component={TransactionHistory}
+          navigation={navigation}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
           name="Redeem"
           component={Redeem}
           navigation={navigation}
@@ -640,6 +714,30 @@ export default function App({navigation}) {
         <Stack.Screen
           name="ReferralCode"
           component={ReferCode}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="CreateBankAccount"
+          component={CreateBankAccount}
+          navigation={navigation}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="ListBankAccount"
+          component={ListBankAccount}
+          navigation={navigation}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="AddFund"
+          component={AddFundToCard}
+          navigation={navigation}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="CardInfo"
+          component={CardInfoScreen}
+          navigation={navigation}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

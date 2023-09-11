@@ -28,7 +28,7 @@ class EventsCarousel extends React.Component {
   }
   review = () => {
     Linking.openURL(
-      'https://twitter.com/intent/tweet?text=%23XadeReview%20%23XADE%0a',
+      'https://tally.so/r/w7LEV0',
     );
   };
   func = () => {
@@ -88,34 +88,118 @@ Download Now: https://bit.ly/xadefinance
           flexDirection: 'row',
           width: DEVICE_WIDTH,
         }}>
-        {images.map(imageGroups =>
-          imageGroups.map(image => (
-            <View style={styles.depWith}>
-              <TouchableOpacity
-                style={styles.depFurther}
-                key={image.name}
-                onPress={() => {
-                  image.name == 'Referrals'
-                    ? this.func()
-                    : image.name == 'Review'
-                    ? this.review()
-                    : Linking.openURL(image.link);
-                }}>
+          <View style={styles.depWith}>
+            <TouchableOpacity
+              style={styles.depFurther}
+              onPress={() => {
+                Linking.openURL('https://xadefinance.crew3.xyz/invite/OEL6nx6wDDIxAFsZVHPsv');
+              }}>
+              <View style={styles.actionContainer}>
+                <View style={styles.textContainer}>
+                  <Text style={styles.titleText}>
+                    Complete quests
+                  </Text>
+                  <Text style={styles.descriptionText}>
+                    To get Xade coins & amazing rewards for free
+                  </Text>
+                </View>
                 <FastImage
-                  source={{
-                    uri: image.image,
-                  }}
+                  source={require('./icon/quest.png')}
                   resizeMode="cover"
                   style={{
-                    width: 180,
-                    height: 180,
-                    borderRadius: 10,
+                    width: 60,
+                    height: 60,
+                    borderRadius: 10, 
                   }}
                 />
-              </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.depWith}>
+            <TouchableOpacity
+              style={styles.depFurther}
+              onPress={() => {
+                Linking.openURL('https://explorers.xade.finance/');
+              }}>
+              <View style={styles.actionContainer}>
+                <View style={styles.textContainer}>
+                  <Text style={styles.titleText}>
+                    Get Premium
+                  </Text>
+                  <Text style={styles.descriptionText}>
+                    To get everything from the new era of banking
+                  </Text>
+                </View>
+                <FastImage
+                  source={require('./icon/subscribe.png')}
+                  resizeMode="cover"
+                  style={{
+                    width: 60,
+                    height: 60,
+                    borderRadius: 10, 
+                  }}
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.depWith}>
+            <TouchableOpacity
+              style={styles.depFurther}
+              onPress={() => {
+               this.review();
+            }}>
+              <View style={styles.actionContainer}>
+                <View style={styles.textContainer}>
+                  <Text style={styles.titleText}>
+                    Contribute
+                  </Text>
+                  <Text style={styles.descriptionText}>
+                    Help Xade community grow and exclusive perks
+                  </Text>
+                </View>
+                <FastImage
+                  source={require('./icon/contribute.png')}
+                  resizeMode="cover"
+                  style={{
+                    width: 60,
+                    height: 60,
+                    borderRadius: 10, 
+                  }}
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
+
+        <View style={styles.depWith}>
+          <TouchableOpacity
+            style={styles.depFurther}
+            onPress={() => {
+              this.func()
+            }}>
+            <View style={styles.actionContainer}>
+              <View style={styles.textContainer}>
+                <Text style={styles.titleText}>
+                  Invite friends
+                </Text>
+                <Text style={styles.descriptionText}>
+                  To become a part of Xade referral program
+                </Text>
+              </View>
+              <FastImage
+                source={require('./icon/referral.png')}
+                resizeMode="cover"
+                style={{
+                  width: 60,
+                  height: 60,
+                  borderRadius: 10, 
+                }}
+              />
             </View>
-          )),
-        )}
+          </TouchableOpacity>
+        </View>
+
       </ScrollView>
     );
   }
@@ -126,8 +210,35 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
-    width: DEVICE_WIDTH / 2,
+    width: DEVICE_WIDTH - '40',
+    marginHorizontal: 20,
+    marginVertical: 10,
+    paddingVertical: 10,
+    backgroundColor:'#131313',
+    // borderStyle: 'dashed',
+    // borderWidth: 1,
+    // borderColor: '#8e8e8e',
+    borderRadius: 20
   },
+  titleText: {
+    fontSize: 16,
+    color: '#ffffff',
+    fontFamily: `Sarala-Regular`,
+  },
+  descriptionText: {
+    fontSize: 14,
+    color: '#b9b9b9',
+    fontFamily: `Sarala-Regular`,
+  },
+  actionContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+  },
+  textContainer: {
+    flexDirection: 'column',
+    justifyContent: 'space-evenly',
+    width: '70%'
+  }
 });
 
 export {EventsCarousel};

@@ -177,6 +177,44 @@ const FiatRamps = ({navigation}) => {
           </View>
           {/* <View style={styles.hr} /> */}
         </TouchableOpacity>
+        <TouchableOpacity style={[styles.optionContainer, 
+          selected == 'kado' ? styles.selected : '',
+          {marginTop: '4%'}]}
+          onPress={() => {
+            setSelected('kado');
+          }}
+        >
+          <View style={styles.insideText}>
+            <View style={{flexDirection: 'row'}}>
+              <FastImage
+                source={require('./kado.jpg')}
+                style={{
+                  borderWidth: 0,
+                  width: 25,
+                  height: 24,
+                }}
+              />
+              <Text style={styles.optionText}>Kado</Text>
+            </View>
+            <View><Text style={[styles.optionText, {color: '#2FBE6A'}]}>Available</Text></View>
+            {/* <View>
+              <Text style={[styles.optionText, {color: '#E14C4C'}]}>
+                Unavailable
+              </Text>
+            </View> */}
+          </View>          
+          <View style={styles.hr} />
+          <View style={styles.insideText}>
+            <View style={{flexDirection: 'row'}}>
+              {/* <Ionicons name="wallet-outline" size={24} color="#1abc9c" /> */}
+              <Text style={styles.optionTextBelow}>
+                Instant deposit & the highest buy limit
+              </Text>
+            </View>
+            {/* <View><Text style={[styles.optionText, {color: '#2FBE6A'}]}>Available</Text></View> */}
+          </View>
+          <View style={styles.hr} />
+        </TouchableOpacity>
         <TouchableOpacity style={[styles.optionContainer, {marginTop: '4%'}]}>
           <View style={styles.insideText}>
             <View style={{flexDirection: 'row'}}>
@@ -303,6 +341,8 @@ const FiatRamps = ({navigation}) => {
           </View>
           {/* <View style={styles.hr} /> */}
         </TouchableOpacity>
+
+        
       </ScrollView>
       <View
         style={{
@@ -339,20 +379,21 @@ const styles = StyleSheet.create({
 
   confirmButton: {
     width: '80%',
-    marginBottom: 20,
+    marginVertical: 10,
     alignItems: 'center',
     borderWidth: 1,
-    paddingVertical: 18,
+    paddingVertical: 10,
     paddingHorizontal: 100,
     justifyContent: 'center',
     borderRadius: 10,
     backgroundColor: '#fff',
   },
   depositText: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#fff', // white text color
-    marginBottom: 100,
+    marginBottom: 60,
+    fontFamily: `EuclidCircularA-Regular`,
   },
   optionContainer: {
     // aspectRatio: 1,

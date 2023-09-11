@@ -10,14 +10,24 @@ const styles = StyleSheet.create({
 
   remmitexContainer: {
     width: '100%',
-    marginTop: '2%',
+    marginVertical: '2%',
     flexDirection: 'row',
     justifyContent: 'space-evenly',
   },
 
   balanceContainer: {
-    width: '50%',
-    paddingLeft: '6%',
+    // width: '100%',
+    // paddingLeft: '6%',
+    alignItems: 'center',
+    // paddingBottom:'2%',
+    backgroundColor: '#131313',
+    marginHorizontal:25,
+    marginVertical: 5,
+    borderRadius: 10,
+    padding:20,
+    // paddingHorizontal: 20,
+    justifyContent: 'space-between',
+    flexDirection: 'row'
   },
 
   sendRequest: {
@@ -43,13 +53,13 @@ const styles = StyleSheet.create({
   },
 
   exploreContainer: {
-    marginTop: '5%',
+    // marginTop: '5%',
     width: '100%',
     flexDirection: 'column',
   },
 
   transactionContainer: {
-    marginTop: '10%',
+    marginTop: '5%',
     width: '100%',
     flexDirection: 'column',
     paddingBottom: 200,
@@ -81,7 +91,7 @@ const styles = StyleSheet.create({
   transactionRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: '24%',
+    width: '30%',
     justifyContent: 'space-between',
   },
 
@@ -99,18 +109,22 @@ const styles = StyleSheet.create({
   depWith: {
     flexDirection: 'row',
     height: '100%',
-    width: '30%',
-    borderRadius: 20,
+    width: '40%',
+    borderRadius: 6,
+  },
+
+  innerDepColored: {
+    backgroundColor: '#5038E1'
   },
 
   innerDep: {
     width: '100%',
     flexDirection: 'row',
-    borderRadius: 10,
+    borderRadius: 6,
     alignItems: 'center',
-    justifyContent: 'space-around',
-    paddingLeft: '1%',
-    paddingRight: '1%',
+    justifyContent: 'space-evenly',
+    paddingHorizontal: '1%',
+    backgroundColor: '#141414',
   },
 
   noTransaction: {
@@ -263,6 +277,36 @@ const styles = StyleSheet.create({
   // buttonText: {
   //   marginRight: '20%',
   // },
+
+
+  paymentActionContainer: {
+    marginTop: '5%',
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly', 
+    marginVertical: 10
+  },
+
+  paymentActionButton : {
+    padding: 20,
+    borderRadius: 20
+  },
+
+  transferButton : {
+    backgroundColor: '#230D0F',
+    color: '#DD6060'
+  },
+
+  depositButton : {
+    backgroundColor: '#0E2216',
+    color: '#66FF88'
+  },
+
+  scanQRButton : {
+    backgroundColor: '#230E1D',
+    color: '#FC66FF'
+  }
+
 });
 
 export default styles;
