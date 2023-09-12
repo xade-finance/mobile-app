@@ -15,6 +15,13 @@ import LinearGradient from 'react-native-linear-gradient';
 const DEVICE_WIDTH = Dimensions.get('window').width;
 import Clipboard from '@react-native-clipboard/clipboard';
 import FastImage from 'react-native-fast-image';
+import SvgUri from 'react-native-svg-uri';
+
+import ContributeSvg from './icon/contribute.svg';
+import QuestSvg from './icon/quest.svg';
+import ReferralSvg from './icon/referral.svg';
+import PremiumSvg from './icon/subscribe.svg';
+import QuestIcon from './icon/questIcon';
 
 class EventsCarousel extends React.Component {
   scrollRef = React.createRef();
@@ -80,13 +87,14 @@ Download Now: https://bit.ly/xadefinance
     const {selectedIndex} = this.state;
     return (
       <ScrollView
+
         horizontal
         pagingEnabled
         ref={this.scrollRef}
         style={{
-          marginTop: '4%',
+          // marginTop: '4%',
           flexDirection: 'row',
-          width: DEVICE_WIDTH,
+          // width: DEVICE_WIDTH,
         }}>
           <View style={styles.depWith}>
             <TouchableOpacity
@@ -103,15 +111,10 @@ Download Now: https://bit.ly/xadefinance
                     To get Xade coins & amazing rewards for free
                   </Text>
                 </View>
-                <FastImage
-                  source={require('./icon/quest.png')}
-                  resizeMode="cover"
-                  style={{
-                    width: 60,
-                    height: 60,
-                    borderRadius: 10, 
-                  }}
-                />
+                <View>
+                  <QuestIcon />
+                </View>
+
               </View>
             </TouchableOpacity>
           </View>
@@ -131,15 +134,13 @@ Download Now: https://bit.ly/xadefinance
                     To get everything from the new era of banking
                   </Text>
                 </View>
-                <FastImage
-                  source={require('./icon/subscribe.png')}
-                  resizeMode="cover"
-                  style={{
-                    width: 60,
-                    height: 60,
-                    borderRadius: 10, 
-                  }}
-                />
+                <View>
+                  <SvgUri
+                    width="54"
+                    height="54"
+                    svgXmlData={PremiumSvg}
+                  />
+                </View>
               </View>
             </TouchableOpacity>
           </View>
@@ -159,7 +160,12 @@ Download Now: https://bit.ly/xadefinance
                     Help Xade community grow and exclusive perks
                   </Text>
                 </View>
-                <FastImage
+                <SvgUri
+                  width="54"
+                  height="54"
+                  svgXmlData={ContributeSvg}
+                />
+                {/* <FastImage
                   source={require('./icon/contribute.png')}
                   resizeMode="cover"
                   style={{
@@ -167,7 +173,7 @@ Download Now: https://bit.ly/xadefinance
                     height: 60,
                     borderRadius: 10, 
                   }}
-                />
+                /> */}
               </View>
             </TouchableOpacity>
           </View>
@@ -187,15 +193,11 @@ Download Now: https://bit.ly/xadefinance
                   To become a part of Xade referral program
                 </Text>
               </View>
-              <FastImage
-                source={require('./icon/referral.png')}
-                resizeMode="cover"
-                style={{
-                  width: 60,
-                  height: 60,
-                  borderRadius: 10, 
-                }}
-              />
+              <SvgUri
+                  width="54"
+                  height="54"
+                  svgXmlData={ReferralSvg}
+                />
             </View>
           </TouchableOpacity>
         </View>
@@ -210,20 +212,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
-    width: DEVICE_WIDTH - '40',
-    marginHorizontal: 20,
+    width: DEVICE_WIDTH - '30',
+    marginHorizontal : 15,
     marginVertical: 10,
     paddingVertical: 10,
     backgroundColor:'#131313',
     // borderStyle: 'dashed',
     // borderWidth: 1,
     // borderColor: '#8e8e8e',
-    borderRadius: 20
+    borderRadius: 6
   },
   titleText: {
     fontSize: 16,
     color: '#ffffff',
-    fontFamily: `Sarala-Regular`,
+    fontFamily: `Sarala-Bold`,
+    fontWeight: 700
   },
   descriptionText: {
     fontSize: 14,
@@ -233,6 +236,7 @@ const styles = StyleSheet.create({
   actionContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
+    alignItems:'center',
   },
   textContainer: {
     flexDirection: 'column',

@@ -5,6 +5,7 @@ import FastImage from "react-native-fast-image";
 
 import {paymentsLoad, addXUSD, txHistoryLoad} from '../payments/utils';
 import TransactionReceipt from "./transactionReceipt";
+import Snackbar from "react-native-snackbar";
 
 const width = Dimensions.get('window').width;
 
@@ -221,7 +222,8 @@ const TransactionList = ({navigation, route}) => {
                                     key={json.hash}
                                     onPress={() => {
                                         Clipboard.setString(json.truth ? json.from : json.to);
-                                        Alert.alert('Copied Address To Clipboard');
+                                        Snackbar.show({text: "Copied address to clipboard"})
+                                        // Alert.alert('Copied Address To Clipboard');
                                     }}>
                                         <Text
                                             style={{

@@ -24,6 +24,13 @@ module.exports = {
             relativeSourceLocation: true,
           },
         ],
+        [
+          "babel-plugin-inline-import", {
+            "extensions": [
+              ".svg"
+            ]
+          }
+        ],
       ],
     },
     production: {
@@ -47,6 +54,13 @@ module.exports = {
           {
             relativeSourceLocation: true,
           },
+        ],
+        [
+          "babel-plugin-inline-import", {
+            "extensions": [
+              ".svg"
+            ]
+          }
         ],
         ['transform-remove-console'],
       ],

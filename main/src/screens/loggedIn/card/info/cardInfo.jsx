@@ -67,12 +67,13 @@ const CardInfo = ({navigation}) => {
         <View style={styles.container}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                 <View>
-                  <Icon
-                    name={'chevron-left'}
-                    size={24}
-                    color={'#fff'}
-                    type="entypo"
-                  />
+                    <Icon
+                        name={'keyboard-backspace'}
+                        size={30}
+                        color={'#f0f0f0'}
+                        type="materialicons"
+                        onPress={() => navigation.goBack()}
+                    /> 
                 </View>
             </TouchableOpacity>
             <Text style={styles.heading}>Card Details</Text>
@@ -288,14 +289,14 @@ const styles = StyleSheet.create({
         left: 10,
         color: 'fff',
         borderRadius: 50,
-        backgroundColor: '#FE2C5E',
+        // backgroundColor: '#FE2C5E',
         padding:5,
     },
     heading: {
         fontSize: 20,
         marginBottom: 20,
         color: '#ffffff',
-        fontFamily: `EuclidCircularA-Medium`,
+        fontFamily: `Sarala-Regular`,
         fontWeight: 500,
         marginLeft: 50
     },
@@ -323,13 +324,13 @@ const styles = StyleSheet.create({
         width: '70%',
         fontSize: 16, 
         fontWeight: 400,
-        fontFamily: `EuclidCircularA-Medium`,
+        fontFamily: `Sarala-Regular`,
       },
       verificationButtonText: {
         color: '#fff', 
         fontSize: 14,
         width: '30%',
-        fontFamily: `EuclidCircularA-Medium`,
+        fontFamily: `Sarala-Regular`,
       },
 
       cardDetailRow :{
@@ -339,14 +340,14 @@ const styles = StyleSheet.create({
       },
       cardDetailLabel : {
         fontSize: 13,
-        fontFamily : 'EuclidCircularA-Medium',
+        fontFamily : 'Sarala-Regular',
         fontWeight: 500,
         color: '#8f8f8f',
         width: '100%'
       },
       cardDetailValue : {
         fontSize: 16,
-        fontFamily : 'EuclidCircularA-Medium',
+        fontFamily : 'Sarala-Regular',
         fontWeight: 500,
         color: '#fff',
         width: '100%',
@@ -381,10 +382,9 @@ const styles = StyleSheet.create({
         left: 0,
         position: 'absolute',
         top: 0,
-        backgroundColor: 'green',         
+        backgroundColor: '#5038E1',         
         elevation: 100,
         zIndex: 100,
-        backgroundColor: 'green',
         padding: 8,
         borderRadius: 5,       
       },
@@ -392,7 +392,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 400,
         color: '#fff',
-        fontFamily: `EuclidCircularA-Medium`,
+        fontFamily: `Sarala-Regular`,
       }
 });
 

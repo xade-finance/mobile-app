@@ -9,7 +9,9 @@ import {
   Linking,
   SafeAreaView,
   Platform,
-  ActivityIndicator
+  ActivityIndicator,
+  Modal,
+  Pressable
 } from 'react-native';
 
 import {Icon} from 'react-native-elements';
@@ -39,6 +41,10 @@ import * as particleAuth from 'react-native-particle-auth';
 import * as particleConnect from 'react-native-particle-connect';
 
 import {WalletType, ChainInfo, Env} from 'react-native-particle-connect';
+import Clipboard from '@react-native-clipboard/clipboard';
+import { Picker } from '@react-native-picker/picker';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import axios from 'axios';
 
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
@@ -52,6 +58,9 @@ const Card = ({navigation}) => {
   const [verificationUrl, setVerificationUrl] = useState(null);
   const [virtualCardRenderSecret, setVirtualCardRenderSecret] = useState(null);
   const [apiKey, setApiKey] = useState(null);
+
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [isModalVisible, setModalVisible] = useState(false);
 
   const client = SpritzApiClient.initialize({
     environment: Environment.Staging,
@@ -90,6 +99,36 @@ const Card = ({navigation}) => {
       client.setApiKey(user.apiKey);
       await AsyncStorage.setItem('spritzAPI', JSON.stringify(user.apiKey));
 
+      // call api to store spritz api key in the backend
+      try{
+        const name = global.loginAccount.name;
+        const address = global.loginAccount.publicAddress;
+        const email = global.loginAccount.phoneEmail;
+        const uuid = global.loginAccount.uiud;
+        const object = {
+          email: email.toLowerCase(),
+          phone: 'NULL',
+          name: name,
+          typeOfLogin: 'login',
+          eoa: address.toLowerCase(),
+          scw: address.toLowerCase(),
+          id: uuid,
+          spritzApiKey: user.apiKey
+        };
+        const json = JSON.stringify(object || {}, null, 2);
+        console.log('Request Being Sent:', json);
+        
+        await fetch('https://mongo.api.xade.finance/polygon', {
+          method: 'POST',
+          body: json,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+      }catch(e){
+        console.log(e);
+      } 
+
       setUserExists(true);
       setApiKey(user.apiKey);
 
@@ -123,9 +162,13 @@ const Card = ({navigation}) => {
       setLoading(false);
     } catch (err) {
       console.log(err);
+      Snackbar.show({text: 'Unable to create new user'});
     }
 
     setLoading(false);
+    setTimeout(() => {
+      toggleModal();
+    },1000)
   }
 
   async function getUser() {
@@ -157,25 +200,58 @@ const Card = ({navigation}) => {
     }
   }
 
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+
   useEffect(() => {
 
     async function init() {
-      console.log("---------");
+
       // try{
-      //   await AsyncStorage.setItem('spritzAPI', 'ak_YTAzMmY1MzEtYjRjMi00NTE0LTlmNDgtNTZjZGYxNmFlZDgy');
+      //   await AsyncStorage.setItem('spritzAPI', 'ak_OWEyNWJhNmUtMTIyZC00NzFlLTlmN2ItNjVlNTA0MjhmYjg3');
       // }catch(e) {
       //   console.log(e);
       // }
 
-      try{
-        await AsyncStorage.setItem('spritzAPI', 'ak_OWEyNWJhNmUtMTIyZC00NzFlLTlmN2ItNjVlNTA0MjhmYjg3');
-      }catch(e) {
-        console.log(e);
-      }
+         
+      
 
       try{
         const api_key = await AsyncStorage.getItem('spritzAPI');
         console.log(api_key);
+
+      //   // call api to store spritz api key in the backend
+      //   try{
+      //     const name = global.loginAccount.name;
+      //     const address = global.loginAccount.publicAddress;
+      //     const email = global.loginAccount.phoneEmail;
+      //     const uuid = global.loginAccount.uiud;
+      //     const object = {
+      //       email: email.toLowerCase(),
+      //       phone: 'NULL',
+      //       name: name,
+      //       typeOfLogin: 'connect',
+      //       eoa: address.toLowerCase(),
+      //       scw: address.toLowerCase(),
+      //       id: uuid,
+      //       spritzApiKey: api_key
+      //     };
+      //     const json = JSON.stringify(object || {}, null, 2);
+      //     console.log('Request Being Sent:', json);
+          
+      //     const da = await fetch('https://mongo.api.xade.finance/polygon', {
+      //       method: 'POST',
+      //       body: json,
+      //       headers: {
+      //         'Content-Type': 'application/json',
+      //       },
+      //     });
+      //     console.log(da);
+      //   }catch(e){
+      //     console.log(e);
+      //   } 
+
         if (api_key === null) {
           setUserExists(false);
         }else{
@@ -238,14 +314,95 @@ const Card = ({navigation}) => {
               to win exclusive rewards
             </Text>
             <View style={{marginTop:'5%'}}></View>
+            {
+              isModalVisible &&
+              <Modal animationType="slide"
+                hasBackdrop={true} 
+                backdropOpacity={1} 
+                isVisible={isModalVisible} 
+                onBackdropPress={() => {
+                    toggleModal();
+                }}
+                style={styles.modalContainer}>
+              
+                <View style={{
+                  flex: 1,
+                  backgroundColor: '#000',
+                  padding:20
+                }}>
+                    <View style={{
+                      flexDirection: 'row',
+                      width: '100%',
+                      justifyContent: 'flex-end'
+                    }}>
+                      
+                      <TouchableOpacity onPress={toggleModal}>
+                          <Ionicons name="close-outline" size={32} color="#fff" />
+                      </TouchableOpacity>
+                  </View>
+                    <View style={{
+                      justifyContent: 'center',
+                      color: '#fff',
+                      marginTop: '20%',
+                      margin: 20
+                    }}>
+                      <Text style={styles.modalText}>Are you an US Citizen?</Text>
+                      <View style={styles.buttonContainer}>
+                          <Pressable onPress={createUser} style={styles.confirmButton}>
+                            {loading 
+                              ? <ActivityIndicator size={30} style={styles.loader} color="#fff" />
+                              : <Text style={styles.modalButtonText}>Yes</Text>
+                            }
+                          </Pressable>
+                          <Pressable onPress={toggleModal} style={styles.cancelButton}>
+                              <Text style={styles.modalButtonText}>No</Text>
+                          </Pressable>
+                      </View>
+                    </View>
+                </View>
+            </Modal>
+            }
+            {/* <View style={{
+              width:'100%',
+              flexDirection:'row',
+              justifyContent: 'space-around',
+            }}>
+
+              <View
+                style={styles.pickerContainer}>
+                <Text style={{
+                  fontFamily:'Sarala-Regular',
+                  fontSize:15,
+                  fontWeight:700
+                }}>Are you a US citizen?</Text>
+                <Picker
+                    label="Are you a US citizen"
+                    style={styles.picker}
+                    selectedValue = {selectedCountry}
+                    mode='dialog'
+                    onValueChange={(itemValue) => setSelectedCountry(itemValue)}>
+                      <Picker.Item key='0' value='' label='Please select' />
+                      <Picker.Item key='yes' value='yes' label='Yes' />
+                      <Picker.Item key='no' value='no' label='No' />
+                </Picker>
+            </View>
+          </View> */}
+
             {loading ? <ActivityIndicator size={30} style={styles.loader} color="#fff" />
             : <TouchableOpacity
-                style={styles.button}
-                onPress={() => createUser()
-                  //Linking.openURL('https://docs.xade.finance')
-                }>
-                <Text style={styles.buttonText}>Apply now</Text>
-              </TouchableOpacity> 
+                  style={styles.button}
+                  onPress={() => {
+                      // show popup to choose citizenship
+                      toggleModal();
+                      // if (selectedCountry === 'yes'){
+                      //   createUser()
+                      // }else{
+                      //   Linking.openURL('https://tally.so/r/wbjzRE')
+                      // }
+                    }
+                  }>
+                  <Text style={styles.buttonText}>Apply now</Text>
+                </TouchableOpacity>  
             }
           </View>
         </View>
@@ -258,7 +415,10 @@ const Card = ({navigation}) => {
             // renderSecret={
             //   'U2FsdGVkX1+Y2OTwL309Ey4HUvP+nIChHiFTjVKt0FHZeQNZ/tOHcfotlSUB0oG62ja5cVrte6liweze1Y+BBPLUOtjlS6Dah6oxWXa0XQhBPtcto2mZiJduDaGFbPLxj0AHTZLUexTAZ967swgH24123W7CBuKjg032ovHrQpF31j5+xqsaqC/OTNjqkjw+'
             // }
-            onCopyText={text => console.log('onCopyText', text)}
+            onCopyText={text => {
+              Clipboard.setString(text);
+              Snackbar.show({text: 'Copied to clipboard'})
+            }}
             onDetailsLoaded={() => console.log('Card details loaded')}
           />
 
@@ -422,14 +582,14 @@ const styles = StyleSheet.create({
   },
   image: {
     width: 400,
-    height: 300,
+    height: 250,
   },
   textContainer: {
     alignItems: 'center',
   },
   title: {
     fontSize: 30,
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `Sarala-Regular`,
     color: '#fff',
     textAlign: 'center',
   },
@@ -439,7 +599,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
     marginHorizontal: 30,
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `Sarala-Regular`,
   },
   button: {
     backgroundColor: '#222',
@@ -453,11 +613,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     textAlign: 'center',
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `Sarala-Regular`,
   },
   sectionHeading : {
     fontSize: 24,
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `Sarala-Regular`,
     fontWeight: 500,
     color: '#fff',
     textAlign: 'left',
@@ -474,7 +634,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },  
   cardActionButton : {
-    backgroundColor: '#FE2C5E',
+    backgroundColor: '#5038E1',
     margin: 10,
     borderRadius: 10,
     width: 48,
@@ -494,14 +654,14 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     justifyContent: 'center',
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `Sarala-Regular`,
     fontWeight: 500,
   },
   actionDescription: {
     color: '#7f7f7f',
     fontSize: 14,
     justifyContent: 'center',
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `Sarala-Regular`,
     fontWeight: 400
   },
   cardActionText: {
@@ -513,7 +673,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     fontSize: 13,
     textAlign: 'center',
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `Sarala-Regular`,
   },
   kycContainer: {
     width: '100%',
@@ -538,14 +698,86 @@ const styles = StyleSheet.create({
     width: '70%',
     fontSize: 16, 
     fontWeight: 400,
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `Sarala-Regular`,
   },
   verificationButtonText: {
     color: '#fff', 
     fontSize: 14,
     width: '30%',
-    fontFamily: `EuclidCircularA-Medium`,
-  }
+    fontFamily: `Sarala-Regular`,
+  },
+  picker: {
+    color: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+    width:'20%',
+    height: 10
+},
+pickerContainer: {
+    // flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderRadius: 10,
+    height: 40,
+    width:'100%',
+    borderColor: '#707070',
+    marginBottom: 50,
+    marginTop: 50,
+},
+modal : {
+  backgroundColor: '#000',
+  elevation : 10,
+  height: 140,   
+  padding : 20 
+},
+modalText: {
+  fontSize: 18,
+  fontWeight: 500,
+  fontFamily: 'Sarala-Regular',
+  color: '#fff',
+},
+confirmButton :{
+  borderRadius: 10,
+  color: '#fff',
+  margin: 10,
+  padding: 10,
+  width: '30%',
+  justifyContent: 'center',
+  flexDirection: 'row',
+  backgroundColor: '#5038E1'
+},
+cancelButton : {
+  borderRadius: 10,
+  margin: 10,
+  padding: 10,
+  width: '30%',
+  justifyContent: 'center',
+  flexDirection: 'row',
+  backgroundColor: '#222'
+
+},
+modalButtonText : {
+  color: '#fff',
+  fontSize: 16,
+  fontWeight: 500,
+  fontFamily: 'Sarala-Regular',
+},
+buttonContainer: {
+  flexDirection: 'row',
+  justifyContent: 'center',
+  marginTop: 10,
+},
+modalContainer : {
+  height:'500',
+  backgroundColor: '#000',
+  color: '#fff',
+  marginHorizontal: '10%',
+  marginVertical: '30%',
+  borderRadius: 20,
+  justifyContent: 'center',
+  alignItems: 'center',
+},
 });
 
 export default Card;

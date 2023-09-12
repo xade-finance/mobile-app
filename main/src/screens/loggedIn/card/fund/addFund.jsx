@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         marginBottom: 20,
         color: '#ffffff',
-        fontFamily: `EuclidCircularA-Medium`,
+        fontFamily: `Sarala-Regular`,
     },
     formContainer: {
         width: '100%',
@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     submitButton: {
-        backgroundColor: '#FE2C5E',
+        backgroundColor: '#5038E1',
         padding: 10,
         borderRadius: 10,
         width: '50%',
@@ -351,7 +351,7 @@ const styles = StyleSheet.create({
     buttonText: {
         color: 'white',
         fontSize: 16,
-        fontFamily: `EuclidCircularA-Medium`,
+        fontFamily: `Sarala-Regular`,
         fontWeight: 500,
         textAlign: 'center'
     },  
@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         marginTop: 10,
         fontSize: 14,
-        fontFamily: `EuclidCircularA-Medium`,
+        fontFamily: `Sarala-Regular`,
     },
     linearGradient: {
         flex: 1,
@@ -386,7 +386,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 500,
         color: '#fff',
-        fontFamily: `EuclidCircularA-Medium`,
+        fontFamily: `Sarala-Regular`,
         marginBottom: 10
     },
 

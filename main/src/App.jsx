@@ -281,6 +281,8 @@ function Payments({navigation}) {
     <SafeAreaView style={styles.container}>
       <TopBar navigation={navigation} headers={'Home'} />
       <ScrollView
+       showsVerticalScrollIndicator={false}
+       showsHorizontalScrollIndicator={false}
         style={[styles.content, {zIndex: -1}]}
         refreshControl={
           <RefreshControl

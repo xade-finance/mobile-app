@@ -61,7 +61,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>We use the camera to scan QRs for public addresses</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need access in order to open photos of QRs</string>
 	<key>UIAppFonts</key>
@@ -99,6 +99,8 @@
 		<string>EuclidCircularA-Medium.otf</string>
 		<string>EuclidCircularA-SemiBold.otf</string>
 		<string>EuclidCircularA-Regular.otf</string>
+		<string>Sarala-Bold.otf</string>
+		<string>Sarala-Regular.otf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

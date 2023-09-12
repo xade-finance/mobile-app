@@ -119,11 +119,11 @@ function TopBar({navigation, headers}) {
             type="material"
           /> */}
         {/* </View> */}
-        <View style={{marginTop:2}}>
+        <View style={{marginTop:5}}>
           <Icon
             onPress={() => navigation.navigate('Settings')}
             name={'settings'}
-            size={25}
+            size={28}
             color={'#fff'}
             type="material"
           />
@@ -188,7 +188,8 @@ const styles = StyleSheet.create({
     // borderBottomRightRadius:10,
     // borderTopRightRadius: 10,
     color: '#FFE4BB',
-    fontFamily: `EuclidCircularA-Bold`,
+    fontFamily: 'Sarala-Bold',
+    // fontFamily: `EuclidCircularA-Bold`,
     fontSize: 18,
     paddingTop: 4,
     paddingBottom: 4,
@@ -238,11 +239,14 @@ const styles = StyleSheet.create({
     zIndex: 999,
     fontSize: 14,
     color: 'white',
-    fontFamily: `EuclidCircularA-Regular`,
+    fontFamily: 'Sarala-Regular',
+    // fontFamily: `EuclidCircularA-Regular`,
   },
   logo: {
-    fontFamily: `EuclidCircularA-Bold`,
+    // fontFamily: `EuclidCircularA-Bold`,
+    fontFamily: 'Sarala-Bold',
     color: '#fff',
+    fontWeight: 700,
     fontSize: 30,
     marginLeft: '2%',
     marginBottom: '2%',

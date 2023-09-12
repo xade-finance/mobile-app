@@ -42,6 +42,14 @@
       "sha1": "8a9ff2b61316994234dae5eaaaa2b99de1b29205"
     },
     {
+      "path": "assets/fonts/Sarala-Bold.otf",
+      "sha1": "f141949bd7aa70289951121722aaf980b49d7edd"
+    },
+    {
+      "path": "assets/fonts/Sarala-Regular.otf",
+      "sha1": "60e85bdc2931ece5f47e2d2824f070cfda90e4fe"
+    },
+    {
       "path": "assets/fonts/VelaSans-Bold.otf",
       "sha1": "e09740859708e17363219d1294b166bf7c85f7d2"
     },
