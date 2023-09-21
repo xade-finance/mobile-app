@@ -61,6 +61,7 @@ import {POLYGON_API_KEY} from '@env';
 import {registerFcmToken} from '../../../utils/push';
 import TransactionReceipt from '../transactions/transactionReceipt';
 import Snackbar from 'react-native-snackbar';
+import ExternalLinkModal from '../externalLink/widget';
 const contractAddress = '0xA3C957f5119eF3304c69dBB61d878798B3F239D9';
 const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
 
@@ -96,11 +97,11 @@ const PaymentsComponent = ({navigation}) => {
 
     const {tokenBalance, mainnet} = await paymentsLoad(web3, address);
 
-    if (Number(tokenBalance) > 1000) {
-      setBalance(Number(tokenBalance / 1000).toFixed(3) + ' K');
-    } else {
+    // if (Number(tokenBalance) > 1000) {
+    //   setBalance(Number(tokenBalance / 1000).toFixed(3) + ' K');
+    // } else {
       setBalance(tokenBalance);
-    }
+    // }
 
     setMainnet(mainnet);
 
@@ -150,8 +151,6 @@ const PaymentsComponent = ({navigation}) => {
     }
   }
 
-
-  
   const [showTxnReceiptModal, setShowTxnReceiptModal] = useState(false);
   const [transactionData, setTransactionData] = useState();
 
@@ -166,16 +165,16 @@ const PaymentsComponent = ({navigation}) => {
   }, []);
 
 
+
   const t = true;
   return (
     <SafeAreaView
       style={{
         width: '100%',
         height: '100%',
-        alignSelf: 'flex-start',
-        backgroundColor: '#000'
+        alignSelf: 'flex-start'
       }}>
-      
+    
       <View style={{
         marginHorizontal:20,
         marginTop: 32
@@ -357,9 +356,9 @@ const PaymentsComponent = ({navigation}) => {
             }}>
             <Text
               style={{
-                color: '#A38CFF',
+                color: '#bababa',
                 fontFamily: 'Sarala-Regular',
-                fontSize: 17,
+                fontSize: 14,
                 marginRight: '5%',
                 paddingTop: 3,
               }}>
@@ -367,7 +366,7 @@ const PaymentsComponent = ({navigation}) => {
             </Text>
           </TouchableOpacity>
         </View>
-        {state.length > 0 ? (
+        {/* {state.length > 0 ? (
           <Text
             style={{
               fontFamily: 'Sarala-Regular',
@@ -380,7 +379,7 @@ const PaymentsComponent = ({navigation}) => {
           </Text>
         ) : (
           ''
-        )}
+        )} */}
         {state.length > 0 ? (
           state.slice(0, 10).map(json => {
             return (
@@ -405,7 +404,7 @@ const PaymentsComponent = ({navigation}) => {
                 <View style={styles.transactionLeft}>
                   <View style={{
                     borderRadius: 50,
-                    backgroundColor: '#A38CFF',
+                    backgroundColor: '#333333',
                     width: 40, height: 40,
                     justifyContent: 'center',
                     alignItems: 'center',
@@ -433,7 +432,7 @@ const PaymentsComponent = ({navigation}) => {
                         style={{
                           color: '#e9e9e9',
                           fontFamily: `Sarala-Regular`,
-                          fontSize: 15,
+                          fontSize: 16,
                           fontWeight: 700,
                         }}>
                         {(json.truth
@@ -451,7 +450,7 @@ const PaymentsComponent = ({navigation}) => {
 
                     <Text
                       style={{
-                        color: '#7f7f7f',
+                        color: '#a1a1a1',
                         fontSize: 14,
                         fontWeight: 400,
                         fontFamily: `Sarala-Regular`,
@@ -464,21 +463,17 @@ const PaymentsComponent = ({navigation}) => {
                 <View style={styles.transactionRight}>
                   <Text
                     style={{
-                      color: json.truth ? '#A38CFF' : '#fff',
-                      fontSize: 17,
+                      color: json.truth ? '#fff' : '#fff',
+                      fontSize: 16,
                       fontWeight:700,
                       fontFamily: `Sarala-Regular`,
+                      alignItems:'flex-end',
+                      alignSelf:'flex-end',
+                      textAlign: 'right'
                     }}>
                     {json.truth != 0 && json.truth != 2 ? '+' : '-'}$
                     {json.value.toFixed(3)}
                   </Text>
-                  {/* <Icon
-                    // style={styles.tup}
-                    name={'chevron-small-right'}
-                    size={30}
-                    color={'#7f7f7f'}
-                    type="entypo"
-                  /> */}
                 </View>
               </TouchableOpacity>
             );
@@ -486,7 +481,7 @@ const PaymentsComponent = ({navigation}) => {
         ) : (
           <View>
             <Text style={styles.noTransaction}>
-              Your Transactions Appear Here
+              No transaction found
             </Text>
           </View>
         )}

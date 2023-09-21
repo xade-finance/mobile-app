@@ -63,10 +63,12 @@ const styles = StyleSheet.create({
   transactionContainer: {
     marginTop: '7%',
     // width: '100%',
-    marginHorizontal:'1%',
+    marginHorizontal:15,
     flexDirection: 'column',
-    paddingBottom: 100,
-    borderRadius: 20,
+    paddingBottom: 10,
+    paddingTop:10,
+    borderRadius: 6,
+    backgroundColor:'#131313'
   },
 
   txHeading: {
@@ -75,27 +77,31 @@ const styles = StyleSheet.create({
   },
 
   transactions: {
-    width: '92%',
-    marginHorizontal: '4%',
+    width: '100%',
+    // marginHorizontal: '4%',
     marginVertical: '2%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 15,
-    paddingVertical: 17,
+    paddingVertical: 15,
     borderRadius: 6,
-    backgroundColor: '#151515',
+    // backgroundColor: '#151515',
   },
 
   transactionLeft: {
     flexDirection: 'row',
+    alignItems:'center'
   },
 
   transactionRight: {
     flexDirection: 'row',
     alignItems: 'center',
     width: '30%',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
+    textAlign: 'center',
+    alignContent: 'flex-end',
+    // alignSelf : 'right',
   },
 
   tup: {

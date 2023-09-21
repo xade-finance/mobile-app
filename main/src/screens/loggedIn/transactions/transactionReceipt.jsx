@@ -12,7 +12,6 @@ const width = Dimensions.get('window').width;
 
 const TransactionReceipt = ({transactionData, onClose}) => {
 
-    console.log("@@@@@@");
     const [modalVisible, setModalVisible] = useState(true);
     const [mainnet, setMainnet] = useState(false);
 
@@ -26,6 +25,10 @@ const TransactionReceipt = ({transactionData, onClose}) => {
 
         const {tokenBalance, mainnet} = await paymentsLoad(web3, address); 
 
+        console.log('--------------------------------');
+        console.log(mainnet);
+        console.log("!!!!!!!!!!!!!!1");
+
         setMainnet(mainnet);
     }
 
@@ -35,6 +38,7 @@ const TransactionReceipt = ({transactionData, onClose}) => {
     };
 
     useEffect(() => {
+        call();
         console.log(transactionData);
     });
 

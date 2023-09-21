@@ -18,8 +18,8 @@ import HomeSelectedNavIcon from './navbar-images/home-selected';
 import HomeNavIcon from './navbar-images/home';
 
 const windowHeight = Dimensions.get('window').height;
-const selectedIcon = '#A38CFF';
-const icon = '#979797';
+const selectedIcon = '#ffffff';
+const icon = '#696969';
 const BottomNavbar = ({navigation, selected}) => {
   return (
     // <View style = {{height: windowHeight * 0.3}}>
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   container: {
-    backgroundColor: '#191919',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     alignItems: 'center',
@@ -143,24 +143,26 @@ const styles = StyleSheet.create({
     marginVertical: 3
   },
   navIconSelected : {
-    color: '#FE2C5E',
+    color: '#fff',
+    // color: '#FE2C5E',
     width: 24,
     height: 24,
   },
   navIcon: {
-    color: '#9D9D9D',
+    color: '#696969',
     width: 24,
     height: 24,
   },
   navItemLabel: {
-    color: '#9D9D9D',
+    color: '#696969',
     fontSize: 11,
     fontFamily: 'Sarala-Bold',
     fontWeight: 700,
     paddingTop: 4,
   },
   navItemLabelSelected: {
-    color: '#A38CFF',
+    color: '#FFF',
+    // color: '#A38CFF',
     fontSize: 11,
     fontFamily: 'Sarala-Bold',
     fontWeight: 700,

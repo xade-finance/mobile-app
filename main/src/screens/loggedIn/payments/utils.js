@@ -127,7 +127,7 @@ export async function txHistoryLoad(eoa) {
         global.withAuth
           ? global.loginAccount.scw
           : global.connectAccount.publicAddress
-      }&page=1&offset=2&sort=desc&apikey=${POLYGON_API_KEY}`,
+      }&sort=desc&apikey=${POLYGON_API_KEY}`,
       {
         method: 'GET',
         headers: {

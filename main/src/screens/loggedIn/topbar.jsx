@@ -13,18 +13,21 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {POINTS_KEY} from '@env';
 import FastImage from 'react-native-fast-image';
 import Svg, {Path} from 'react-native-svg';
+import ExternalLinkModal from './externalLink/widget';
 // import RedeemSvg from './redeem.svg';
 
 // const points = 12040;
 const starIcon = require('./coins.png');
 // const scanIcon = require('./scan.png');
 
+
 const addPoints = async () => {
   try {
-    // const address = global.withAuth
-    //   ? global.loginAccount.scw
-    //   : global.connectAccount.publicAddress;
-    const address = ''
+    const address = global.withAuth
+      ? global.loginAccount.scw
+      : global.connectAccount.publicAddress;
+    // const address = ''
+    
     const inputValue = {
       userId: address,
       // userId: address.toLowerCase(),
@@ -49,7 +52,7 @@ const addPoints = async () => {
 
 function TopBar({navigation, headers}) {
   const [infoVisible, setInfoVisible] = useState(false);
-  const [points, setPoints] = useState('Updating...');
+  const [points, setPoints] = useState('...');
   useEffect(() => {
     async function logic() {
       const _points = await addPoints();
@@ -58,8 +61,25 @@ function TopBar({navigation, headers}) {
     }
     logic();
   });
+
+  
+  const [externalLinkHeading, setExternalLinkHeading] = useState('');
+  const [externalLinkUri, setExternalLinkUri] = useState('');
+  const [showExternalLinkModal, setShowExternalLinkModal] = useState(false);
+
+  const handleCloseExternalLinkModal = () => {
+    setShowExternalLinkModal(false);
+  }
+
   return (
     <View style={styles.container}>
+      {showExternalLinkModal && (
+        <ExternalLinkModal
+          uri={externalLinkUri}
+          heading={externalLinkHeading}
+          onClose={handleCloseExternalLinkModal}
+        />
+      )}
       <Text style={styles.logo}>{headers}</Text>
       <View style={{flexDirection: 'row'}}>
         {/* {headers == 'Home' ? (
@@ -99,10 +119,13 @@ function TopBar({navigation, headers}) {
         {/* <View style={{margin: 5,padding: 10}}> */}
           {/* <RedeemSvg width={25} height={25} /> */}
           <TouchableOpacity
-            onPress={() => 
-              Linking.openURL('https://tally.so/r/wA2aze')
-              // setInfoVisible(!infoVisible)            
-            }
+            onPress={() => {
+              setExternalLinkHeading('Redeem Points');
+              setExternalLinkUri('https://tally.so/r/wA2aze');
+              setShowExternalLinkModal(true);
+              // Linking.openURL('https://tally.so/r/wA2aze')
+              // setInfoVisible(!infoVisible)       
+            }}
             activeOpacity={0.8}
             style={{marginRight: 15}}>
             <View style={[styles.pointsContainer, {marginBottom: 0}]}>

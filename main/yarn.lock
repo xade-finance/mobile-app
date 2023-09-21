@@ -3071,10 +3071,10 @@
   dependencies:
     cross-fetch "^4.0.0"
 
-"@spritz-finance/react-native-secure-elements@^1.0.7":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@spritz-finance/react-native-secure-elements/-/react-native-secure-elements-1.0.7.tgz#d4165c338397311da483ff641ea4bf607540c7c1"
-  integrity sha512-OyBLPok8TpIOHsEX9Fg9nEBggubgbJNJCAjGgHifEMID0ekgKS08afRCWZwswfSEGyI4u8eofWJ8nkZoxH+1yQ==
+"@spritz-finance/react-native-secure-elements@^1.0.9":
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/@spritz-finance/react-native-secure-elements/-/react-native-secure-elements-1.0.9.tgz#b47b97c5fdad11a5c1e70a3ee7a1035504b116bb"
+  integrity sha512-AFn6sLC0uEXtFUuw3Z1s1EGQ1ECP7ZmhATyQDCM+SXSNX0IQpcvfghN+rGekXUy9mII1W9HVds2Y6M/zlR8C/Q==
   dependencies:
     react-native-webview "^12.4.0"
 

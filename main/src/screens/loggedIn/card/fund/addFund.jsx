@@ -7,7 +7,7 @@ import {Picker} from '@react-native-picker/picker';
 import { BankAccountType, BankAccountSubType, PaymentNetwork } from '@spritz-finance/api-client'
 import '@ethersproject/shims';
 import {ethers} from 'ethers';
-import {SPRITZ_API_KEY, SPRITZ_INTEGRATION_KEY} from '@env';
+import {SPRITZ_API_KEY, SPRITZ_INTEGRATION_KEY_PROD} from '@env';
 import {
     SpritzApiClient,
     Environment,
@@ -29,9 +29,9 @@ import SpritzAbi from './Spritz';
 const AddFund = ({navigation}) => {
 
     const client = SpritzApiClient.initialize({
-        environment: Environment.Staging,
+        environment: Environment.Production,
         // apiKey: SPRITZ_API_KEY,
-        integrationKey: SPRITZ_INTEGRATION_KEY,
+        integrationKey: SPRITZ_INTEGRATION_KEY_PROD,
     });
     const [loading, setLoading] = useState(false);
     const [bankAccountList, setBankAccountList] = useState([]);

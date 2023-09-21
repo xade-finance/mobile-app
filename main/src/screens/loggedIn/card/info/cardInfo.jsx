@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {Icon} from 'react-native-elements';
 import { BankAccountType, BankAccountSubType } from '@spritz-finance/api-client'
-import {SPRITZ_API_KEY, SPRITZ_INTEGRATION_KEY} from '@env';
+import {SPRITZ_API_KEY, SPRITZ_INTEGRATION_KEY_PROD} from '@env';
 import {
     SpritzApiClient,
     Environment,
@@ -23,9 +23,9 @@ const CardInfo = ({navigation}) => {
     const [virtualCardInfo, setVirtualCardInfo] = useState(null);
   
     const client = SpritzApiClient.initialize({
-        environment: Environment.Staging,
+        environment: Environment.Production,
         // apiKey: SPRITZ_API_KEY,
-        integrationKey: SPRITZ_INTEGRATION_KEY,
+        integrationKey: SPRITZ_INTEGRATION_KEY_PROD,
     });
 
     async function init() {

@@ -31,7 +31,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {SpritzCard} from '@spritz-finance/react-native-secure-elements';
 
-import {SPRITZ_API_KEY, SPRITZ_INTEGRATION_KEY} from '@env';
+import {SPRITZ_API_KEY, SPRITZ_INTEGRATION_KEY_PROD} from '@env';
 import CardTransactions from './card/transaction';
 
 import Snackbar from 'react-native-snackbar';
@@ -45,6 +45,12 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import { Picker } from '@react-native-picker/picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
+import LinearGradient from 'react-native-linear-gradient';
+
+import ChipSvg from './card/icon/ChipSvg';
+import { SvgUri } from 'react-native-svg';
+import VisaSvg from './card/icon/VisaSvg';
+import LogoSvg from './card/icon/LogoSvg';
 
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
@@ -63,9 +69,8 @@ const Card = ({navigation}) => {
   const [isModalVisible, setModalVisible] = useState(false);
 
   const client = SpritzApiClient.initialize({
-    environment: Environment.Staging,
-    // apiKey: SPRITZ_API_KEY,
-    integrationKey: SPRITZ_INTEGRATION_KEY,
+    environment: Environment.Production, 
+    integrationKey: SPRITZ_INTEGRATION_KEY_PROD,
   });
 
   particleAuth.init(
@@ -362,31 +367,6 @@ const Card = ({navigation}) => {
                 </View>
             </Modal>
             }
-            {/* <View style={{
-              width:'100%',
-              flexDirection:'row',
-              justifyContent: 'space-around',
-            }}>
-
-              <View
-                style={styles.pickerContainer}>
-                <Text style={{
-                  fontFamily:'Sarala-Regular',
-                  fontSize:15,
-                  fontWeight:700
-                }}>Are you a US citizen?</Text>
-                <Picker
-                    label="Are you a US citizen"
-                    style={styles.picker}
-                    selectedValue = {selectedCountry}
-                    mode='dialog'
-                    onValueChange={(itemValue) => setSelectedCountry(itemValue)}>
-                      <Picker.Item key='0' value='' label='Please select' />
-                      <Picker.Item key='yes' value='yes' label='Yes' />
-                      <Picker.Item key='no' value='no' label='No' />
-                </Picker>
-            </View>
-          </View> */}
 
             {loading ? <ActivityIndicator size={30} style={styles.loader} color="#fff" />
             : <TouchableOpacity
@@ -407,21 +387,58 @@ const Card = ({navigation}) => {
           </View>
         </View>
       : <View style={styles.container}>
-          <SpritzCard
-            environment={Environment.Staging}
-            apiKey={apiKey}
-            renderSecret = {virtualCardRenderSecret}
-            // apiKey={'ak_YmNmOTg5ZjMtMmQ5NS00ODBkLThiMmUtY2MxYmYwZWM3NzMw'}
-            // renderSecret={
-            //   'U2FsdGVkX1+Y2OTwL309Ey4HUvP+nIChHiFTjVKt0FHZeQNZ/tOHcfotlSUB0oG62ja5cVrte6liweze1Y+BBPLUOtjlS6Dah6oxWXa0XQhBPtcto2mZiJduDaGFbPLxj0AHTZLUexTAZ967swgH24123W7CBuKjg032ovHrQpF31j5+xqsaqC/OTNjqkjw+'
-            // }
-            onCopyText={text => {
-              Clipboard.setString(text);
-              Snackbar.show({text: 'Copied to clipboard'})
-            }}
-            onDetailsLoaded={() => console.log('Card details loaded')}
-          />
+          <LinearGradient colors={[ '#00D1FF', '#4E5FFF']} style={styles.cardContainer}>
+          {/* <View style={styles.cardContainer}> */}
+            <SpritzCard
+              environment={Environment.Staging}
+              apiKey={apiKey}
+              renderSecret = {virtualCardRenderSecret}
+              background={false}
+              description={false}
+              // color={'red'}
+              // apiKey={'ak_YmNmOTg5ZjMtMmQ5NS00ODBkLThiMmUtY2MxYmYwZWM3NzMw'}
+              // renderSecret={
+              //   'U2FsdGVkX1+Y2OTwL309Ey4HUvP+nIChHiFTjVKt0FHZeQNZ/tOHcfotlSUB0oG62ja5cVrte6liweze1Y+BBPLUOtjlS6Dah6oxWXa0XQhBPtcto2mZiJduDaGFbPLxj0AHTZLUexTAZ967swgH24123W7CBuKjg032ovHrQpF31j5+xqsaqC/OTNjqkjw+'
+              // }
+              onCopyText={text => {
+                Clipboard.setString(text);
+                Snackbar.show({text: 'Copied to clipboard'})
+              }}
+              onDetailsLoaded={() => console.log('Card details loaded')}
+            />
+            <View
+              style={{
+                position:'absolute',
+                top:20,
+                left: 20,
+                zIndex:10
+              }}
+            >
+              <LogoSvg />
+            </View>
 
+            <View
+              style={{
+                position:'absolute',
+                top:60,
+                left: 20,
+                zIndex:10
+              }}
+            >
+              <ChipSvg />
+            </View>
+
+            <View
+              style={{
+                position:'absolute',
+                bottom:20,
+                right: 20,
+                zIndex:10
+              }}
+            >
+              <VisaSvg />
+            </View>
+          </LinearGradient>
           {
             (verificationStatus != null && verificationStatus !== 'ACTIVE') && 
             <View style={styles.kycContainer}>
@@ -574,11 +591,19 @@ const Card = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     // flex: 1,
-    backgroundColor: '#0c0c0c',
+    // backgroundColor: '#000',
     alignItems: 'center',
     justifyContent: 'center',
     margin: 20,
     marginBottom:100
+  },
+  cardContainer: {
+    flex:1,
+    backgroundColor: 'red',
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 5,
+    borderRadius: 8
   },
   image: {
     width: 400,
@@ -616,12 +641,13 @@ const styles = StyleSheet.create({
     fontFamily: `Sarala-Regular`,
   },
   sectionHeading : {
-    fontSize: 24,
+    fontSize: 20,
     fontFamily: `Sarala-Regular`,
     fontWeight: 500,
     color: '#fff',
     textAlign: 'left',
-    marginVertical: 20
+    marginVertical: 20,
+    marginHorizontal: 10,
   },
   cardActionContainer : {
     flexDirection: 'column',

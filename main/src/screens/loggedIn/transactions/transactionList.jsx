@@ -41,7 +41,6 @@ const TransactionList = ({navigation, route}) => {
   }
 
   async function call() {
-    console.log("----------------------------------------------------------------");
     const address = global.withAuth
       ? global.loginAccount.publicAddress
       : global.connectAccount.publicAddress;
@@ -191,21 +190,11 @@ const TransactionList = ({navigation, route}) => {
                                 <View style={styles.transactionLeft}>
                                 <View style={{
                                   borderRadius: 50,
-                                  backgroundColor: '#A38CFF',
+                                  backgroundColor: '#333333',
                                   width: 40, height: 40,
                                   justifyContent: 'center',
                                   alignItems: 'center',
                                 }}>
-                                  {/* <FastImage
-                                    style={{width: 30, height: 30}}
-                                    source={
-                                      json.truth == 2
-                                        ? require('./icon/pending.png')
-                                        : json.truth == 1
-                                        ? require('./icon/positive.png')
-                                        : require('./icon/negative.png')
-                                    }
-                                  /> */}
                                   <FastImage
                                       style={{width: 20, height: 20, borderRadius: 5}}
                                       source={
@@ -257,15 +246,18 @@ const TransactionList = ({navigation, route}) => {
                                 </View>
 
                                 <View style={styles.transactionRight}>
-                                <Text
-                                    style={{
-                                    color: json.truth ? '#A38CFF' : '#fff',
-                                    fontSize: 17,
-                                    fontFamily: `Sarala-Regular`,
-                                    }}>
-                                    {json.truth != 0 && json.truth != 2 ? '+' : '-'}$
-                                    {json.value.toFixed(3)}
-                                </Text>
+                                  <Text
+                                      style={{
+                                      color: json.truth ? '#A38CFF' : '#fff',
+                                      fontSize: 17,
+                                      fontFamily: `Sarala-Regular`,
+                                      textAlign:'right',
+                                      alignSelf:'flex-end',
+                                      alignContent: 'flex-end'
+                                      }}>
+                                      {json.truth != 0 && json.truth != 2 ? '+' : '-'}$
+                                      {json.value.toFixed(3)}
+                                  </Text>
                                 {/* <Icon
                                     // style={styles.tup}
                                     name={'chevron-small-right'}
@@ -280,7 +272,7 @@ const TransactionList = ({navigation, route}) => {
                     ) : (
                     <View>
                         <Text style={styles.noTransaction}>
-                            Your Transactions Appear Here
+                            No transaction found
                         </Text>
                     </View>
                     )}
@@ -306,26 +298,29 @@ const styles = StyleSheet.create({
     },
     
   transactions: {
-    width: '92%',
-    marginHorizontal: '4%',
-    marginVertical: '2%',
+    width: width-30,
+    marginHorizontal: 15,
+    marginVertical: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 15,
-    paddingVertical: 17,
+    paddingHorizontal: 10,
+    paddingVertical: 15,
     borderRadius: 6,
-    // backgroundColor: 'red',
+    backgroundColor: 'red',
     backgroundColor: '#151515',
   },
   transactionLeft: {
     flexDirection: 'row',
+    alignItems:'center'
   },
   transactionRight: {
     flexDirection: 'row',
     alignItems: 'center',
     width: '30%',
     justifyContent: 'flex-end',
+    textAlign: 'center',
+    alignContent: 'flex-end',
   },
   noTransaction: {
     color: '#d9d9d9',

@@ -829,12 +829,12 @@ const styles = StyleSheet.create({
 
   black: {
     height: windowHeight,
-    backgroundColor: '#0C0C0C',
+    backgroundColor: '#0D0D0D',
   },
 
   container: {
     flex: 1,
-    backgroundColor: '#0C0C0C',
+    backgroundColor: '#0D0D0D',
   },
   content: {
     // flex: 1,
