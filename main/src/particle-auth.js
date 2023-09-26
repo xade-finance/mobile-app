@@ -4,6 +4,7 @@ import {
   SupportAuthType,
   Env,
 } from 'react-native-particle-auth';
+import {Polygon} from '@particle-network/chains';
 import * as particleAuth from 'react-native-particle-auth';
 import {PNAccount} from './Models/PNAccount';
 import * as Helper from './helper';
@@ -61,13 +62,13 @@ web3_getAccounts = async () => {
 };
 
 init = async () => {
-  const chainInfo = ChainInfo.PolygonMainnet;
+  const chainInfo = Polygon;
   const env = Env.Production;
   particleAuth.init(chainInfo, env);
 };
 
 setChainInfo = async () => {
-  const chainInfo = ChainInfo.PolygonMainnet;
+  const chainInfo = Polygon;
   const result = await particleAuth.setChainInfo(chainInfo);
   console.log(result);
 };

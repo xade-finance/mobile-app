@@ -31,7 +31,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {SpritzCard} from '@spritz-finance/react-native-secure-elements';
 
-import {SPRITZ_API_KEY, SPRITZ_INTEGRATION_KEY_PROD} from '@env';
+import {SPRITZ_API_KEY,SPRITZ_INTEGRATION_KEY_TEST, SPRITZ_INTEGRATION_KEY_PROD} from '@env';
 import CardTransactions from './card/transaction';
 
 import Snackbar from 'react-native-snackbar';
@@ -39,7 +39,7 @@ import Snackbar from 'react-native-snackbar';
 
 import * as particleAuth from 'react-native-particle-auth';
 import * as particleConnect from 'react-native-particle-connect';
-
+import { Polygon, PolygonMumbai } from '@particle-network/chains';
 import {WalletType, ChainInfo, Env} from 'react-native-particle-connect';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { Picker } from '@react-native-picker/picker';
@@ -68,14 +68,19 @@ const Card = ({navigation}) => {
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
 
+  // const client = SpritzApiClient.initialize({
+  //   environment: Environment.Production, 
+  //   integrationKey: SPRITZ_INTEGRATION_KEY_PROD,
+  // });
+
   const client = SpritzApiClient.initialize({
-    environment: Environment.Production, 
-    integrationKey: SPRITZ_INTEGRATION_KEY_PROD,
+    environment: Environment.Staging, 
+    integrationKey: SPRITZ_INTEGRATION_KEY_TEST,
   });
 
   particleAuth.init(
-    particleAuth.ChainInfo.PolygonMainnet,
-    particleAuth.Env.Production,
+    PolygonMumbai,
+    particleAuth.Env.Staging,
   );
 
   async function createUser() {
@@ -115,9 +120,9 @@ const Card = ({navigation}) => {
           phone: 'NULL',
           name: name,
           typeOfLogin: 'login',
-          eoa: address.toLowerCase(),
-          scw: address.toLowerCase(),
-          id: uuid,
+          eoa: "0x418798377903ce8cc1d48a8dad0220515544f785",
+          scw: "0x418798377903ce8cc1d48a8dad0220515544f785",
+          id: "25d2ae9a-b96e-4b9f-bf37-8332bcdde121",
           spritzApiKey: user.apiKey
         };
         const json = JSON.stringify(object || {}, null, 2);

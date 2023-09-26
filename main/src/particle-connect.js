@@ -8,6 +8,8 @@ import {
   WalletType,
 } from 'react-native-particle-connect';
 import {ChainInfo} from 'react-native-particle-connect';
+
+import {Polygon} from '@particle-network/chains';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Web3 from 'web3';
@@ -31,7 +33,7 @@ createConnectProvider = () => {
 };
 
 setChainInfo = async () => {
-  const chainInfo = ChainInfo.PolygonMainnet;
+  const chainInfo = Polygon;
   const result = await particleConnect.setChainInfo(chainInfo);
   console.log(result);
 };
@@ -106,7 +108,7 @@ onClickConnect = async ({navigation, walletype}) => {
     solana_url: null,
   };
   particleConnect.init(
-    ChainInfo.PolygonMainnet,
+    Polygon,
     Env.Production,
     metadata,
     rpcUrl,

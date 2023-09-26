@@ -7,7 +7,7 @@ import {Picker} from '@react-native-picker/picker';
 import { BankAccountType, BankAccountSubType, PaymentNetwork } from '@spritz-finance/api-client'
 import '@ethersproject/shims';
 import {ethers} from 'ethers';
-import {SPRITZ_API_KEY, SPRITZ_INTEGRATION_KEY_PROD} from '@env';
+import {SPRITZ_API_KEY, SPRITZ_INTEGRATION_KEY_PROD, SPRITZ_INTEGRATION_KEY_TEST} from '@env';
 import {
     SpritzApiClient,
     Environment,
@@ -15,7 +15,7 @@ import {
 import Snackbar from 'react-native-snackbar';
 import LinearGradient from 'react-native-linear-gradient';
 import { paymentsLoad } from '../../payments/utils';
-import SpritzAbi from './Spritz';
+import usdAbi from '../../../../abi/USDC.json';
 // import { ethers } from 'ethers';
 // import Web3 from 'web3';
 
@@ -29,10 +29,20 @@ import SpritzAbi from './Spritz';
 const AddFund = ({navigation}) => {
 
     const client = SpritzApiClient.initialize({
-        environment: Environment.Production,
-        // apiKey: SPRITZ_API_KEY,
-        integrationKey: SPRITZ_INTEGRATION_KEY_PROD,
+        environment: Environment.Staging, 
+        integrationKey: SPRITZ_INTEGRATION_KEY_TEST,
     });
+
+    // particleAuth.init(
+    //     PolygonMumbai,
+    //     particleAuth.Env.Staging,
+    // );
+
+    // const client = SpritzApiClient.initialize({
+    //     environment: Environment.Production,
+    //     // apiKey: SPRITZ_API_KEY,
+    //     integrationKey: SPRITZ_INTEGRATION_KEY_PROD,
+    // });
     const [loading, setLoading] = useState(false);
     const [bankAccountList, setBankAccountList] = useState([]);
     const [selectedBankAccount, setSelectedBankAccount] = useState(null);
@@ -65,12 +75,7 @@ const AddFund = ({navigation}) => {
             // Create a payment request for the selected bank account
             const paymentRequest = await client.paymentRequest.create(paymentRequestData);
 
-            console.log(paymentRequest);
- 
-
-            console.log("--------------");
-
-
+            console.log(paymentRequest);  
             
             // // Retrieve the transaction data required to issue a blockchain transaction
             const transactionData = await client.paymentRequest.getWeb3PaymentParams({
@@ -87,17 +92,14 @@ const AddFund = ({navigation}) => {
              * and wait for confirmation
             **/
 
-            await sendTransaction(transactionData);
+            await sendTransaction(transactionData, parseInt(selectedAmount));
             
             // Retrieve the payment issued for the payment request to check the payment status and confirmation
             const payment = await client.payment.getForPaymentRequest(paymentRequest.id)
 
             console.log(payment);
 
-            Snackbar.show({
-                text: 'Payment request generated successfully',
-                duration: Snackbar.LENGTH_SHORT,
-            });
+            
 
             setSelectedAmount(null);
 
@@ -113,8 +115,10 @@ const AddFund = ({navigation}) => {
 
     }
 
-    const sendTransaction = async (data) => {
+    const sendTransaction = async (data, amount) => {
         try {
+
+            const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
 
             const address = global.withAuth
                 ? global.loginAccount.publicAddress
@@ -124,46 +128,94 @@ const AddFund = ({navigation}) => {
                 : this.createConnectProvider();
 
             const {tokenBalance, mainnet} = await paymentsLoad(web3, address); 
-            if (Number(tokenBalance) > 1000) {
-                setBalance(Number(tokenBalance / 1000).toFixed(3) + ' K');
-            } else {
-                setBalance(tokenBalance);
-            }
+            setBalance(tokenBalance);
 
-            const approve = {
-              to: data.contractAddress,
-              data: data.calldata,
-            };
-            
-            try {
-              const txResponse = await  global.smartAccount.sendTransaction({
-                transaction: approve,
-              });
-              console.log('Response:', txResponse);
-              return true;
-            } catch (err) {
-              console.log(err);
-              return false;
-            }
+            console.log(data.contractAddress);
 
-            // setMainnet(mainnet);
+            console.log('Calculating Gas In USDC...');
 
-        // //   const accounts = await web3.eth.getAccounts();
-        // //   const senderAddress = accounts[0];
+            amount = amount*1000000
 
-        //   const senderAddress = '0x3E46a778B837da6e4EF7c14e9c0313390a9ED6D3';
+            const contractGas = Number('90000');
+            const approvalGas = Number('60000');
+            const gasPrice = await web3.eth.getGasPrice();
+            const gas = (contractGas + approvalGas) * gasPrice;
+            const gasUSDC = Number(String(gas).substring(0, 5) * 1.15).toFixed(0);
+            const totalAmount = Number(amount) + Number(gasUSDC);
+        
+            console.log('Total Gas:', web3.utils.fromWei(String(gas), 'ether'));
+            console.log(
+                'Total Gas In USDC:',
+                web3.utils.fromWei(String(gasUSDC), 'mwei'),
+            );
+            console.log('Total Amount:', totalAmount);
+            console.log('Total Balance:', balance);
+
+            if (totalAmount >= balance*1000000){
+                Snackbar.show({text: 'Insufficient balance'})
+            }else{
+
+                let txs = [];
     
-        //   const transactionData = {
-        //     from: senderAddress,
-        //     to: data.contractAddress, // Replace with the receiver's Ethereum address
-        //     value: web3.utils.toWei(data.amountDue, 'ether'), // Amount of ether to send
-        //   };
+                console.log('Creating Transactions...');
+
+                const usdcAbi = new ethers.utils.Interface(usdAbi);
     
-        //   const transactionHash = await web3.eth.sendTransaction(transactionData);
-        //   setTransactionStatus(`Transaction sent: ${transactionHash}`);
+                const approveData = usdcAbi.encodeFunctionData('approve', [
+                    data.contractAddress,
+                    totalAmount,
+                ]);
+        
+                const approveTX = {
+                    to: usdcAddress,
+                    data: approveData,
+                };
+        
+                txs.push(approveTX);
+
+                const spritzData = {
+                to: data.contractAddress,
+                data: data.calldata,
+                };
+
+                txs.push(spritzData);
+                
+                console.log(global.smartAccount);
+
+                console.log(txs);
+
+                try {
+                    const txResponse = await  global.smartAccount.sendTransactionBatch({
+                        transactions: txs,
+                    });
+                    const txHash = await txResponse.wait();
+                    console.log(txHash);
+                    console.log('Response:', txResponse);
+
+                    Snackbar.show({
+                        text: 'Payment request generated successfully',
+                        duration: Snackbar.LENGTH_SHORT,
+                    });
+
+                    return true;
+                } catch (err) {
+                    console.log(err);
+                    Snackbar.show({
+                        text: 'Error generating payment request',
+                        duration: Snackbar.LENGTH_SHORT,
+                    });
+                    return false;
+                }
+
+
+            }
         } catch (error) {
-            console.log(error);
-        //   setTransactionStatus(`Error: ${error.message}`);
+            console.log(error); 
+            Snackbar.show({
+                text: 'Error generating payment request',
+                duration: Snackbar.LENGTH_SHORT,
+            });
+            return false;
         }
     };
 

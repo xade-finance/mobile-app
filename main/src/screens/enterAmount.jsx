@@ -60,6 +60,7 @@ export default function EnterAmountComponent({navigation, route}) {
       const gasPrice = Number(await web3.eth.getGasPrice());
       console.log('Calculating gas');
       if (global.withAuth) {
+        console.log(route.params);
         if (route.params.type == 'v2') {
           const gasNeeded = Number('51975');
           const gasFees = 1.1 * 2 * gasNeeded * gasPrice;
@@ -130,10 +131,13 @@ export default function EnterAmountComponent({navigation, route}) {
       }}>
       <View
         style={{
+          position: 'absolute',
           top: '1%',
+          left:'4%',
           width: width * 0.8,
           alignItems: 'center',
           flexDirection: 'row',
+          justifyContent: 'space-between', 
         }}>
         <Icon
           name={'keyboard-backspace'}
@@ -147,7 +151,7 @@ export default function EnterAmountComponent({navigation, route}) {
         <Text
           style={{
             fontSize: 30,
-            fontFamily: `EuclidCircularA-Regular`,
+            fontFamily: `Sarala-Regular`,
             color: 'white',
             letterSpacing: 0.5,
           }}>
@@ -157,7 +161,7 @@ export default function EnterAmountComponent({navigation, route}) {
           <Text
             style={{
               fontSize: 18,
-              fontFamily: `EuclidCircularA-Regular`,
+              fontFamily: `Sarala-Regular`,
               color: 'white',
             }}>
             Send to
@@ -174,7 +178,7 @@ export default function EnterAmountComponent({navigation, route}) {
                 style={{
                   color: 'white',
                   fontSize: route.params.type == 'email' ? 25 : 18,
-                  fontFamily: `EuclidCircularA-Regular`,
+                  fontFamily: `Sarala-Regular`,
                 }}>
                 {route.params.type == 'email'
                   ? name
@@ -183,7 +187,7 @@ export default function EnterAmountComponent({navigation, route}) {
               <Text
                 style={{
                   color: '#A4A4A4',
-                  fontFamily: `EuclidCircularA-Regular`,
+                  fontFamily: `Sarala-Regular`,
                   fontSize: 13,
                 }}>
                 {route.params.type == 'email'
@@ -197,7 +201,7 @@ export default function EnterAmountComponent({navigation, route}) {
           <Text
             style={{
               fontSize: 22,
-              fontFamily: `EuclidCircularA-Regular`,
+              fontFamily: `Sarala-Regular`,
               color: 'white',
             }}>
             Enter amount
@@ -216,7 +220,7 @@ export default function EnterAmountComponent({navigation, route}) {
                 style={{
                   fontSize: 35,
                   color: 'white',
-                  fontFamily: `EuclidCircularA-Regular`,
+                  fontFamily: `Sarala-Regular`,
                   textAlign: 'center',
                 }}>
                 $
@@ -225,7 +229,7 @@ export default function EnterAmountComponent({navigation, route}) {
                 style={{
                   fontSize: 40,
                   color: 'white',
-                  fontFamily: `EuclidCircularA-Regular`,
+                  fontFamily: `Sarala-Regular`,
                   textAlign: 'center',
                 }}>
                 {amount}
@@ -237,7 +241,7 @@ export default function EnterAmountComponent({navigation, route}) {
               style={{
                 marginTop: '2%',
                 fontSize: 20,
-                fontFamily: `EuclidCircularA-Regular`,
+                fontFamily: `Sarala-Regular`,
                 color: 'white',
               }}>
               {global.withAuth ? 'USDC' : 'MATIC'}
@@ -248,14 +252,14 @@ export default function EnterAmountComponent({navigation, route}) {
           <Text
             style={{
               fontSize: 15,
-              fontFamily: `EuclidCircularA-Regular`,
+              fontFamily: `Sarala-Regular`,
               color: '#898989',
             }}>
             Estimated gas:{' '}
             <Text
               style={{
                 fontSize: 15,
-                fontFamily: `EuclidCircularA-Regular`,
+                fontFamily: `Sarala-Regular`,
                 color: 'white',
               }}>
               {gas + ' '}USDC
@@ -264,14 +268,14 @@ export default function EnterAmountComponent({navigation, route}) {
           <Text
             style={{
               fontSize: 15,
-              fontFamily: `EuclidCircularA-Regular`,
+              fontFamily: `Sarala-Regular`,
               color: '#898989',
             }}>
             Wallet address:{' '}
             <Text
               style={{
                 fontSize: 15,
-                fontFamily: `EuclidCircularA-Regular`,
+                fontFamily: `Sarala-Regular`,
                 color: 'white',
               }}>
               {route.params.walletAddress.slice(0, 20)}...
@@ -313,7 +317,7 @@ export default function EnterAmountComponent({navigation, route}) {
             <Text
               style={{
                 color: '#000',
-                fontFamily: `EuclidCircularA-Medium`,
+                fontFamily: `Sarala-Bold`,
                 fontSize: 18,
               }}>
               Send money
@@ -330,11 +334,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#0C0C0C',
     flex: 1,
     width: '85%',
-    marginTop: '5%',
-    height: windowHeight,
+    marginTop: '11%',
+    // height: windowHeight,
+    overflow:'scroll',
   },
   send: {
-    marginTop: '10%',
+    marginTop: '1%',
   },
   details: {
     marginTop: '3%',
@@ -343,14 +348,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   enterAmount: {
-    marginTop: '12%',
+    marginTop: '2%',
   },
   amount: {
     alignItems: 'center',
   },
   amountInfo: {
     width: '100%',
-    marginTop: '3%',
+    marginTop: '1%',
     flexDirection: 'row',
     paddingBottom: 5,
     justifyContent: 'space-between',

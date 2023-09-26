@@ -19,6 +19,7 @@ import {
   Switch,
 } from 'react-native';
 // import {Icon} from 'react-native-elements';
+import { Polygon, PolygonMumbai } from '@particle-network/chains';
 import * as particleAuth from 'react-native-particle-auth';
 import * as particleConnect from 'react-native-particle-connect';
 import {ChainId} from '@biconomy/core-types';
@@ -372,10 +373,10 @@ const Component = ({navigation}) => {
                             if (global.withAuth) {
                               console.log(
                                 await particleAuth.setChainInfoAsync(
-                                  particleAuth.ChainInfo.PolygonMainnet,
+                                  Polygon,
                                 ),
                                 await particleAuth.setChainInfoAsync(
-                                  particleAuth.ChainInfo.PolygonMainnet,
+                                  Polygon,
                                 ),
                                 await global.smartAccount.setActiveChain(
                                   ChainId.POLYGON_MAINNET,
@@ -386,7 +387,7 @@ const Component = ({navigation}) => {
                                 await particleConnect.switchEthereumChain(
                                   global.walletType,
                                   global.connectAccount.publicAddress,
-                                  particleConnect.ChainInfo.PolygonMainnet,
+                                  Polygon,
                                 ),
                               );
                             }
@@ -409,10 +410,10 @@ const Component = ({navigation}) => {
                             if (global.withAuth) {
                               console.log(
                                 await particleAuth.setChainInfoAsync(
-                                  particleAuth.ChainInfo.PolygonMumbai,
+                                  PolygonMumbai,
                                 ),
                                 await particleAuth.setChainInfoAsync(
-                                  particleAuth.ChainInfo.PolygonMumbai,
+                                  PolygonMumbai,
                                 ),
                                 await global.smartAccount.setActiveChain(
                                   ChainId.POLYGON_MUMBAI,
@@ -423,7 +424,7 @@ const Component = ({navigation}) => {
                                 await particleConnect.switchEthereumChain(
                                   global.walletType,
                                   global.connectAccount.publicAddress,
-                                  particleConnect.ChainInfo.PolygonMumbai,
+                                  PolygonMumbai,
                                 ),
                               );
                             }

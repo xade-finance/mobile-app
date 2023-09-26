@@ -65,7 +65,7 @@ def enableSeparateBuildPerCPUArchitecture = true
 /**
  * Set this to true to Run Proguard on Release builds to minify the Java bytecode.
  */
-def enableProguardInReleaseBuilds = true
+def enableProguardInReleaseBuilds = false
 
 /**
  * The preferred build flavor of JavaScriptCore (JSC)
@@ -112,6 +112,7 @@ android {
         manifestPlaceholders["PN_PROJECT_ID"] = "260df770-44b4-4afd-a408-0a9f2b9944a9"
         manifestPlaceholders["PN_PROJECT_CLIENT_KEY"] = "c2HUrCSv7ymat5zCKhD41B9BA8bsRIFJgAXM0Jlm"
         manifestPlaceholders["PN_APP_ID"] = "f84832a5-f295-4f30-a1b7-18aa0a616d16"
+        multiDexEnabled true
     }
 
     dataBinding {
@@ -145,13 +146,14 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
+            minifyEnabled false
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
             signingConfig signingConfigs.release
-            minifyEnabled enableProguardInReleaseBuilds
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            minifyEnabled false
+            // proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
 
@@ -175,11 +177,13 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation platform('com.google.firebase:firebase-bom:31.3.0')
+    implementation 'com.android.support:multidex:2.0.1'
     implementation 'com.google.firebase:firebase-analytics'
     implementation("com.facebook.react:react-android")
     implementation project(':react-native-vector-icons')
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation 'commons-codec:commons-codec:1.5'
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
         exclude group:'com.squareup.okhttp3', module:'okhttp'

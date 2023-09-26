@@ -1,3 +1,4 @@
+import {Polygon, PolygonMumbai} from '@particle-network/chains';
 import * as particleAuth from 'react-native-particle-auth';
 import * as particleConnect from 'react-native-particle-connect';
 import createProvider from '../../../particle-auth';
@@ -14,7 +15,6 @@ const Web3 = require('web3');
 import {Alert} from 'react-native';
 
 import {IPaymaster, ChainId} from '@biconomy/core-types';
-import SmartAccount from '@biconomy/smart-account';
 
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
@@ -84,11 +84,11 @@ export async function paymentsLoad(web3, eoa) {
     if (global.withAuth) {
       if (_mainnet) {
         await particleAuth.setChainInfoAsync(
-          particleAuth.ChainInfo.PolygonMainnet,
+          Polygon,
         );
       } else {
         await particleAuth.setChainInfoAsync(
-          particleAuth.ChainInfo.PolygonMumbai,
+          PolygonMumbai,
         );
       }
     }

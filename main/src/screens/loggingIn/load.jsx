@@ -15,7 +15,7 @@ import {
 import {Text} from '@rneui/themed';
 
 import {PNAccount} from '../../Models/PNAccount';
-
+import { Polygon } from '@particle-network/chains';
 import * as particleAuth from 'react-native-particle-auth';
 import * as particleConnect from 'react-native-particle-connect';
 
@@ -74,10 +74,15 @@ const LoginCheck = async ({navigation, setLoadingText}) => {
 
     global.mainnet = mainnet;
 
+    console.log(Polygon);
+
     particleAuth.init(
-      particleAuth.ChainInfo.PolygonMainnet,
+      Polygon,
+      // particleAuth.ChainInfo.PolygonMainnet,
       particleAuth.Env.Production,
     );
+
+    console.log("--------------------------------");
 
     console.log('Device ID:', DeviceInfo.getUniqueIdSync());
 
@@ -337,7 +342,7 @@ const LoginCheck = async ({navigation, setLoadingText}) => {
                   };
 
                   particleConnect.init(
-                    ChainInfo.PolygonMainnet,
+                    Polygon,
                     Env.Production,
                     metadata,
                     rpcUrl,

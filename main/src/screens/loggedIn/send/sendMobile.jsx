@@ -142,7 +142,7 @@ const SendMobileComponent = ({navigation}) => {
           <Text
             style={{
               fontSize: 30,
-              fontFamily: `EuclidCircularA-Regular`,
+              fontFamily: `Sarala-Regular`,
               color: 'white',
               letterSpacing: 0.5,
             }}>
@@ -161,7 +161,7 @@ const SendMobileComponent = ({navigation}) => {
                   style={{
                     fontSize: 35,
                     color: 'white',
-                    fontFamily: `EuclidCircularA-Regular`,
+                    fontFamily: `Sarala-Regular`,
                     textAlign: 'center',
                   }}>
                   +{'  '}
@@ -170,7 +170,7 @@ const SendMobileComponent = ({navigation}) => {
                   style={{
                     fontSize: 30,
                     color: 'white',
-                    fontFamily: `EuclidCircularA-Regular`,
+                    fontFamily: `Sarala-Regular`,
                     textAlign: 'center',
                   }}>
                   {text}
@@ -182,14 +182,14 @@ const SendMobileComponent = ({navigation}) => {
             <Text
               style={{
                 fontSize: 15,
-                fontFamily: `EuclidCircularA-Regular`,
+                fontFamily: `Sarala-Regular`,
                 color: 'white',
               }}>
               Format:{' '}
               <Text
                 style={{
                   fontSize: 15,
-                  fontFamily: `EuclidCircularA-Regular`,
+                  fontFamily: `Sarala-Regular`,
                   color: '#898989',
                 }}>
                 +91-9XXXXXXX90
@@ -200,7 +200,7 @@ const SendMobileComponent = ({navigation}) => {
             <Text
               style={{
                 color: '#000',
-                fontFamily: `EuclidCircularA-Regular`,
+                fontFamily: `Sarala-Regular`,
                 fontSize: 18,
               }}>
               {submitText}
@@ -212,7 +212,7 @@ const SendMobileComponent = ({navigation}) => {
             <Text
               style={{
                 color: 'white',
-                fontFamily: `EuclidCircularA-Regular`,
+                fontFamily: `Sarala-Regular`,
                 fontSize: 15,
               }}>
               Send to an email address
@@ -231,7 +231,7 @@ const SendMobileComponent = ({navigation}) => {
             <Text
               style={{
                 color: 'white',
-                fontFamily: `EuclidCircularA-Regular`,
+                fontFamily: `Sarala-Regular`,
                 fontSize: 15,
               }}>
               Send to a digital wallet
@@ -383,7 +383,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 25,
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `Sarala-Bold`,
   },
 
   extradeets: {

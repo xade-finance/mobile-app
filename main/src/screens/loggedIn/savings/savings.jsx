@@ -21,6 +21,14 @@ import {POLYGON_API_KEY, SABEX_LP} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
 // import { PROJECT_ID, CLIENT_KEY } from 'react-native-dotenv'
+import '@ethersproject/shims';
+import {ethers} from 'ethers';
+
+import abi from './aave-v3-pool';
+import usdAbi from './USDC';
+import remmitexAbi from '../../../abi/remmitex.json'
+import SmartAccount from '@biconomy/smart-account';
+// import XUSDAbi from './XUSD';
 
 let web3;
 const contractAddress = '0xA3C957f5119eF3304c69dBB61d878798B3F239D9';
@@ -156,6 +164,165 @@ const Savings = ({navigation}) => {
     console.log('this is right');
     allLogic();
   }, []);
+
+
+  useEffect(() => {
+
+  },[])
+
+
+  const depositToLendingPool = async (_amount="1") => {
+    const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
+    const lendingPoolAddress = '0x794a61358D6845594F94dc1DB02A252b5b4814aD';
+    const v1Address = '0xc9DD6D26430e84CDF57eb10C3971e421B17a4B65';
+
+
+    const decimals = 6;
+
+    console.log(123);
+    
+    const amount = ethers.utils.parseUnits(_amount, decimals);
+
+    const isAuth = true;
+
+    // if (global.withAuth) {
+    //   authAddress = global.loginAccount.publicAddress;
+    //   console.log('Global Account:', global.loginAccount);
+    //   web3 = this.createProvider();
+    // } else {
+    //   authAddress = global.connectAccount.publicAddress;
+    //   console.log('Global Account:', global.connectAccount);
+    //   console.log('Global Wallet Type:', global.walletType);
+    //   web3 = this.createConnectProvider();
+    // }  
+
+    console.log(authAddress);
+    const mainnetJSON = await AsyncStorage.getItem('mainnet');
+    const mainnet = JSON.parse(mainnetJSON);
+
+    console.log("Mainnet:", mainnet);
+
+    if (global.withAuth) {
+      if (!global.smartAccount) {
+        let options = {
+          activeNetworkId: mainnet
+            ? ChainId.POLYGON_MAINNET
+            : ChainId.POLYGON_MUMBAI,
+          supportedNetworksIds: [
+            ChainId.POLYGON_MAINNET,
+            ChainId.POLYGON_MUMBAI,
+          ],
+
+          networkConfig: [
+            {
+              chainId: ChainId.POLYGON_MAINNET,
+              dappAPIKey: BICONOMY_API_KEY,
+            },
+            {
+              chainId: ChainId.POLYGON_MUMBAI,
+              dappAPIKey: BICONOMY_API_KEY_MUMBAI,
+            },
+          ],
+        };
+
+        const particleProvider = this.getOnlyProvider();
+        const provider = new ethers.providers.Web3Provider(
+          particleProvider,
+          'any',
+        );
+
+        let smartAccount = new SmartAccount(provider, options);
+        smartAccount = await smartAccount.init();
+        global.smartAccount = smartAccount;
+
+        console.log(smartAccount);
+      }
+    }
+
+    if (global.withAuth) {
+      console.log('Calculating Gas In USDC...');
+  
+      const contractGas = Number('90000');
+      const approvalGas = Number('60000');
+      const gasPrice = await web3.eth.getGasPrice();
+      const gas = (contractGas + approvalGas) * gasPrice;
+      const gasUSDC = Number(String(gas).substring(0, 5) * 1.15).toFixed(0);
+      const totalAmount = Number(amount) + Number(gasUSDC);
+  
+      console.log('Total Gas:', web3.utils.fromWei(String(gas), 'ether'));
+      console.log(
+        'Total Gas In USDC:',
+        web3.utils.fromWei(String(gasUSDC), 'mwei'),
+      );
+      console.log('Total Amount:', totalAmount);
+  
+      const usdcAbi = new ethers.utils.Interface(usdAbi);
+      const contractAbi = new ethers.utils.Interface(abi);
+
+      let txs = [];
+  
+      console.log('Creating Transactions...');
+  
+      try {
+        const approveData = usdcAbi.encodeFunctionData('approve', [
+          lendingPoolAddress,
+          totalAmount,
+        ]);
+  
+        const approveTX = {
+          to: usdcAddress,
+          data: approveData,
+        };
+  
+        txs.push(approveTX);
+
+        const sendData = contractAbi.encodeFunctionData('supply', [
+          usdcAddress,
+          amount,
+          authAddress,
+          0
+        ]);
+  
+        const sendTX = {
+          to: lendingPoolAddress,
+          data: sendData,
+        };
+
+        txs.push(sendTX);
+  
+        console.log('Created Transactions Successfully...');
+  
+        console.log('Waiting For Approval...');
+
+        console.log(global.smartAccount);
+
+        console.log(global.smartAccount.address);
+  
+        const txResponse = await global.smartAccount.sendTransactionBatch({
+          transactions: txs,
+        });
+  
+        console.log('Approved!');
+        // const txResponse = await smartAccount.sendTransaction({ transaction: tx1})
+
+        const txHash = await txResponse.wait();
+        console.log(txHash);
+  
+        console.log(txResponse);
+  
+      } catch (e) {
+        console.error(e);
+
+      }
+    }else{
+      console.log("------");
+    }
+  }
+
+  const withdrawFromLendingPool = (amount) => {
+
+  }
+
   return (
     <SafeAreaView style={{width: '100%', height: '100%'}}>
       {/* <View style={styles.topbar}>
@@ -168,7 +335,7 @@ const Savings = ({navigation}) => {
               style={{
                 color: '#6D797D',
                 fontSize: 45,
-                fontFamily: 'Benzin-Medium',
+                fontFamily: 'Sarala-Regular',
               }}>
               $
             </Text>
@@ -176,7 +343,7 @@ const Savings = ({navigation}) => {
               style={{
                 color: 'white',
                 fontSize: 45,
-                fontFamily: 'Benzin-Medium',
+                fontFamily: 'Sarala-Regular',
               }}>
               {balance.split('.')[0]}
             </Text>
@@ -184,7 +351,7 @@ const Savings = ({navigation}) => {
               style={{
                 color: '#6D797D',
                 fontSize: 30,
-                fontFamily: 'Benzin-Medium',
+                fontFamily: 'Sarala-Regular',
                 marginBottom: 5,
               }}>
               {'.'}
@@ -195,7 +362,7 @@ const Savings = ({navigation}) => {
             style={{
               color: 'white',
               fontSize: 18,
-              fontFamily: 'VelaSans-Bold',
+              fontFamily: 'Sarala-Bold',
             }}>
             Total amount deposited
           </Text>
@@ -212,7 +379,8 @@ const Savings = ({navigation}) => {
           <TouchableOpacity
             style={styles.depWith}
             onPress={() => {
-              navigation.navigate('ComingSoon');
+              depositToLendingPool("1");
+              // navigation.navigate('ComingSoon');
             }}>
             <LinearGradient
               colors={['#1D2426', '#383838']}
@@ -227,7 +395,7 @@ const Savings = ({navigation}) => {
                 color={'#86969A'}
                 type="feather"
               />
-              <Text style={{color: '#86969A', fontFamily: 'VelaSans-Bold'}}>
+              <Text style={{color: '#86969A', fontFamily: 'Sarala-Bold'}}>
                 Deposit
               </Text>
             </LinearGradient>
@@ -252,7 +420,7 @@ const Savings = ({navigation}) => {
                 // color={t?'green': 'red'}
                 type="font-awesome"
               />
-              <Text style={{color: '#86969A', fontFamily: 'VelaSans-Bold'}}>
+              <Text style={{color: '#86969A', fontFamily: 'Sarala-Bold'}}>
                 Withdraw
               </Text>
             </LinearGradient>
@@ -310,7 +478,7 @@ const Savings = ({navigation}) => {
             style={{
               color: 'white',
               fontSize: 20,
-              fontFamily: 'VelaSans-Bold',
+              fontFamily: 'Sarala-Bold',
             }}>
             Transactions
           </Text>
@@ -362,12 +530,12 @@ export default Savings;
                         Alert.alert('Copied Address To Clipboard');
                       }}>
                       <Text
-                        style={{color: 'white', fontFamily: 'VelaSans-Bold'}}>
+                        style={{color: 'white', fontFamily: 'Sarala-Bold'}}>
                         {json.truth ? json.from : json.to}
                       </Text>
                     </TouchableHighlight>
 
-                    <Text style={{color: 'grey', fontFamily: 'VelaSans-Bold'}}>
+                    <Text style={{color: 'grey', fontFamily: 'Sarala-Bold'}}>
                       {json.date}
                     </Text>
                   </View>
@@ -378,7 +546,7 @@ export default Savings;
                     style={{
                       color: json.truth ? '#4EE58B' : 'red',
                       fontSize: 20,
-                      fontFamily: 'VelaSans-Bold',
+                      fontFamily: 'Sarala-Bold',
                     }}>
                     {json.truth ? '+' : '-'}
                     {json.value}

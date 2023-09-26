@@ -90,6 +90,11 @@ export async function transferUSDC(
 
       setStatus('Waiting For Approval...');
 
+      return {
+        status: false,
+        fees: 0
+      }
+
       const txResponse = await smartAccount.sendTransactionBatch({
         transactions: txs,
       });
