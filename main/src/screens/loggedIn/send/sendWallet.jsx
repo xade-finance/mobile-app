@@ -132,6 +132,7 @@ const SendWalletComponent = ({navigation}) => {
             style={{
               color: '#000',
               fontFamily: `Sarala-Bold`,
+              fontWeight: 300,
               fontSize: 18,
             }}>
             {submitText}

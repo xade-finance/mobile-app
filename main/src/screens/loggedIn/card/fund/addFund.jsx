@@ -14,8 +14,10 @@ import {
 } from '../../../../../node_modules/@spritz-finance/api-client/dist/spritz-api-client.mjs';
 import Snackbar from 'react-native-snackbar';
 import LinearGradient from 'react-native-linear-gradient';
-import { paymentsLoad } from '../../payments/utils';
+import { initSmartWallet, paymentsLoad } from '../../payments/utils';
 import usdAbi from '../../../../abi/USDC.json';
+import xusdAbi from '../../../../abi/XUSD.json';
+import { PaymasterMode } from '@biconomy/paymaster';
 // import { ethers } from 'ethers';
 // import Web3 from 'web3';
 
@@ -80,7 +82,8 @@ const AddFund = ({navigation}) => {
             // // Retrieve the transaction data required to issue a blockchain transaction
             const transactionData = await client.paymentRequest.getWeb3PaymentParams({
                 paymentRequest,
-                // paymentTokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
+                // paymentTokenAddress: '0xA3C957f5119eF3304c69dBB61d878798B3F239D9', //xUSDC
+                // paymentTokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' 
                 paymentTokenAddress: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', // USDC on mainnet
             })
 
@@ -119,6 +122,7 @@ const AddFund = ({navigation}) => {
         try {
 
             const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
+            // const usdcAddress = '0xA3C957f5119eF3304c69dBB61d878798B3F239D9';
 
             const address = global.withAuth
                 ? global.loginAccount.publicAddress
@@ -129,6 +133,9 @@ const AddFund = ({navigation}) => {
 
             const {tokenBalance, mainnet} = await paymentsLoad(web3, address); 
             setBalance(tokenBalance);
+
+            console.log(tokenBalance);
+            console.log(mainnet);
 
             console.log(data.contractAddress);
 
@@ -149,9 +156,9 @@ const AddFund = ({navigation}) => {
                 web3.utils.fromWei(String(gasUSDC), 'mwei'),
             );
             console.log('Total Amount:', totalAmount);
-            console.log('Total Balance:', balance);
+            console.log('Total Balance:', tokenBalance);
 
-            if (totalAmount >= balance*1000000){
+            if (totalAmount >= tokenBalance*1000000){
                 Snackbar.show({text: 'Insufficient balance'})
             }else{
 
@@ -160,12 +167,18 @@ const AddFund = ({navigation}) => {
                 console.log('Creating Transactions...');
 
                 const usdcAbi = new ethers.utils.Interface(usdAbi);
+                const xusdcAbi = new ethers.utils.Interface(xusdAbi);
     
                 const approveData = usdcAbi.encodeFunctionData('approve', [
                     data.contractAddress,
                     totalAmount,
                 ]);
         
+                // const approveData = xusdcAbi.encodeFunctionData('approve', [
+                //     data.contractAddress,
+                //     totalAmount,
+                // ]);
+
                 const approveTX = {
                     to: usdcAddress,
                     data: approveData,
@@ -174,23 +187,59 @@ const AddFund = ({navigation}) => {
                 txs.push(approveTX);
 
                 const spritzData = {
-                to: data.contractAddress,
-                data: data.calldata,
+                    to: data.contractAddress,
+                    data: data.calldata,
                 };
 
                 txs.push(spritzData);
                 
-                console.log(global.smartAccount);
-
                 console.log(txs);
 
                 try {
-                    const txResponse = await  global.smartAccount.sendTransactionBatch({
-                        transactions: txs,
-                    });
-                    const txHash = await txResponse.wait();
-                    console.log(txHash);
-                    console.log('Response:', txResponse);
+                    const userOp = await global.smartAccount.buildUserOp(txs)
+
+                    const biconomyPaymaster = await global.smartAccount.paymaster;
+            
+                    console.log(biconomyPaymaster);
+            
+                    let paymasterServiceData = {
+                        mode: PaymasterMode.SPONSORED,
+                        // smartAccountInfo: {
+                        //   name: 'BICONOMY',
+                        //   version: '2.0.0'
+                        // },
+                    };
+            
+                    console.log(paymasterServiceData);
+            
+                    const paymasterAndDataResponse = await biconomyPaymaster.getPaymasterAndData(
+                        userOp,
+                        paymasterServiceData
+                    );
+            
+                    console.log(paymasterAndDataResponse);
+                        
+                    userOp.paymasterAndData = paymasterAndDataResponse.paymasterAndData;
+            
+                    // userOp.paymasterAndData = "0x"
+            
+                    console.log(userOp);
+                  
+                    const userOpResponse = await global.smartAccount.sendUserOp(userOp);
+            
+                    console.log(userOpResponse);
+                  
+                    const transactionDetail = await userOpResponse.wait()
+                  
+                    console.log("transaction detail below")
+                    console.log(transactionDetail)
+
+                    // const txResponse = await  global.smartAccount.sendTransactionBatch({
+                    //     transactions: txs,
+                    // });
+                    // const txHash = await txResponse.wait();
+                    // console.log(txHash);
+                    // console.log('Response:', txResponse);
 
                     Snackbar.show({
                         text: 'Payment request generated successfully',
@@ -223,6 +272,7 @@ const AddFund = ({navigation}) => {
 
         async function init() {
             try{
+              await initSmartWallet();
               const api_key = await AsyncStorage.getItem('spritzAPI');
               console.log(api_key);
               if (api_key === null) {

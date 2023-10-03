@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: 300,
     fontFamily: 'Sarala-Bold',
     color: '#fff',
   },

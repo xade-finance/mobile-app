@@ -99,8 +99,8 @@
 		<string>EuclidCircularA-Medium.otf</string>
 		<string>EuclidCircularA-SemiBold.otf</string>
 		<string>EuclidCircularA-Regular.otf</string>
-		<string>Sarala-Bold.otf</string>
 		<string>Sarala-Regular.otf</string>
+		<string>Sarala-Bold.otf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

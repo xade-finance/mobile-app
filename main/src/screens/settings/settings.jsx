@@ -340,17 +340,17 @@ const Component = ({navigation}) => {
               Alert.alert('Modal has been closed.');
               setNetworksVisible(!networksVisible);
             }}>
-            <ImageBackground source={bg} style={modalStyles.bg}>
+            
               <SafeAreaView>
                 <ScrollView>
                   <View style={modalStyles.container}>
                     <View style={modalStyles.topbar}>
-                      <Text style={modalStyles.logo}>XADE</Text>
+                      {/* <Text style={modalStyles.logo}>XADE</Text> */}
                       <TouchableOpacity
                         style={{marginTop: '1%'}}
                         onPress={() => setNetworksVisible(!networksVisible)}>
                         <Icon
-                          name={'close'}
+                          name={'keyboard-backspace'}
                           size={30}
                           color={'#f0f0f0'}
                           type="materialicons"
@@ -358,9 +358,154 @@ const Component = ({navigation}) => {
                       </TouchableOpacity>
                     </View>
                     <View style={modalStyles.mainContent}>
-                      <Text style={modalStyles.mainText}>Choose Network:</Text>
+                      <Text style={modalStyles.mainText}>Change Networks</Text>
+                      <Text style={modalStyles.subText}>The networks below are for Polygon POS and not zkEVM</Text>
                       <View style={modalStyles.buttonContent}>
                         <TouchableOpacity
+                          onPress={ async () => {
+                            global.mainnet = true;
+
+                            await AsyncStorage.setItem(
+                              'mainnet',
+                              JSON.stringify(true),
+                            );
+                            console.log('Switching To Mainnet');
+                            if (global.withAuth) {
+                              try{
+                              // console.log(
+                                await particleAuth.setChainInfoAsync(
+                                  Polygon,
+                                );
+
+                                await particleAuth.setChainInfoAsync(
+                                  Polygon,
+                                );
+                                await global.smartAccount.setActiveChain(
+                                  ChainId.POLYGON_MAINNET,
+                                );
+                              }catch(e){
+                                console.log(e);
+                              }
+                              // );
+                            } else {
+                              console.log(
+                                await particleConnect.switchEthereumChain(
+                                  global.walletType,
+                                  global.connectAccount.publicAddress,
+                                  Polygon,
+                                ),
+                              );
+                            }
+                            setNetworksVisible(!networksVisible);
+                            navigation.push('Home');
+                          }}
+                          style={[
+                            modalStyles.optionContainer,
+                            global.mainnet ? modalStyles.selected : '',
+                            {marginTop: '4%'},
+                          ]}>
+                          <View style={modalStyles.insideText}>
+                            <View style={{flexDirection: 'row'}}>
+                              {/* <FastImage
+                                source={require('./onramp.png')}
+                                style={{
+                                  borderWidth: 0,
+                                  width: 24,
+                                  height: 24,
+                                }}
+                              /> */}
+                              <Text style={modalStyles.optionText}>Polygon Mainnet</Text>
+                            </View>
+                          </View>
+                          <View style={modalStyles.hr} />
+                          <View style={modalStyles.insideText}>
+                            <View style={{flexDirection: 'row'}}>
+                              {/* <Ionicons name="wallet-outline" size={24} color="#1abc9c" /> */}
+                              <Text style={modalStyles.optionTextBelow}>
+                                Switch to the 'real mode' with real money.
+                              </Text>
+                            </View>
+                            {/* <View><Text style={[styles.optionText, {color: '#2FBE6A'}]}>Available</Text></View> */}
+                          </View>
+                          {/* <View style={styles.hr} /> */}
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          style={[
+                            modalStyles.optionContainer,
+                            global.mainnet ? '' : modalStyles.selected ,
+                            {marginTop: '4%'},
+                          ]}
+
+                          onPress={ async () => {
+                            global.mainnet = false;
+                            await AsyncStorage.setItem(
+                              'mainnet',
+                              JSON.stringify(false),
+                            );
+                            console.log('Switching To Testnet');
+                            if (global.withAuth) {
+                              try{
+                                // console.log(
+                                  await particleAuth.setChainInfoAsync(
+                                    PolygonMumbai,
+                                  );
+                                  await particleAuth.setChainInfoAsync(
+                                    PolygonMumbai,
+                                  );
+                                  await global.smartAccount.setActiveChain(
+                                    ChainId.POLYGON_MUMBAI,
+                                  );
+                                // );
+                              }catch(e){
+                                console.log(e);
+                              }
+                            } else {
+                              console.log(
+                                await particleConnect.switchEthereumChain(
+                                  global.walletType,
+                                  global.connectAccount.publicAddress,
+                                  PolygonMumbai,
+                                ),
+                              );
+                            }
+                            setNetworksVisible(!networksVisible);
+                            navigation.push('Home');
+                          }}
+
+                        >
+                          <View style={modalStyles.insideText}>
+                            <View style={{flexDirection: 'row'}}>
+                              {/* <FastImage
+                                source={require('./onramp.png')}
+                                style={{
+                                  borderWidth: 0,
+                                  width: 24,
+                                  height: 24,
+                                }}
+                              /> */}
+                              <Text style={modalStyles.optionText}>Polygon Testnet</Text>
+                            </View>
+                            {/* <View>
+                              <Text style={[modalStyles.optionText, {color: '#2FBE6A'}]}>
+                                Available
+                              </Text>
+                            </View> */}
+                          </View>
+                          <View style={modalStyles.hr} />
+                          <View style={modalStyles.insideText}>
+                            <View style={{flexDirection: 'row'}}>
+                              {/* <Ionicons name="wallet-outline" size={24} color="#1abc9c" /> */}
+                              <Text style={modalStyles.optionTextBelow}>
+                                Switch to the 'test mode' with fake money.
+                              </Text>
+                            </View>
+                            {/* <View><Text style={[styles.optionText, {color: '#2FBE6A'}]}>Available</Text></View> */}
+                          </View>
+                          {/* <View style={styles.hr} /> */}
+                        </TouchableOpacity>
+
+                        {/* <TouchableOpacity
                           style={modalStyles.button}
                           onPress={async () => {
                             global.mainnet = true;
@@ -371,17 +516,22 @@ const Component = ({navigation}) => {
                             );
                             console.log('Switching To Mainnet');
                             if (global.withAuth) {
-                              console.log(
+                              try{
+                              // console.log(
                                 await particleAuth.setChainInfoAsync(
                                   Polygon,
-                                ),
+                                );
+
                                 await particleAuth.setChainInfoAsync(
                                   Polygon,
-                                ),
+                                );
                                 await global.smartAccount.setActiveChain(
                                   ChainId.POLYGON_MAINNET,
-                                ),
-                              );
+                                );
+                              }catch(e){
+                                console.log(e);
+                              }
+                              // );
                             } else {
                               console.log(
                                 await particleConnect.switchEthereumChain(
@@ -408,17 +558,21 @@ const Component = ({navigation}) => {
                             );
                             console.log('Switching To Testnet');
                             if (global.withAuth) {
-                              console.log(
-                                await particleAuth.setChainInfoAsync(
-                                  PolygonMumbai,
-                                ),
-                                await particleAuth.setChainInfoAsync(
-                                  PolygonMumbai,
-                                ),
-                                await global.smartAccount.setActiveChain(
-                                  ChainId.POLYGON_MUMBAI,
-                                ),
-                              );
+                              try{
+                                // console.log(
+                                  await particleAuth.setChainInfoAsync(
+                                    PolygonMumbai,
+                                  );
+                                  await particleAuth.setChainInfoAsync(
+                                    PolygonMumbai,
+                                  );
+                                  await global.smartAccount.setActiveChain(
+                                    ChainId.POLYGON_MUMBAI,
+                                  );
+                                // );
+                              }catch(e){
+                                console.log(e);
+                              }
                             } else {
                               console.log(
                                 await particleConnect.switchEthereumChain(
@@ -434,13 +588,12 @@ const Component = ({navigation}) => {
                           <Text style={modalStyles.buttonTextAlt}>
                             Switch To Testnet
                           </Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                       </View>
                     </View>
                   </View>
                 </ScrollView>
               </SafeAreaView>
-            </ImageBackground>
           </Modal>
         </View>
         <View style={[styles.otherSettings, {marginTop: 10, marginBottom: 10}]}>
@@ -562,13 +715,16 @@ const modalStyles = StyleSheet.create({
   container: {
     width: '100%',
     height: windowHeight,
+    backgroundColor:'#000'
   },
 
   topbar: {
     width: '90%',
     backgroundColor: 'transparent',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
+    marginTop: '2%',
+    paddingHorizontal: 20
   },
 
   logo: {
@@ -580,22 +736,36 @@ const modalStyles = StyleSheet.create({
 
   mainContent: {
     width: '100%',
-    backgroundColor: 'transparent',
+    backgroundColor: '#000',
     marginTop: '15%',
+    paddingHorizontal: 20
   },
 
   mainText: {
     color: '#fff',
-    fontFamily: 'VelaSans-ExtraBold',
-    fontSize: 25,
+    fontFamily: 'Sarala-Regular',
+    fontSize: 32,
     width: '100%',
-    textAlign: 'center',
+      // textAlign: 'center',
+  },
+
+  subText: {
+    fontFamily: 'Sarala-Regular',
+    fontWeight: 400,
+    color: '#707070',
+    fontSize: 18
+    // fontSize: '18px'
   },
 
   buttonContent: {
     width: '100%',
-    backgroundColor: 'transparent',
-    marginTop: '30%',
+    // backgroundColor: 'red',
+    // marginTop: '30%',
+    justifyContent: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    alignContent:'center',
+    alignItems: 'center',
   },
 
   button: {
@@ -636,5 +806,59 @@ const modalStyles = StyleSheet.create({
 
   buttonIcon: {
     marginLeft: '80%',
+  },
+
+  optionContainer: {
+    width: '99%',
+    // aspectRatio: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginBottom: 10,
+    borderColor: '#292929', // dark option background color
+    borderWidth: 1,
+    padding: 16,
+    paddingLeft: 12,
+    paddingRight: 12,
+    // height: 50,
+    // textAlign: 'center',
+    borderRadius: 5,
+    // paddingTop:
+    justifyContent: 'space-between',
+  },
+  optionText: {
+    marginLeft: 10,
+    fontSize: 20,
+    fontFamily: `Sarala-Regular`,
+    color: '#fff', // white text color
+  },
+  hr: {
+    borderBottomColor: '#292929',
+    borderBottomWidth: 1,
+    marginBottom: 8,
+  },
+
+  hr: {
+    // backgroundColor: 'white',
+    borderBottomColor: 'grey',
+    borderBottomWidth: 0.3,
+    marginVertical: 15,
+    width: '100%',
+  },
+
+  insideText: {
+    color: 'white',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '99%',
+  },
+
+  optionTextBelow: {
+    color: '#848484',
+    fontSize: 16,
+    fontFamily: `Sarala-Regular`,
+  },
+
+  selected: {
+    borderColor: '#fff',
   },
 });

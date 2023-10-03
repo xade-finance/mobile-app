@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {Icon} from 'react-native-elements';
 import { BankAccountType, BankAccountSubType } from '@spritz-finance/api-client'
-import {SPRITZ_API_KEY, SPRITZ_INTEGRATION_KEY_PROD} from '@env';
+import {SPRITZ_API_KEY, SPRITZ_INTEGRATION_KEY_PROD, SPRITZ_INTEGRATION_KEY_STAGING} from '@env';
 import {
     SpritzApiClient,
     Environment,
@@ -21,17 +21,20 @@ const CardInfo = ({navigation}) => {
     const [virtualCardRenderSecret, setVirtualCardRenderSecret] = useState(null);
     const [apiKey, setApiKey] = useState(null);
     const [virtualCardInfo, setVirtualCardInfo] = useState(null);
-  
+    
+    console.log(global.mainnet);
+    console.log(SPRITZ_INTEGRATION_KEY_PROD);
+    console.log(SPRITZ_INTEGRATION_KEY_STAGING);
+    
     const client = SpritzApiClient.initialize({
-        environment: Environment.Production,
+        environment: global.mainnet ? Environment.Production : Environment.Staging,
         // apiKey: SPRITZ_API_KEY,
-        integrationKey: SPRITZ_INTEGRATION_KEY_PROD,
+        integrationKey: global.mainnet ? SPRITZ_INTEGRATION_KEY_PROD : SPRITZ_INTEGRATION_KEY_STAGING,
     });
 
     async function init() {
         try{
           const api_key = await AsyncStorage.getItem('spritzAPI');
-          console.log(api_key);
           if (api_key === null) {
             navigation.push('Card');
           }else{
@@ -48,7 +51,6 @@ const CardInfo = ({navigation}) => {
             
             const virtualCard = await client.virtualCard.fetch();
             setVirtualCardInfo(virtualCard);
-
 
             setLoading(false);
           }
@@ -105,7 +107,7 @@ const CardInfo = ({navigation}) => {
                         (verificationStatus === 'ACTIVE') && 
                         <View style={styles.cardDetailContainer}>
                             <LinearGradient
-                                colors={['#1D2426', '#383838']}
+                                colors={['#222', '#222']}
                                 useAngle
                                 angle={45}
                                 angleCenter={{x: 0.5, y: 0.5}} 
@@ -154,7 +156,7 @@ const CardInfo = ({navigation}) => {
                             </LinearGradient>
 
                             <LinearGradient
-                                colors={['#1D2426', '#383838']}
+                                colors={['#222', '#222']}
                                 useAngle
                                 angle={45}
                                 angleCenter={{x: 0.5, y: 0.5}} 
@@ -191,7 +193,7 @@ const CardInfo = ({navigation}) => {
                             </LinearGradient>
 
                             <LinearGradient
-                                colors={['#1D2426', '#383838']}
+                                colors={['#222', '#222']}
                                 useAngle
                                 angle={45}
                                 angleCenter={{x: 0.5, y: 0.5}} 
@@ -309,7 +311,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
       },
       verificationStartButton: {
-        backgroundColor: '#FE2C5E',
+        backgroundColor: '#5038E1',
         flexWrap: 'wrap',
         color: '#fff',
         borderRadius: 5,

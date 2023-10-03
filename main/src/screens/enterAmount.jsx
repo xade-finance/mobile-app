@@ -318,6 +318,7 @@ export default function EnterAmountComponent({navigation, route}) {
               style={{
                 color: '#000',
                 fontFamily: `Sarala-Bold`,
+                fontStyle:300,
                 fontSize: 18,
               }}>
               Send money

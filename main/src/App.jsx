@@ -73,6 +73,8 @@ import AddBankAccount from './screens/loggedIn/card/bankAccount/addBankAccount';
 import ListBankAccounts from './screens/loggedIn/card/bankAccount/listBankAccount';
 import AddFund from './screens/loggedIn/card/fund/addFund';
 import CardInfo from './screens/loggedIn/card/info/cardInfo';
+import Withdraw from './screens/loggedIn/savings/withdraw/withdraw';
+import Deposit from './screens/loggedIn/savings/deposit/deposit';
 
 function PreLaunchLoad({navigation}) {
   return (
@@ -262,6 +264,28 @@ function Investment({navigation}) {
   );
 }
 
+function DepositScreen({navigation, route}) {
+  return (
+    <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
+        {/* <TopBar navigation={navigation} headers={'Deposit'} /> */}
+        <Deposit navigation={navigation} route={route} />
+      </SafeAreaView>
+    </View>
+  );
+}
+
+function WithdrawScreen({navigation, route}) {
+  return (
+    <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
+        {/* <TopBar navigation={navigation} headers={'Withdraw'} /> */}
+        <Withdraw navigation={navigation} route={route}/>
+      </SafeAreaView>
+    </View>
+  );
+}
+
 function Payments({navigation}) {
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -271,6 +295,7 @@ function Payments({navigation}) {
       setRefreshing(false);
     }, 2000);
   }, []);
+
 
   const reload = React.useCallback(async () => {
     await onRefresh();
@@ -595,6 +620,18 @@ export default function App({navigation}) {
         <Stack.Screen
           name="Savings"
           component={Savings}
+          navigation={navigation}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Deposit"
+          component={DepositScreen}
+          navigation={navigation}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Withdraw"
+          component={WithdrawScreen}
           navigation={navigation}
           options={{headerShown: false}}
         />

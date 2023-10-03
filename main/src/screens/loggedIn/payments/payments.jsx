@@ -37,7 +37,7 @@ import {
   BICONOMY_API_KEY_MUMBAI,
   SECRET_KEY_REMMITEX,
 } from '@env';
-import {paymentsLoad, addXUSD, txHistoryLoad} from './utils';
+import {paymentsLoad, addXUSD, txHistoryLoad, initSmartWallet} from './utils';
 const Web3 = require('web3');
 
 import {IPaymaster, ChainId} from '@biconomy/core-types';
@@ -117,36 +117,7 @@ const PaymentsComponent = ({navigation}) => {
 
     if (global.withAuth) {
       if (!global.smartAccount) {
-        let options = {
-          activeNetworkId: mainnet
-            ? ChainId.POLYGON_MAINNET
-            : ChainId.POLYGON_MUMBAI,
-          supportedNetworksIds: [
-            ChainId.POLYGON_MAINNET,
-            ChainId.POLYGON_MUMBAI,
-          ],
-
-          networkConfig: [
-            {
-              chainId: ChainId.POLYGON_MAINNET,
-              dappAPIKey: BICONOMY_API_KEY,
-            },
-            {
-              chainId: ChainId.POLYGON_MUMBAI,
-              dappAPIKey: BICONOMY_API_KEY_MUMBAI,
-            },
-          ],
-        };
-
-        const particleProvider = this.getOnlyProvider();
-        const provider = new ethers.providers.Web3Provider(
-          particleProvider,
-          'any',
-        );
-
-        let smartAccount = new SmartAccount(provider, options);
-        smartAccount = await smartAccount.init();
-        global.smartAccount = smartAccount;
+        await initSmartWallet();
       }
     }
   }
@@ -177,14 +148,14 @@ const PaymentsComponent = ({navigation}) => {
     
       <View style={{
         marginHorizontal:20,
-        marginTop: 32
+        marginTop: 16
       }}>
         <Text
           style={{
             fontFamily: 'Sarala-Bold',
             fontSize: 20,
             color: "#fff",
-            fontWeight: 700,
+            fontWeight: 300,
           }}
         >Accounts</Text>
       </View>
@@ -202,18 +173,18 @@ const PaymentsComponent = ({navigation}) => {
             <Text
               style={{
                 color: '#fff',
-                fontFamily: 'Sarala-Regular',
+                fontFamily: 'Sarala-Bold',
                 fontSize: 24,
-                fontWeight: 700,
+                fontWeight: 300,
                 marginTop: '1%',
               }}>
               ${balance.split('.')[0]}
               <Text
                 style={{
                   color: '#fff',
-                  fontFamily: 'Sarala-Regular',
+                  fontFamily: 'Sarala-Bold',
                   fontSize: 24,
-                  fontWeight: 700,
+                  fontWeight: 300,
                   marginTop: '1%',
                 }}>
                 {'.'}
@@ -284,7 +255,7 @@ const PaymentsComponent = ({navigation}) => {
                     // color={t?'green': 'red'}
                     type="feather"
                   />
-              <Text style={{color: '#fff', fontSize: 14, paddingLeft:'5%', fontFamily: 'Sarala-Regular', fontWeight: 700}}>
+              <Text style={{color: '#fff', fontSize: 14, paddingLeft:'5%', fontFamily: 'Sarala-Bold', fontWeight: 300}}>
                 Add cash
               </Text>
             </View>
@@ -303,7 +274,7 @@ const PaymentsComponent = ({navigation}) => {
                 color={'#fff'}
                 type="feather"
               />
-              <Text style={{color: '#fff', fontSize: 14,paddingLeft:'5%', fontFamily: 'Sarala-Regular', fontWeight: 700}}>
+              <Text style={{color: '#fff', fontSize: 14,paddingLeft:'5%', fontFamily: 'Sarala-Bold', fontWeight: 300}}>
                 Transfer
               </Text>
             </View>
@@ -338,7 +309,7 @@ const PaymentsComponent = ({navigation}) => {
               color: 'white',
               fontSize: 20,
               fontFamily: 'Sarala-Bold',
-              fontWeight: 700,
+              fontWeight: 300,
               marginLeft: '4%',
             }}>
             Transactions 
@@ -346,18 +317,12 @@ const PaymentsComponent = ({navigation}) => {
           <TouchableOpacity
             onPress={() => {
               navigation.push('TransactionHistory');
-              // Linking.openURL(
-              //   `https://${mainnet ? '' : 'mumbai.'}polygonscan.com/address/${
-              //     global.withAuth
-              //       ? global.loginAccount.scw
-              //       : global.connectAccount.publicAddress
-              //   }`,
-              // );
             }}>
             <Text
               style={{
                 color: '#bababa',
-                fontFamily: 'Sarala-Regular',
+                fontFamily: 'Sarala-Bold',
+                fontWeight: 300,
                 fontSize: 14,
                 marginRight: '5%',
                 paddingTop: 3,
@@ -366,38 +331,14 @@ const PaymentsComponent = ({navigation}) => {
             </Text>
           </TouchableOpacity>
         </View>
-        {/* {state.length > 0 ? (
-          <Text
-            style={{
-              fontFamily: 'Sarala-Regular',
-              color: '#6f6f6f',
-              fontSize: 17,
-              marginLeft: '5%',
-              marginTop: '2%',
-            }}>
-            {String(state[0].month)}
-          </Text>
-        ) : (
-          ''
-        )} */}
         {state.length > 0 ? (
-          state.slice(0, 10).map(json => {
+          state.slice(0, 2).map(json => {
             return (
               <TouchableOpacity
                 keyboardShouldPersistTaps={true}
-                // onPress={() => {
-                //   navigation.push('ViewTransaction', {json: json});
-                // }}
                 onPress={() => {
                   setTransactionData(json);
                   setShowTxnReceiptModal(true);
-
-                  
-                  // Linking.openURL(
-                  //   `https://${mainnet ? '' : 'mumbai.'}polygonscan.com/tx/${
-                  //     json.hash
-                  //   }`,
-                  // );
                 }}
                 style={styles.transactions}
                 key={state.indexOf(json)}>
@@ -431,9 +372,9 @@ const PaymentsComponent = ({navigation}) => {
                       <Text
                         style={{
                           color: '#e9e9e9',
-                          fontFamily: `Sarala-Regular`,
+                          fontFamily: `Sarala-Bold`,
                           fontSize: 16,
-                          fontWeight: 700,
+                          fontWeight: 300,
                         }}>
                         {(json.truth
                           ? json.from ==
@@ -465,8 +406,8 @@ const PaymentsComponent = ({navigation}) => {
                     style={{
                       color: json.truth ? '#fff' : '#fff',
                       fontSize: 16,
-                      fontWeight:700,
-                      fontFamily: `Sarala-Regular`,
+                      fontWeight:300,
+                      fontFamily: `Sarala-Bold`,
                       alignItems:'flex-end',
                       alignSelf:'flex-end',
                       textAlign: 'right'

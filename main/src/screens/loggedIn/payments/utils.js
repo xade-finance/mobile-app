@@ -14,11 +14,15 @@ import transferXUSD from './remmitexv1';
 const Web3 = require('web3');
 import {Alert} from 'react-native';
 
-import {IPaymaster, ChainId} from '@biconomy/core-types';
+import {ChainId} from '@biconomy/core-types';
 
 import 'react-native-get-random-values';
 import '@ethersproject/shims';
 import {ethers} from 'ethers';
+import { Bundler } from '@biconomy/bundler';
+import { BiconomyPaymaster, PaymasterMode } from '@biconomy/paymaster';
+import { DEFAULT_ECDSA_OWNERSHIP_MODULE, ECDSAOwnershipValidationModule } from '@biconomy/modules';
+import { BiconomySmartAccount, DEFAULT_ENTRYPOINT_ADDRESS } from '@biconomy/account';
 
 const REMMITEX_CONTRACT = '0xf1Ff5c85df29f573003328c783b8c6f8cC326EB7';
 
@@ -216,3 +220,62 @@ export const addXUSD = async (navigation, walletAddress) => {
     console.error(err);
   }
 };
+
+export const initSmartWallet = async () => {
+  
+  try{
+
+    const mainnetJSON = await AsyncStorage.getItem('mainnet');
+    const mainnet = await JSON.parse(mainnetJSON);
+
+    console.log('Mainnet:', mainnet);
+
+    const particleProvider = this.getOnlyProvider();
+    const provider = new ethers.providers.Web3Provider(
+      particleProvider,
+      'any',
+    );
+
+    const bundlerUrl = 'https://bundler.biconomy.io/api/v2/' 
+                        + `${mainnet ? ChainId.POLYGON_MAINNET : ChainId.POLYGON_MUMBAI}` 
+                        + '/' + `${mainnet ? BICONOMY_API_KEY : BICONOMY_API_KEY_MUMBAI}`
+
+    const bundler = new Bundler({
+      bundlerUrl: bundlerUrl,
+      chainId: mainnet ? ChainId.POLYGON_MAINNET : ChainId.POLYGON_MUMBAI,
+      entryPointAddress: DEFAULT_ENTRYPOINT_ADDRESS,
+    })
+
+    const paymaster = new BiconomyPaymaster({
+      paymasterUrl: 'https://paymaster.biconomy.io/api/v1/'
+                    + `${mainnet ? ChainId.POLYGON_MAINNET : ChainId.POLYGON_MUMBAI}` 
+                    + '/' + `${mainnet ? BICONOMY_API_KEY : BICONOMY_API_KEY_MUMBAI}`
+    })
+
+    const addre = await provider.getSigner().getAddress();
+    const signer = provider.getSigner();
+
+    const module = await ECDSAOwnershipValidationModule.create({
+      signer: signer,
+      moduleAddress: DEFAULT_ECDSA_OWNERSHIP_MODULE
+    })
+
+    const biconomySmartAccountConfig = {
+      signer: signer,
+      chainId: mainnet ? ChainId.POLYGON_MAINNET : ChainId.POLYGON_MUMBAI,
+      bundler: bundler,
+      paymaster: paymaster, 
+      entryPointAddress: DEFAULT_ENTRYPOINT_ADDRESS,
+      defaultValidationModule: module,
+      activeValidationModule: module
+    }
+
+    let biconomySmartAccount = new BiconomySmartAccount(biconomySmartAccountConfig)
+    biconomySmartAccount =  await biconomySmartAccount.init()
+
+    global.smartAccount = biconomySmartAccount;
+
+  }catch (err) {
+    console.log(err);
+  }
+}

@@ -258,12 +258,12 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 16,
     color: '#ffffff',
-    fontFamily: `Sarala-Bold`,
-    fontWeight: 700
+    fontFamily: 'Sarala-Bold',
+    fontWeight: 300
   },
   descriptionText: {
     fontSize: 14,
-    color: '#b9b9b9',
+    color: '#a1a1a1',
     fontFamily: `Sarala-Regular`,
   },
   actionContainer: {

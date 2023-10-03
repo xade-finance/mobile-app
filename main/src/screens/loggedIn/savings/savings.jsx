@@ -17,18 +17,24 @@ import {Icon} from 'react-native-elements';
 import ethProvider from './integration/ethProvider';
 import createProvider from '../../../particle-auth';
 import createConnectProvider from '../../../particle-connect';
-import {POLYGON_API_KEY, SABEX_LP} from '@env';
+import {POLYGON_API_KEY, SABEX_LP, BICONOMY_API_KEY, BICONOMY_API_KEY_MUMBAI, AAVE_V3_LENDING_POOL_ADDRESS} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
 // import { PROJECT_ID, CLIENT_KEY } from 'react-native-dotenv'
 import '@ethersproject/shims';
-import {ethers} from 'ethers';
 
 import abi from './aave-v3-pool';
 import usdAbi from './USDC';
 import remmitexAbi from '../../../abi/remmitex.json'
 import SmartAccount from '@biconomy/smart-account';
 // import XUSDAbi from './XUSD';
+import { BiconomySmartAccount, BiconomySmartAccountConfig, DEFAULT_ENTRYPOINT_ADDRESS } from "@biconomy/account";
+import { Wallet, providers, ethers } from 'ethers';
+import { ChainId } from '@biconomy/core-types';
+import { Bundler } from '@biconomy/bundler'
+import { BiconomyPaymaster, PaymasterMode } from '@biconomy/paymaster';
+import { ECDSAOwnershipValidationModule, DEFAULT_ECDSA_OWNERSHIP_MODULE } from "@biconomy/modules";
+import { initSmartWallet } from '../payments/utils';
 
 let web3;
 const contractAddress = '0xA3C957f5119eF3304c69dBB61d878798B3F239D9';
@@ -173,9 +179,8 @@ const Savings = ({navigation}) => {
 
   const depositToLendingPool = async (_amount="1") => {
     const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
-    const lendingPoolAddress = '0x794a61358D6845594F94dc1DB02A252b5b4814aD';
+    const lendingPoolAddress = AAVE_V3_LENDING_POOL_ADDRESS;
     const v1Address = '0xc9DD6D26430e84CDF57eb10C3971e421B17a4B65';
-
 
     const decimals = 6;
 
@@ -202,42 +207,7 @@ const Savings = ({navigation}) => {
 
     console.log("Mainnet:", mainnet);
 
-    if (global.withAuth) {
-      if (!global.smartAccount) {
-        let options = {
-          activeNetworkId: mainnet
-            ? ChainId.POLYGON_MAINNET
-            : ChainId.POLYGON_MUMBAI,
-          supportedNetworksIds: [
-            ChainId.POLYGON_MAINNET,
-            ChainId.POLYGON_MUMBAI,
-          ],
-
-          networkConfig: [
-            {
-              chainId: ChainId.POLYGON_MAINNET,
-              dappAPIKey: BICONOMY_API_KEY,
-            },
-            {
-              chainId: ChainId.POLYGON_MUMBAI,
-              dappAPIKey: BICONOMY_API_KEY_MUMBAI,
-            },
-          ],
-        };
-
-        const particleProvider = this.getOnlyProvider();
-        const provider = new ethers.providers.Web3Provider(
-          particleProvider,
-          'any',
-        );
-
-        let smartAccount = new SmartAccount(provider, options);
-        smartAccount = await smartAccount.init();
-        global.smartAccount = smartAccount;
-
-        console.log(smartAccount);
-      }
-    }
+    await initSmartWallet();
 
     if (global.withAuth) {
       console.log('Calculating Gas In USDC...');
@@ -276,10 +246,13 @@ const Savings = ({navigation}) => {
   
         txs.push(approveTX);
 
+        const sma = await global.smartAccount.getSmartAccountAddress()
+        console.log(sma);
+
         const sendData = contractAbi.encodeFunctionData('supply', [
           usdcAddress,
           amount,
-          authAddress,
+          sma,
           0
         ]);
   
@@ -289,26 +262,90 @@ const Savings = ({navigation}) => {
         };
 
         txs.push(sendTX);
+
+        console.log(txs);
   
         console.log('Created Transactions Successfully...');
   
         console.log('Waiting For Approval...');
 
-        console.log(global.smartAccount);
+        const userOp = await global.smartAccount.buildUserOp(txs)
 
-        console.log(global.smartAccount.address);
-  
-        const txResponse = await global.smartAccount.sendTransactionBatch({
-          transactions: txs,
-        });
+        const biconomyPaymaster = await global.smartAccount.paymaster;
+
+        console.log(biconomyPaymaster);
+
+        let paymasterServiceData = {
+            mode: PaymasterMode.SPONSORED,
+            // smartAccountInfo: {
+            //   name: 'BICONOMY',
+            //   version: '2.0.0'
+            // },
+        };
+
+        console.log(paymasterServiceData);
+
+        const paymasterAndDataResponse = await biconomyPaymaster.getPaymasterAndData(
+            userOp,
+            paymasterServiceData
+        );
+
+        console.log(paymasterAndDataResponse);
+            
+        userOp.paymasterAndData = paymasterAndDataResponse.paymasterAndData;
+
+        // userOp.paymasterAndData = "0x"
+
+        console.log(userOp);
+      
+        const userOpResponse = await global.smartAccount.sendUserOp(userOp);
+
+        console.log(userOpResponse);
+      
+        const transactionDetail = await userOpResponse.wait()
+      
+        console.log("transaction detail below")
+        console.log(transactionDetail)
+
+        // const userOp1 = await global.smartAccount.buildUserOp(txs)
+
+        // const biconomyPaymaster1 = await global.smartAccount.paymaster;
+
+        // console.log(biconomyPaymaster1);
+
+        // let paymasterServiceData1 = {
+        //     mode: PaymasterMode.SPONSORED,
+        //     // smartAccountInfo: {
+        //     //   name: 'BICONOMY',
+        //     //   version: '2.0.0'
+        //     // },
+        // };
+
+        // console.log(paymasterServiceData1);
+
+        // const paymasterAndDataResponse1 = await biconomyPaymaster.getPaymasterAndData(
+        //     userOp1,
+        //     paymasterServiceData1
+        // );
+
+        // console.log(paymasterAndDataResponse1);
+            
+        // userOp1.paymasterAndData = paymasterAndDataResponse1.paymasterAndData;
+
+        // // userOp.paymasterAndData = "0x"
+
+        // console.log(userOp1);
+      
+        // const userOpResponse1 = await global.smartAccount.sendUserOp(userOp1);
+
+        // console.log(userOpResponse1);
+      
+        // const transactionDetail1 = await userOpResponse1.wait()
+      
+        // console.log("transaction detail below")
+        // console.log(transactionDetail1)        
   
         console.log('Approved!');
-        // const txResponse = await smartAccount.sendTransaction({ transaction: tx1})
-
-        const txHash = await txResponse.wait();
-        console.log(txHash);
-  
-        console.log(txResponse);
   
       } catch (e) {
         console.error(e);
@@ -363,6 +400,7 @@ const Savings = ({navigation}) => {
               color: 'white',
               fontSize: 18,
               fontFamily: 'Sarala-Bold',
+              fontWeight: 300,
             }}>
             Total amount deposited
           </Text>
@@ -379,11 +417,12 @@ const Savings = ({navigation}) => {
           <TouchableOpacity
             style={styles.depWith}
             onPress={() => {
-              depositToLendingPool("1");
-              // navigation.navigate('ComingSoon');
+              // depositToLendingPool("1");
+              // navigation.navigate('Deposit');
+              navigation.navigate('ComingSoon')
             }}>
             <LinearGradient
-              colors={['#1D2426', '#383838']}
+              colors={['#222', '#222']}
               useAngle
               angle={45}
               angleCenter={{x: 0.5, y: 0.5}}
@@ -395,7 +434,7 @@ const Savings = ({navigation}) => {
                 color={'#86969A'}
                 type="feather"
               />
-              <Text style={{color: '#86969A', fontFamily: 'Sarala-Bold'}}>
+              <Text style={{color: '#86969A', fontFamily: 'Sarala-Bold', fontWeight:300}}>
                 Deposit
               </Text>
             </LinearGradient>
@@ -404,10 +443,11 @@ const Savings = ({navigation}) => {
           <TouchableOpacity
             style={styles.depWith}
             onPress={() => {
+              // navigation.navigate('Withdraw');
               navigation.navigate('ComingSoon');
             }}>
             <LinearGradient
-              colors={['#1D2426', '#383838']}
+              colors={['#222', '#222']}
               useAngle
               angle={45}
               angleCenter={{x: 0.5, y: 0.5}}
@@ -420,7 +460,7 @@ const Savings = ({navigation}) => {
                 // color={t?'green': 'red'}
                 type="font-awesome"
               />
-              <Text style={{color: '#86969A', fontFamily: 'Sarala-Bold'}}>
+              <Text style={{color: '#86969A', fontFamily: 'Sarala-Bold', fontWeight: 300}}>
                 Withdraw
               </Text>
             </LinearGradient>
@@ -479,6 +519,7 @@ const Savings = ({navigation}) => {
               color: 'white',
               fontSize: 20,
               fontFamily: 'Sarala-Bold',
+              fontWeight: 300
             }}>
             Transactions
           </Text>

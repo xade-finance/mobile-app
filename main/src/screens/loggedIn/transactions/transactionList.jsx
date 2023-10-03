@@ -3,7 +3,7 @@ import { Dimensions, SafeAreaView, StyleSheet, Linking, TouchableHighlight, Touc
 import { Icon, Text } from "react-native-elements";
 import FastImage from "react-native-fast-image";
 
-import {paymentsLoad, addXUSD, txHistoryLoad} from '../payments/utils';
+import {paymentsLoad, addXUSD, txHistoryLoad, initSmartWallet} from '../payments/utils';
 import TransactionReceipt from "./transactionReceipt";
 import Snackbar from "react-native-snackbar";
 
@@ -69,36 +69,7 @@ const TransactionList = ({navigation, route}) => {
 
     if (global.withAuth) {
       if (!global.smartAccount) {
-        let options = {
-          activeNetworkId: mainnet
-            ? ChainId.POLYGON_MAINNET
-            : ChainId.POLYGON_MUMBAI,
-          supportedNetworksIds: [
-            ChainId.POLYGON_MAINNET,
-            ChainId.POLYGON_MUMBAI,
-          ],
-
-          networkConfig: [
-            {
-              chainId: ChainId.POLYGON_MAINNET,
-              dappAPIKey: BICONOMY_API_KEY,
-            },
-            {
-              chainId: ChainId.POLYGON_MUMBAI,
-              dappAPIKey: BICONOMY_API_KEY_MUMBAI,
-            },
-          ],
-        };
-
-        const particleProvider = this.getOnlyProvider();
-        const provider = new ethers.providers.Web3Provider(
-          particleProvider,
-          'any',
-        );
-
-        let smartAccount = new SmartAccount(provider, options);
-        smartAccount = await smartAccount.init();
-        global.smartAccount = smartAccount;
+        await initSmartWallet();
       }
     }
   }
@@ -217,7 +188,7 @@ const TransactionList = ({navigation, route}) => {
                                         <Text
                                             style={{
                                             color: '#e9e9e9',
-                                            fontFamily: `Sarala-Regular`,
+                                            fontFamily: `Sarala-Bold`,
                                             fontSize: 16,
                                             }}>
                                             {(json.truth
@@ -248,12 +219,12 @@ const TransactionList = ({navigation, route}) => {
                                 <View style={styles.transactionRight}>
                                   <Text
                                       style={{
-                                      color: json.truth ? '#A38CFF' : '#fff',
-                                      fontSize: 17,
-                                      fontFamily: `Sarala-Regular`,
-                                      textAlign:'right',
-                                      alignSelf:'flex-end',
-                                      alignContent: 'flex-end'
+                                        color: json.truth ? '#fff' : '#fff',
+                                        fontSize: 17,
+                                        fontFamily: `Sarala-Bold`,
+                                        textAlign:'right',
+                                        alignSelf:'flex-end',
+                                        alignContent: 'flex-end'
                                       }}>
                                       {json.truth != 0 && json.truth != 2 ? '+' : '-'}$
                                       {json.value.toFixed(3)}
@@ -287,7 +258,7 @@ const styles = StyleSheet.create({
     heading : { 
         fontSize: 20,
         color: '#ffffff',
-        fontFamily: `Sarala-Regular`,
+        fontFamily: `Sarala-Bold`,
         fontWeight: 500,
         marginLeft: 30
     },

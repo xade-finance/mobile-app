@@ -50,8 +50,8 @@
 		CC7D72D2134D4E7DAF11FE48 /* VelaSans-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0F29E1AB951D4AC4BFACFF79 /* VelaSans-SemiBold.otf */; };
 		D8055FD304DB4D589D6DCD31 /* VelaSans-ExtraLight.otf in Resources */ = {isa = PBXBuildFile; fileRef = 92DCC70407BF46CEAE294FBD /* VelaSans-ExtraLight.otf */; };
 		E21DC469E7AD4C1E823060DB /* VelaSans-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7DDD8CA4C4F04E72A9337D7F /* VelaSans-Medium.otf */; };
-		235C22CEC8DD44EC82FD4214 /* Sarala-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 08DFB6C64E074CB294F5CB81 /* Sarala-Bold.otf */; };
 		6F12C1418D354BEE88202B0F /* Sarala-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 672192825C334C988FB82B95 /* Sarala-Regular.otf */; };
+		B39CE6C97237462C9E37D454 /* Sarala-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = D862F1CC97184EB4916BF8D3 /* Sarala-Bold.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -121,8 +121,8 @@
 		C6307B2083C04402848DF9AB /* Inter-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-Regular.otf"; path = "../assets/fonts/Inter-Regular.otf"; sourceTree = "<group>"; };
 		E98B70F4D28442798A5989B4 /* VelaSans-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "VelaSans-Light.otf"; path = "../assets/fonts/VelaSans-Light.otf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		08DFB6C64E074CB294F5CB81 /* Sarala-Bold.otf */ = {isa = PBXFileReference; name = "Sarala-Bold.otf"; path = "../assets/fonts/Sarala-Bold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		672192825C334C988FB82B95 /* Sarala-Regular.otf */ = {isa = PBXFileReference; name = "Sarala-Regular.otf"; path = "../assets/fonts/Sarala-Regular.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		D862F1CC97184EB4916BF8D3 /* Sarala-Bold.otf */ = {isa = PBXFileReference; name = "Sarala-Bold.otf"; path = "../assets/fonts/Sarala-Bold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -211,8 +211,8 @@
 				3D27DC7B80E844FBAEDD7F8E /* EuclidCircularA-Medium.otf */,
 				303CAEF7FCE740E3B255CC3A /* EuclidCircularA-SemiBold.otf */,
 				4CEFEB4D1D614A628CC964FF /* EuclidCircularA-Regular.otf */,
-				08DFB6C64E074CB294F5CB81 /* Sarala-Bold.otf */,
 				672192825C334C988FB82B95 /* Sarala-Regular.otf */,
+				D862F1CC97184EB4916BF8D3 /* Sarala-Bold.otf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -415,8 +415,8 @@
 				A1F6A70AA9774651B48EF37D /* EuclidCircularA-Medium.otf in Resources */,
 				A99F26D535054D1F8ED899BA /* EuclidCircularA-SemiBold.otf in Resources */,
 				2460991218BE40ABB9217D68 /* EuclidCircularA-Regular.otf in Resources */,
-				235C22CEC8DD44EC82FD4214 /* Sarala-Bold.otf in Resources */,
 				6F12C1418D354BEE88202B0F /* Sarala-Regular.otf in Resources */,
+				B39CE6C97237462C9E37D454 /* Sarala-Bold.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

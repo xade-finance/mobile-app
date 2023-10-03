@@ -32,9 +32,6 @@ import {
 } from '@env';
 const Web3 = require('web3');
 
-import {IPaymaster, ChainId} from '@biconomy/core-types';
-import SmartAccount from '@biconomy/smart-account';
-
 import 'react-native-get-random-values';
 
 import '@ethersproject/shims';

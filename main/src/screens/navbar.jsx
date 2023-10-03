@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     color: '#696969',
     fontSize: 11,
     fontFamily: 'Sarala-Bold',
-    fontWeight: 700,
+    fontWeight: 300,
     paddingTop: 4,
   },
   navItemLabelSelected: {
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     // color: '#A38CFF',
     fontSize: 11,
     fontFamily: 'Sarala-Bold',
-    fontWeight: 700,
+    fontWeight: 300,
     paddingTop: 4,
   }
 });

@@ -11,7 +11,8 @@ import {
   Platform,
   ActivityIndicator,
   Modal,
-  Pressable
+  Pressable,
+  TextInput
 } from 'react-native';
 
 import {Icon} from 'react-native-elements';
@@ -31,11 +32,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {SpritzCard} from '@spritz-finance/react-native-secure-elements';
 
-import {SPRITZ_API_KEY,SPRITZ_INTEGRATION_KEY_TEST, SPRITZ_INTEGRATION_KEY_PROD} from '@env';
+import {SPRITZ_API_KEY, SPRITZ_INTEGRATION_KEY_TEST, SPRITZ_INTEGRATION_KEY_PROD} from '@env';
 import CardTransactions from './card/transaction';
 
 import Snackbar from 'react-native-snackbar';
-
 
 import * as particleAuth from 'react-native-particle-auth';
 import * as particleConnect from 'react-native-particle-connect';
@@ -47,14 +47,24 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import LinearGradient from 'react-native-linear-gradient';
 
+// import Animated, {
+//   Extrapolate,
+//   interpolate,
+//   useAnimatedStyle,
+//   useSharedValue,
+//   withSpring,
+//   withTiming,
+// } from "react-native-reanimated";
+
 import ChipSvg from './card/icon/ChipSvg';
 import { SvgUri } from 'react-native-svg';
 import VisaSvg from './card/icon/VisaSvg';
 import LogoSvg from './card/icon/LogoSvg';
+import AvatarSvg from './card/icon/AvatarSvg';
+import ExternalLinkModal from './externalLink/widget';
 
 const windowHeight = Dimensions.get('window').height;
 const windowWidth = Dimensions.get('window').width;
-
 
 const Card = ({navigation}) => {
 
@@ -67,62 +77,156 @@ const Card = ({navigation}) => {
 
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
-
-  // const client = SpritzApiClient.initialize({
-  //   environment: Environment.Production, 
-  //   integrationKey: SPRITZ_INTEGRATION_KEY_PROD,
-  // });
+  const [isEmailModalVisible, setEmailModalVisible] = useState(false);
+  const [showExternalLinkModal, setShowExternalLinkModal] = useState('');
+  const [externalLinkUri, setExternalLinkUri] = useState('');
+  const [externalLinkHeading, setExternalLinkHeading] = useState(false);
+  const [emailInput, setEmailInput] = useState('');
 
   const client = SpritzApiClient.initialize({
-    environment: Environment.Staging, 
-    integrationKey: SPRITZ_INTEGRATION_KEY_TEST,
+    environment: mainnet ? Environment.Production : Environment.Staging, 
+    integrationKey: mainnet ? SPRITZ_INTEGRATION_KEY_PROD : SPRITZ_INTEGRATION_KEY_TEST,
   });
 
-  particleAuth.init(
-    PolygonMumbai,
-    particleAuth.Env.Staging,
-  );
+  // const spin = useSharedValue(0);
+
+  // const rStyle = useAnimatedStyle(() => {
+  //   const spinVal = interpolate(spin.value, [0, 1], [0, 180]);
+  //   return {
+  //     transform: [
+  //       {
+  //         rotateY: withTiming(`${spinVal}deg`, { duration: 500 }),
+  //       },
+  //     ],
+  //   };
+  // }, []);
+
+  // const bStyle = useAnimatedStyle(() => {
+  //   const spinVal = interpolate(spin.value, [0, 1], [180, 360]);
+  //   return {
+  //     transform: [
+  //       {
+  //         rotateY: withTiming(`${spinVal}deg`, { duration: 500 }),
+  //       },
+  //     ],
+  //   };
+  // }, []);
 
   async function createUser() {
     try {
-      // try{
-      //   await AsyncStorage.removeItem('spritzAPI');
-      // }catch(e) {
-      //   console.log(e);
-      // }
       setLoading(true);
-      var account = await particleAuth.getUserInfo();
-      account = JSON.parse(account);
-
-      let email = account.email
-        ? account.email.toLowerCase()
-        : account.phone
-        ? account.phone
-        : account.googleEmail.toLowerCase();
-
-      console.log('Phone/Email:', email);
-      const user = await client.user.createUser({
-        email: email,
-      });
-      console.log("-----------------");
-      console.log(user);
-      client.setApiKey(user.apiKey);
-      await AsyncStorage.setItem('spritzAPI', JSON.stringify(user.apiKey));
 
       // call api to store spritz api key in the backend
       try{
-        const name = global.loginAccount.name;
-        const address = global.loginAccount.publicAddress;
-        const email = global.loginAccount.phoneEmail;
-        const uuid = global.loginAccount.uiud;
+        if(global.withAuth){
+          const name = global.loginAccount.name;
+          const address = global.loginAccount.publicAddress;
+          const scw = global.loginAccount.scw;
+          const email = global.loginAccount.phoneEmail;
+          const uuid = global.loginAccount.uiud;
+
+          const user = await client.user.createUser({
+            email: email,
+          });
+
+          client.setApiKey(user.apiKey);
+          await AsyncStorage.setItem('spritzAPI', JSON.stringify(user.apiKey));
+          setApiKey(user.apiKey);
+
+          const object = {
+            email: email.toLowerCase(),
+            phone: 'NULL',
+            name: name,
+            typeOfLogin: 'login',
+            eoa: scw,
+            scw: scw,
+            id: uuid,
+            spritzApiKey: user.apiKey
+          };
+          const json = JSON.stringify(object || {}, null, 2);
+          console.log('Request Being Sent:', json);
+          
+          await fetch('https://mongo.api.xade.finance/polygon', {
+            method: 'POST',
+            body: json,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          setUserExists(true);
+
+        }else{
+          // ask user for email address
+          toggleEmailModal();
+        }
+      }catch(e){
+        console.log(e);
+      } 
+      setLoading(false);
+
+    } catch (err) {
+      console.log(err);
+      Snackbar.show({text: 'Unable to create new user'});
+    }
+
+    setLoading(false);
+    setTimeout(() => {
+      toggleModal();
+    },1000)
+  }
+
+  // async function getUser() {
+  //   try{ 
+  //     await AsyncStorage.setItem('spritzAPI', 'ak_OWEyNWJhNmUtMTIyZC00NzFlLTlmN2ItNjVlNTA0MjhmYjg3' );
+  //     const api_key = await AsyncStorage.getItem('spritzAPI');
+  //     client.setApiKey('ak_OWEyNWJhNmUtMTIyZC00NzFlLTlmN2ItNjVlNTA0MjhmYjg3');
+  //     const verificationData = await client.user.getUserVerification(); 
+
+  //   }catch (err) {
+  //     console.log(err);
+  //   }
+  // }
+
+  async function createVirtualCard() {
+    try{
+      const virtualCard = await client.virtualCard.create(VirtualCardType.USVirtualDebitCard);
+      setVirtualCardRenderSecret(virtualCard.renderSecret);
+    }catch (e){
+      console.log(e);
+    }
+  }
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+
+  const toggleEmailModal = () => {
+    setEmailModalVisible(!isEmailModalVisible);
+  };
+
+  async function createUserForConnectAccount () {
+    try{
+      if(global.withConnect){
+        setLoading(true);
+        const name = global.connectAccount.name;
+        const address = global.connectAccount.publicAddress;
+        const email = emailInput;
+        const uuid = global.connectAccount.uiud;
+
+        const user = await client.user.createUser({
+          email: email,
+        });
+        client.setApiKey(user.apiKey);
+        await AsyncStorage.setItem('spritzAPI', JSON.stringify(user.apiKey));
+
         const object = {
-          email: email.toLowerCase(),
+          email: emailInput.toLowerCase(),
           phone: 'NULL',
           name: name,
-          typeOfLogin: 'login',
-          eoa: "0x418798377903ce8cc1d48a8dad0220515544f785",
-          scw: "0x418798377903ce8cc1d48a8dad0220515544f785",
-          id: "25d2ae9a-b96e-4b9f-bf37-8332bcdde121",
+          typeOfLogin: 'connect',
+          eoa: address,
+          scw: address,
+          id: uuid,
           spritzApiKey: user.apiKey
         };
         const json = JSON.stringify(object || {}, null, 2);
@@ -135,145 +239,81 @@ const Card = ({navigation}) => {
             'Content-Type': 'application/json',
           },
         });
-      }catch(e){
-        console.log(e);
-      } 
+        setUserExists(true);
 
-      setUserExists(true);
-      setApiKey(user.apiKey);
-
-      // const verificationData = await client.user.getUserVerification();
-      // console.log(verificationData);
-      // const virtualCard = await client.virtualCard.fetch();
-      // return virtualCard;
-      // const bankAccounts = await client.bankAccount.list();
-      // const bankAccount = await client.bankAccount.create(
-      //   BankAccountType.USBankAccount,
-      //   {
-      //     accountNumber: '123456789',
-      //     routingNumber: '031201360',
-      //     email: emailID,
-      //     holder: 'Anshuman Tekriwal',
-      //     name: 'Precious Savings',
-      //     ownedByUser: true,
-      //     subType: BankAccountSubType.Savings,
-      //   },
-      // );
-      // const updatedBankAccounts = await client.bankAccount.list();
-      // console.log('Bank:', bankAccounts);
-      // const virtualCard = await client.virtualCard.create(
-      //   VirtualCardType.USVirtualDebitCard,
-      // );
-      // const virtualCard = await client.virtualCard.fetch();
-      // console.log(virtualCard);
-      // console.log('Updated Banks:', updatedBankAccounts);
-
-      
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-      Snackbar.show({text: 'Unable to create new user'});
+      }
+    }catch(e) {
+      console.log(e);
     }
-
     setLoading(false);
-    setTimeout(() => {
-      toggleModal();
-    },1000)
+    toggleEmailModal();
+
   }
-
-  async function getUser() {
-    try{ 
-      await AsyncStorage.setItem('spritzAPI', 'ak_OWEyNWJhNmUtMTIyZC00NzFlLTlmN2ItNjVlNTA0MjhmYjg3' );
-      const api_key = await AsyncStorage.getItem('spritzAPI');
-      client.setApiKey('ak_OWEyNWJhNmUtMTIyZC00NzFlLTlmN2ItNjVlNTA0MjhmYjg3');
-      const verificationData = await client.user.getUserVerification(); 
-
-    }catch (err) {
-      console.log(err);
-    }
-  }
-
-  async function createVirtualCard() {
-    try{
-      const virtualCard = await client.virtualCard.create(VirtualCardType.USVirtualDebitCard);
-      setVirtualCardRenderSecret(virtualCard.renderSecret);
-    }catch (e){
-      console.log(e);
-    }
-  }
-
-  async function fetchRecentPayments() {
-    try{
-      // const payments = await client.payment.listForAccount(account.id)
-    }catch (e){
-      console.log(e);
-    }
-  }
-
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
-  };
 
   useEffect(() => {
 
     async function init() {
-
-      // try{
-      //   await AsyncStorage.setItem('spritzAPI', 'ak_OWEyNWJhNmUtMTIyZC00NzFlLTlmN2ItNjVlNTA0MjhmYjg3');
-      // }catch(e) {
-      //   console.log(e);
-      // }
-
-         
-      
-
       try{
-        const api_key = await AsyncStorage.getItem('spritzAPI');
-        console.log(api_key);
+        let scwAddress = ''
 
-      //   // call api to store spritz api key in the backend
-      //   try{
-      //     const name = global.loginAccount.name;
-      //     const address = global.loginAccount.publicAddress;
-      //     const email = global.loginAccount.phoneEmail;
-      //     const uuid = global.loginAccount.uiud;
-      //     const object = {
-      //       email: email.toLowerCase(),
-      //       phone: 'NULL',
-      //       name: name,
-      //       typeOfLogin: 'connect',
-      //       eoa: address.toLowerCase(),
-      //       scw: address.toLowerCase(),
-      //       id: uuid,
-      //       spritzApiKey: api_key
-      //     };
-      //     const json = JSON.stringify(object || {}, null, 2);
-      //     console.log('Request Being Sent:', json);
-          
-      //     const da = await fetch('https://mongo.api.xade.finance/polygon', {
-      //       method: 'POST',
-      //       body: json,
-      //       headers: {
-      //         'Content-Type': 'application/json',
-      //       },
-      //     });
-      //     console.log(da);
-      //   }catch(e){
-      //     console.log(e);
-      //   } 
-
-        if (api_key === null) {
-          setUserExists(false);
+        if(global.withAuth){
+          scwAddress = global.loginAccount.scw;
         }else{
-          client.setApiKey(api_key);
-          setApiKey(api_key);
-          setUserExists(true);        
+          scwAddress = global.connectAccount.publicAddress;
         }
-      }catch(err){
-        console.log(err);
-        setUserExists(false);
+
+        try{
+
+          await fetch(
+            `https://spritz.api.xade.finance/polygon?address=${scwAddress.toLowerCase()}`,
+            {
+              method: 'GET',
+            },
+          )
+          .then(response => {
+            if (response.status == 200) {
+              return response.text();
+            } else return '';
+          })
+          .then(async data => {
+            name = data;
+            try{
+              await AsyncStorage.setItem('spritzAPI', data);
+            }catch(e) {
+              console.log(e);
+            }
+          });
+        }catch(e){
+          console.log(e);
+        }
+        console.log('-------------------------------12');
+
+        try{
+          await AsyncStorage.setItem('spritzAPI', 'ak_OWEyNWJhNmUtMTIyZC00NzFlLTlmN2ItNjVlNTA0MjhmYjg3');
+        }catch(e) {
+          console.log(e);
+        }
+        
+        console.log('-------------------------------');
+        try{
+          const api_key = await AsyncStorage.getItem('spritzAPI');
+          console.log(api_key);
+
+          if (api_key === null) {
+            setUserExists(false);
+          }else{
+            client.setApiKey(api_key);
+            setApiKey(api_key);
+            setUserExists(true);        
+          }
+        }catch(err){
+          console.log(err);
+          setUserExists(false);
+        }
+        setLoading(false);
+      }catch(e){
+        console.log(e);
       }
-      setLoading(false);
     }
 
     init();
@@ -305,13 +345,13 @@ const Card = ({navigation}) => {
       }
       setLoading(false);
     }
-
+    console.log(userExists);
     if (userExists){
       fetchVerificationStatus()
     }
+    setLoading(false);
 
   },[userExists]);
-
 
   return ( 
     !userExists
@@ -324,6 +364,19 @@ const Card = ({navigation}) => {
               to win exclusive rewards
             </Text>
             <View style={{marginTop:'5%'}}></View>
+            {showExternalLinkModal && (
+              <ExternalLinkModal
+                uri={externalLinkUri}
+                heading={externalLinkHeading}
+                // onClose={handleCloseExternalLinkModal()}
+                onClose={() => {
+                    setExternalLinkHeading('');
+                    setExternalLinkUri('');
+                    setShowExternalLinkModal(false);
+                    // handleCloseExternalLinkModal()
+                }}
+              />
+            )}
             {
               isModalVisible &&
               <Modal animationType="slide"
@@ -347,7 +400,7 @@ const Card = ({navigation}) => {
                     }}>
                       
                       <TouchableOpacity onPress={toggleModal}>
-                          <Ionicons name="close-outline" size={32} color="#fff" />
+                        <Ionicons name="close-outline" size={32} color="#fff" />
                       </TouchableOpacity>
                   </View>
                     <View style={{
@@ -364,8 +417,72 @@ const Card = ({navigation}) => {
                               : <Text style={styles.modalButtonText}>Yes</Text>
                             }
                           </Pressable>
-                          <Pressable onPress={toggleModal} style={styles.cancelButton}>
+                          <Pressable onPress={() => {
+                            try{
+                              // open card application form here 
+                              setExternalLinkHeading('Card Application Form');
+                              setExternalLinkUri('https://tally.so/r/wbjzRE');
+                              toggleModal();
+                              setShowExternalLinkModal(true);
+                            }catch(e){
+                              console.log(e);
+                            }
+                          }} style={styles.cancelButton}>
                               <Text style={styles.modalButtonText}>No</Text>
+                          </Pressable>
+                      </View>
+                    </View>
+                </View>
+            </Modal>
+            }
+
+            {
+              isEmailModalVisible &&
+              <Modal animationType="slide"
+                hasBackdrop={true} 
+                backdropOpacity={1} 
+                isVisible={isEmailModalVisible} 
+                onBackdropPress={() => {
+                    toggleModal();
+                }}
+                style={styles.modalContainer}>
+                <View style={{
+                  flex: 1,
+                  backgroundColor: '#000',
+                  padding:20
+                }}>
+                    <View style={{
+                      flexDirection: 'row',
+                      width: '100%',
+                      justifyContent: 'flex-end'
+                    }}>
+                      
+                      <TouchableOpacity onPress={toggleEmailModal}>
+                        <Ionicons name="close-outline" size={32} color="#fff" />
+                      </TouchableOpacity>
+                  </View>
+                    <View style={{
+                      justifyContent: 'center',
+                      color: '#fff',
+                      marginTop: '20%',
+                      margin: 20
+                    }}>
+                      <Text style={styles.modalText}>Please enter your email address</Text>
+                      <View>
+                        <TextInput
+                          style={styles.input}
+                          placeholder="Enter email address here..."
+                          placeholderTextColor="#FFFFFF"
+                          defaultValue={emailInput}
+                          onChangeText={(text) => setEmailInput(text)}
+                        />  
+                      </View>
+                      <View style={styles.buttonContainer}>
+                          <Pressable onPress={createUserForConnectAccount} style={styles.confirmButton}>
+                            {loading 
+                              ? <ActivityIndicator size={30} style={styles.loader} color="#fff" />
+                              : <Text style={styles.modalButtonText}>Submit</Text>
+                            }
                           </Pressable>
                       </View>
                     </View>
@@ -393,9 +510,9 @@ const Card = ({navigation}) => {
         </View>
       : <View style={styles.container}>
           <LinearGradient colors={[ '#00D1FF', '#4E5FFF']} style={styles.cardContainer}>
-          {/* <View style={styles.cardContainer}> */}
-            <SpritzCard
-              environment={Environment.Staging}
+            {/* <View style={styles.cardContainer}> */}
+            {/* <SpritzCard
+              environment={mainnet ? Environment.Production : Environment.Staging}
               apiKey={apiKey}
               renderSecret = {virtualCardRenderSecret}
               background={false}
@@ -410,8 +527,8 @@ const Card = ({navigation}) => {
                 Snackbar.show({text: 'Copied to clipboard'})
               }}
               onDetailsLoaded={() => console.log('Card details loaded')}
-            />
-            <View
+            /> */}
+            {/* <View
               style={{
                 position:'absolute',
                 top:20,
@@ -420,13 +537,24 @@ const Card = ({navigation}) => {
               }}
             >
               <LogoSvg />
+            </View> */}
+
+            <View
+              style={{
+                position:'absolute',
+                bottom: 0,
+                left: 20,
+                zIndex:100
+              }}
+            >
+              <AvatarSvg />
             </View>
 
             <View
               style={{
                 position:'absolute',
-                top:60,
-                left: 20,
+                bottom:40,
+                right:20,
                 zIndex:10
               }}
             >
@@ -436,7 +564,7 @@ const Card = ({navigation}) => {
             <View
               style={{
                 position:'absolute',
-                bottom:20,
+                top:20,
                 right: 20,
                 zIndex:10
               }}
@@ -444,15 +572,21 @@ const Card = ({navigation}) => {
               <VisaSvg />
             </View>
           </LinearGradient>
+          
           {
             (verificationStatus != null && verificationStatus !== 'ACTIVE') && 
             <View style={styles.kycContainer}>
               <Text style={styles.verificationWarning}>Please complete verification to activate your card.</Text>
               
               <TouchableOpacity
-                onPress={() => Linking.openURL(
-                  `${verificationUrl}`,
-                )}
+                onPress={() => {
+                  setExternalLinkHeading('Spritz KYC');
+                  setExternalLinkUri(verificationUrl);
+                  setShowExternalLinkModal(true);
+
+                  // Linking.openURL(
+                  // `${verificationUrl}`,  )
+                }}
                 style={styles.verificationStartButton}>
                 <View>
                   <Text style={styles.buttonText}>Verify</Text>
@@ -470,12 +604,11 @@ const Card = ({navigation}) => {
 
           <View style={styles.cardActionContainer}>
 
-            {/* <TouchableOpacity
+            <TouchableOpacity
               onPress={() => {
                 navigation.push('ListBankAccount');
               }}>
                 <View  style={styles.cardActionItemContainer}>
-              
                   <View style={styles.cardActionButton}>
                     <Icon
                       // style={styles.tup}
@@ -526,7 +659,7 @@ const Card = ({navigation}) => {
                     type="material"
                   />
               </View>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
 
             <TouchableOpacity
               onPress={() => {
@@ -573,7 +706,7 @@ const Card = ({navigation}) => {
                     />
                   </View>
                   <View style={styles.actionTextContainer}>
-                    <Text style={styles.actionHeading}>Create payment request</Text>
+                    <Text style={styles.actionHeading}>Add Funds</Text>
                     <Text style={styles.actionDescription}>Generate a payment request</Text>
                   </View>
                   <Icon
@@ -585,6 +718,35 @@ const Card = ({navigation}) => {
                   />
               </View>
             </TouchableOpacity>
+
+            {/* <TouchableOpacity
+              onPress={() => {
+                navigation.push('WithdrawFunds');
+              }}>
+                <View  style={styles.cardActionItemContainer}>
+              
+                  <View style={styles.cardActionButton}>
+                    <Icon
+                      // style={styles.tup}
+                      name={'add'}
+                      size={30}
+                      color={'#fff'}
+                      type="clarity"
+                    />
+                  </View>
+                  <View style={styles.actionTextContainer}>
+                    <Text style={styles.actionHeading}>Withdraw Funds</Text>
+                    <Text style={styles.actionDescription}>Transfer to your bank account</Text>
+                  </View>
+                  <Icon
+                    // style={styles.tup}
+                    name={'chevron-right'}
+                    size={24}
+                    color={'#7f7f7f'}
+                    type="material"
+                  />
+              </View>
+            </TouchableOpacity> */}
 
           </View>
 
@@ -646,12 +808,12 @@ const styles = StyleSheet.create({
     fontFamily: `Sarala-Regular`,
   },
   sectionHeading : {
-    fontSize: 20,
-    fontFamily: `Sarala-Regular`,
-    fontWeight: 500,
+    fontSize: 22,
+    fontFamily: `Sarala-Bold`,
+    // fontWeight: 500,
     color: '#fff',
     textAlign: 'left',
-    marginVertical: 20,
+    marginTop: 20,
     marginHorizontal: 10,
   },
   cardActionContainer : {
@@ -685,8 +847,8 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     justifyContent: 'center',
-    fontFamily: `Sarala-Regular`,
-    fontWeight: 500,
+    fontFamily: `Sarala-Bold`,
+    fontWeight: 300,
   },
   actionDescription: {
     color: '#7f7f7f',
@@ -714,7 +876,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10
   },
   verificationStartButton: {
-    backgroundColor: '#FE2C5E',
+    backgroundColor: '#5038E1',
     flexWrap: 'wrap',
     color: '#fff',
     borderRadius: 5,
@@ -808,6 +970,15 @@ modalContainer : {
   borderRadius: 20,
   justifyContent: 'center',
   alignItems: 'center',
+},
+input: {
+  height: 50,
+  borderWidth: 1,
+  marginVertical: 10,
+  padding: 10,
+  borderColor: '#707070',
+  color: '#c0c0c0',
+  borderRadius: 10,
 },
 });
 

@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
 
   exploreContainer: {
 //    marginTop:32,
-    marginTop: '10%',
+    marginTop: '7%',
     // marginHorizontal:'5%',
     // width: '100%',
     flexDirection: 'column',
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 15,
-    paddingVertical: 15,
+    paddingVertical: 5,
     borderRadius: 6,
     // backgroundColor: '#151515',
   },
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
 
   ttext: {
     marginLeft: 15,
-    marginTop: 5,
+    marginTop: 0,
   },
 
   depWith: {

@@ -184,7 +184,7 @@ const SendEmailComponent = ({navigation}) => {
             style={{
               color: '#000',
               fontFamily: `Sarala-Bold`,
-              fontWeight:800,
+              fontWeight:300,
               fontSize: 18,
             }}>
             {submitText}
