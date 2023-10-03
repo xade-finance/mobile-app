@@ -50,12 +50,6 @@ module.exports = {
           },
         ],
         [
-          'react-native-reanimated/plugin',
-          {
-            relativeSourceLocation: true,
-          },
-        ],
-        [
           "babel-plugin-inline-import", {
             "extensions": [
               ".svg"

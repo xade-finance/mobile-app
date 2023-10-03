@@ -288,11 +288,11 @@ const Card = ({navigation}) => {
         }
         console.log('-------------------------------12');
 
-        try{
-          await AsyncStorage.setItem('spritzAPI', 'ak_OWEyNWJhNmUtMTIyZC00NzFlLTlmN2ItNjVlNTA0MjhmYjg3');
-        }catch(e) {
-          console.log(e);
-        }
+        // try{
+        //   await AsyncStorage.setItem('spritzAPI', 'ak_OWEyNWJhNmUtMTIyZC00NzFlLTlmN2ItNjVlNTA0MjhmYjg3');
+        // }catch(e) {
+        //   console.log(e);
+        // }
         
         console.log('-------------------------------');
         try{
