@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,6 +7,7 @@ import {
   Platform,
   SafeAreaView,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import {Icon} from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
@@ -14,6 +15,10 @@ import {AAVE_V3_LENDING_POOL_ADDRESS} from '@env';
 import Snackbar from 'react-native-snackbar';
 import { initSmartWallet } from '../../payments/utils';
 import { ethers } from 'ethers';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import abi from '../../../../abi/aave-v3-pool.json';
+import usdAbi from '../../../../abi/USDC';
+import { PaymasterMode } from '@biconomy/paymaster';
 
 const buttons = [
   ['1', '2', '3'],
@@ -49,6 +54,8 @@ export default function Withdraw({navigation, route}) {
   let [address, setAddress] = React.useState(1);
   let [name, setName] = React.useState('Unregistered User');
   let [gas, setGas] = React.useState('Calculating...');
+
+  const [loading, setLoading] = useState(false);
   const json = {mobileNumber: 0, emailAddress: 0, walletAddress: 0, ...params};
 
   // console.log('Address: ', address);
@@ -94,29 +101,136 @@ export default function Withdraw({navigation, route}) {
     }
   }
 
+  const withdrawFromLendingPool = async (_amount) => {
+    setLoading(true);
+
+    const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
+    const lendingPoolAddress = AAVE_V3_LENDING_POOL_ADDRESS;
+    const decimals = 6;
+    
+    const amount = ethers.utils.parseUnits(_amount, decimals);
+
+    const mainnetJSON = await AsyncStorage.getItem('mainnet');
+    const mainnet = JSON.parse(mainnetJSON);
+
+    console.log("Mainnet:", mainnet);
+
+    await initSmartWallet();
+
+    if (global.withAuth) {
+      console.log('Calculating Gas In USDC...');
+  
+      const contractGas = Number('90000');
+      const approvalGas = Number('60000');
+      const gasPrice = await web3.eth.getGasPrice();
+      const gas = (contractGas + approvalGas) * gasPrice;
+      const gasUSDC = Number(String(gas).substring(0, 5) * 1.15).toFixed(0);
+      const totalAmount = Number(amount) + Number(gasUSDC);
+  
+      console.log('Total Gas:', web3.utils.fromWei(String(gas), 'ether'));
+      console.log(
+        'Total Gas In USDC:',
+        web3.utils.fromWei(String(gasUSDC), 'mwei'),
+      );
+
+      // setGas(web3.utils.fromWei(String(gasUSDC), 'mwei').toFixed(3));
+
+      console.log('Total Amount:', totalAmount);
+  
+      const usdcAbi = new ethers.utils.Interface(usdAbi);
+      const contractAbi = new ethers.utils.Interface(abi);
+
+      let txs = [];
+  
+      console.log('Creating Transactions...');
+  
+      try {
+        const approveData = usdcAbi.encodeFunctionData('approve', [
+          lendingPoolAddress,
+          totalAmount,
+        ]);
+  
+        const approveTX = {
+          to: usdcAddress,
+          data: approveData,
+        };
+  
+        // txs.push(approveTX);
+
+        const sma = await global.smartAccount.getSmartAccountAddress()
+        console.log(sma);
+
+        const sendData = contractAbi.encodeFunctionData('withdraw', [
+          usdcAddress,
+          amount,
+          sma
+        ]);
+  
+        const sendTX = {
+          to: lendingPoolAddress,
+          data: sendData,
+        };
+
+        txs.push(sendTX);
+
+        console.log(txs);
+  
+        console.log('Created Transactions Successfully...');
+  
+        console.log('Waiting For Approval...');
+
+        const userOp = await global.smartAccount.buildUserOp(txs)
+
+        const biconomyPaymaster = await global.smartAccount.paymaster;
+
+        let paymasterServiceData = {
+            mode: PaymasterMode.SPONSORED,
+        };
+
+        const paymasterAndDataResponse = await biconomyPaymaster.getPaymasterAndData(
+            userOp,
+            paymasterServiceData
+        );
+
+        userOp.paymasterAndData = paymasterAndDataResponse.paymasterAndData;
+
+        const userOpResponse = await global.smartAccount.sendUserOp(userOp);
+        setLoading(true);
+        const transactionDetail = await userOpResponse.wait()
+
+        console.log(transactionDetail)
+        console.log(transactionDetail.success)
+        if (transactionDetail.success === "true") {
+          Snackbar.show({text: 'Transaction successful', duration: Snackbar.LENGTH_LONG});
+          setTimeout(() => {
+            navigation.goBack();
+          }, 2000);
+        }else{
+          console.log("11111111");
+          Snackbar.show({text: 'Transaction failed', duration: Snackbar.LENGTH_LONG});
+        }
+
+      } catch (e) {
+        console.error(e);
+        console.log("12333333");
+
+        Snackbar.show({text: 'Transaction failed', duration: Snackbar.LENGTH_LONG});
+      }
+    }else{
+      console.log("------");
+      console.log('handle for withConnect');
+      Snackbar.show({text: 'Unable to initiate transaction'});
+    }
+    setLoading(false);
+
+  }
+
   useEffect(() => {
     console.log('Is Auth:', global.withAuth);
-
-    // if (route.params.type == 'email') {
-    //   fetch(
-    //     `https://user.api.xade.finance/polygon?address=${route.params.walletAddress.toLowerCase()}`,
-    //     {
-    //       method: 'GET',
-    //     },
-    //   )
-    //     .then(response => {
-    //       console.log(response);
-    //       if (response.status == 200) {
-    //         return response.text();
-    //       } else return '';
-    //     })
-    //     .then(data => {
-    //       setName(data);
-    //     });
-    // }
-
     calculateGas();
   }, []);
+
+
   return (
     <SafeAreaView
       style={{
@@ -267,7 +381,7 @@ export default function Withdraw({navigation, route}) {
               fontFamily: `Sarala-Regular`,
               color: '#898989',
             }}>
-            Wallet address:{' '}
+            Pool address: {AAVE_V3_LENDING_POOL_ADDRESS}
             <Text
               style={{
                 fontSize: 15,
@@ -296,7 +410,7 @@ export default function Withdraw({navigation, route}) {
                       }}
                       key={`button-${button}`}
                       style={styles.button}>
-                      <Text style={styles.buttonText}>{button}</Text>
+                        <Text style={styles.buttonText}>{button}</Text>                       
                     </TouchableOpacity>
                   );
                 })}
@@ -306,19 +420,23 @@ export default function Withdraw({navigation, route}) {
           <TouchableOpacity
             onPress={() =>
               amount != '' && amount != '0'
-                ? navigation.push('Pending', {...json, amount})
-                : ''
+                ? withdrawFromLendingPool(amount)
+                : Snackbar.show({'text': 'Invalid amount'})
             }
             style={styles.confirmButton}>
-            <Text
-              style={{
-                color: '#000',
-                fontFamily: `Sarala-Bold`,
-                fontWeight: 300,
-                fontSize: 18,
-              }}>
-              Send money
-            </Text>
+            {
+              !loading 
+              ? <Text
+                style={{
+                  color: '#000',
+                  fontFamily: `Sarala-Bold`,
+                  fontWeight: 300,
+                  fontSize: 18,
+                }}>
+                Withdraw
+              </Text>
+              : <ActivityIndicator color={"#fff"} fontSize={14} /> 
+            }
           </TouchableOpacity>
         </View>
       </View>
@@ -328,7 +446,7 @@ export default function Withdraw({navigation, route}) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#0C0C0C',
+    backgroundColor: '#000',
     flex: 1,
     width: '85%',
     marginTop: '11%',

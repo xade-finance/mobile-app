@@ -19,17 +19,17 @@ module.exports = {
           },
         ],
         [
-          'react-native-reanimated/plugin',
-          {
-            relativeSourceLocation: true,
-          },
-        ],
-        [
           "babel-plugin-inline-import", {
             "extensions": [
               ".svg"
             ]
           }
+        ],
+        [
+          'react-native-reanimated/plugin',
+          {
+            relativeSourceLocation: true,
+          },
         ],
       ],
     },
@@ -57,6 +57,12 @@ module.exports = {
           }
         ],
         ['transform-remove-console'],
+        [
+          'react-native-reanimated/plugin',
+          {
+            relativeSourceLocation: true,
+          },
+        ],
       ],
     },
   },

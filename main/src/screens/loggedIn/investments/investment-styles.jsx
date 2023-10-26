@@ -4,13 +4,13 @@ const windowHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   black: {
-    backgroundColor: '#0C0C0C',
+    backgroundColor: '#000',
     width: '100%',
     height: '100%',
   },
 
   logo: {
-    fontFamily: 'VelaSans-ExtraBold',
+    fontFamily: 'Sarala-Bold',
     color: '#fff',
     fontSize: 25,
     marginLeft: '8%',
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
 
   navText: {
     color: '#747474',
-    fontFamily: 'VelaSans-ExtraBold',
+    fontFamily: 'Sarala-Bold',
   },
 
   navSelected: {
@@ -59,18 +59,18 @@ const styles = StyleSheet.create({
   },
 
   navText: {
-    color: '#747474',
-    fontFamily: 'VelaSans-ExtraBold',
+    color: '#787878',
+    fontFamily: 'Sarala-Bold',
   },
 
   navSelectedText: {
     color: '#fff',
-    fontFamily: 'VelaSans-ExtraBold',
+    fontFamily: 'Sarala-Bold',
   },
 
   marketText: {
     color: 'grey',
-    fontFamily: `EuclidCircularA-Regular`,
+    fontFamily: `Sarala-Regular`,
     textAlign: 'center',
     fontSize: 15,
   },
@@ -101,25 +101,25 @@ const styles = StyleSheet.create({
   subContents: {
     width: '80%',
     marginLeft: 15,
-    marginTop: 15,
+    marginTop: 1,
   },
 
   subText: {
     color: '#868686',
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `Sarala-Regular`,
     textAlign: 'left',
     fontSize: 15,
   },
 
   subBtc: {
     color: '#868686',
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `Sarala-Regular`,
     textAlign: 'left',
     fontSize: 17.5,
   },
 
   subPrice: {
-    fontFamily: `EuclidCircularA-SemiBold`,
+    fontFamily: `Sarala-Bold`,
     textAlign: 'left',
     marginTop: 4,
     fontSize: 26,
@@ -128,12 +128,12 @@ const styles = StyleSheet.create({
   },
 
   subPriceBtc: {
-    fontFamily: `EuclidCircularA-SemiBold`,
+    fontFamily: `Sarala-Bold`,
     textAlign: 'left',
-    marginTop: 4,
-    fontSize: 30,
+    marginTop: 0,
+    fontSize: 24,
     color: '#fff',
-    marginBottom: 15,
+    marginBottom: 5,
   },
 
   btcUsd: {
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
 
   leverageText: {
     color: '#FFF',
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `Sarala-Regular`,
     fontSize: 23,
   },
 
@@ -176,13 +176,13 @@ const styles = StyleSheet.create({
     marginTop: 7,
     color: '#787777',
     fontSize: 20,
-    fontFamily: 'VelaSans-Medium',
+    fontFamily: 'Sarala-Regular',
   },
 
   orderSummary: {
     textAlign: 'center',
     color: '#FFF',
-    fontFamily: 'VelaSans-ExtraBold',
+    fontFamily: 'Sarala-Bold',
     marginTop: '3%',
     fontSize: 15,
   },
@@ -213,12 +213,12 @@ const styles = StyleSheet.create({
   confirmText: {
     textAlign: 'center',
     color: '#FFF',
-    fontFamily: 'VelaSans-ExtraBold',
+    fontFamily: 'Sarala-Bold',
     fontSize: 20,
   },
 
   summary: {
-    marginTop: '15%',
+    marginTop: '5%',
     width: '90%',
     marginLeft: '5%',
     backgroundColor: '#1E1E1E',
@@ -230,20 +230,20 @@ const styles = StyleSheet.create({
     marginTop: '10%',
     marginLeft: '5%',
     color: '#FFF',
-    fontFamily: 'VelaSans-ExtraBold',
+    fontFamily: 'Sarala-Bold',
     fontSize: 20,
     marginBottom: '5%',
   },
 
   orderDescription: {
     color: '#FFF',
-    fontFamily: 'VelaSans-Medium',
+    fontFamily: 'Sarala-Regular',
     paddingLeft: '5%',
   },
 
   orderAmount: {
     color: '#787777',
-    fontFamily: 'VelaSans-Medium',
+    fontFamily: 'Sarala-Regular',
     paddingRight: '5%',
   },
 
@@ -263,25 +263,25 @@ const styles = StyleSheet.create({
 
   stockHead: {
     color: '#F0F0F0',
-    fontFamily: `EuclidCircularA-Medium`,
-    fontSize: 30,
+    fontFamily: `Sarala-Regular`,
+    fontSize: 16,
   },
 
   stockPriceContainer: {
-    marginTop: '2%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    // marginTop: '2%',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
   },
 
   stockPrice: {
     color: '#F0F0F0',
-    fontSize: 40,
-    fontFamily: `EuclidCircularA-Medium`,
+    fontSize: 32,
+    fontFamily: `Sarala-Bold`,
     marginLeft: '5%',
   },
 
   coinChart: {
-    marginTop: '10%',
+    // marginTop: '10%',
   },
 
   chartContainer: {
@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
   },
 
   goldSelected: {
-    backgroundColor: '#CC9900',
+    backgroundColor: '#232323',
     borderRadius: 50,
     paddingHorizontal: 25,
     paddingVertical: 7,
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
 
   chartText: {
     color: '#747474',
-    fontFamily: 'VelaSans-ExtraBold',
+    fontFamily: 'Sarala-Bold',
   },
 
   additionalInfo: {
@@ -323,25 +323,25 @@ const styles = StyleSheet.create({
   },
 
   marketCapInfo: {
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `Sarala-Regular`,
     color: '#999',
     fontSize: 15,
   },
 
   marketCapData: {
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `Sarala-Regular`,
     color: '#FFFFFF',
     fontSize: 23,
   },
 
   highText: {
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `Sarala-Regular`,
     color: '#2FBE6A',
     fontSize: 25,
   },
 
   lowText: {
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `Sarala-Regular`,
     color: '#E14C4C',
     fontSize: 25,
   },
@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
 
   portfolioText: {
     color: '#fff',
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `Sarala-Regular`,
     fontSize: 30,
     marginLeft: '5%',
   },
@@ -378,6 +378,27 @@ const styles = StyleSheet.create({
     height: 270,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+
+  depWith: {
+    flexDirection: 'row',
+    height: '100%',
+    width: '47%',
+    borderRadius: 6,
+  },
+
+  innerDepColored: {
+    backgroundColor: '#1D1D1D',
+  },
+
+  innerDep: {
+    width: '100%',
+    flexDirection: 'row',
+    borderRadius: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: '1%',
+    // backgroundColor: '#141414',
   },
 });
 

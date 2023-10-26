@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,6 +7,7 @@ import {
   Platform,
   SafeAreaView,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import {Icon} from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
@@ -53,6 +54,9 @@ export default function Deposit({navigation, route}) {
   let [address, setAddress] = React.useState(1);
   let [name, setName] = React.useState('Unregistered User');
   let [gas, setGas] = React.useState('Calculating...');
+
+  const [loading, setLoading] = useState(false);
+
   const json = {mobileNumber: 0, emailAddress: 0, walletAddress: 0, ...params};
 
   // console.log('Address: ', address);
@@ -65,20 +69,12 @@ export default function Deposit({navigation, route}) {
       console.log('Calculating gas');
       if (global.withAuth) {
         console.log(route.params);
-        // if (route.params.type == 'v2') {
-        //   const gasNeeded = Number('51975');
-        //   const gasFees = 1.1 * 2 * gasNeeded * gasPrice;
-        //   setGas(
-        //     Number(web3.utils.fromWei(gasFees.toString(), 'ether')).toFixed(3),
-        //   );
-        // } else {
-          const gasNeeded = Number('90000') + Number('60000');
-          const gasFees = 1.2 * gasNeeded * gasPrice;
-          console.log('Gas:', web3.utils.fromWei(gasFees.toString(), 'ether'));
-          setGas(
-            Number(web3.utils.fromWei(gasFees.toString(), 'ether')).toFixed(3),
-          );
-        // }
+        const gasNeeded = Number('90000') + Number('60000');
+        const gasFees = 1.2 * gasNeeded * gasPrice;
+        console.log('Gas:', web3.utils.fromWei(gasFees.toString(), 'ether'));
+        setGas(
+          Number(web3.utils.fromWei(gasFees.toString(), 'ether')).toFixed(3),
+        );
       } else {
         setGas('0.2');
       }
@@ -99,6 +95,8 @@ export default function Deposit({navigation, route}) {
   }
 
   const depositToLendingPool = async (_amount) => {
+    setLoading(true);
+
     const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
     const lendingPoolAddress = AAVE_V3_LENDING_POOL_ADDRESS;
     const decimals = 6;
@@ -128,7 +126,7 @@ export default function Deposit({navigation, route}) {
         web3.utils.fromWei(String(gasUSDC), 'mwei'),
       );
 
-      setGas(gasUSDC);
+      // setGas(web3.utils.fromWei(String(gasUSDC), 'mwei').toFixed(3));
 
       console.log('Total Amount:', totalAmount);
   
@@ -191,28 +189,34 @@ export default function Deposit({navigation, route}) {
         userOp.paymasterAndData = paymasterAndDataResponse.paymasterAndData;
 
         const userOpResponse = await global.smartAccount.sendUserOp(userOp);
-      
+        setLoading(true);
         const transactionDetail = await userOpResponse.wait()
 
         console.log(transactionDetail)
         console.log(transactionDetail.success)
-
-        if (transactionDetail.success === true) {
+        if (transactionDetail.success === "true") {
           Snackbar.show({text: 'Transaction successful', duration: Snackbar.LENGTH_LONG});
           setTimeout(() => {
-            navigation.navigate('savings');
+            navigation.goBack();
           }, 2000);
         }else{
+          console.log("11111111");
           Snackbar.show({text: 'Transaction failed', duration: Snackbar.LENGTH_LONG});
         }
 
       } catch (e) {
         console.error(e);
+        console.log("12333333");
+
+        Snackbar.show({text: 'Transaction failed', duration: Snackbar.LENGTH_LONG});
       }
     }else{
       console.log("------");
       console.log('handle for withConnect');
+      Snackbar.show({text: 'Unable to initiate transaction'});
     }
+    setLoading(false);
+
   }
 
   useEffect(() => {
@@ -406,7 +410,7 @@ export default function Deposit({navigation, route}) {
                 : Snackbar.show({'text': 'Invalid amount'})
             }
             style={styles.confirmButton}>
-            <Text
+            {!loading ? <Text
               style={{
                 color: '#000',
                 fontFamily: `Sarala-Bold`,
@@ -415,6 +419,8 @@ export default function Deposit({navigation, route}) {
               }}>
               Confirm
             </Text>
+            : <ActivityIndicator fontSize={14} color={"#000"} />
+          }
           </TouchableOpacity>
         </View>
       </View>
@@ -424,7 +430,7 @@ export default function Deposit({navigation, route}) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#0C0C0C',
+    backgroundColor: '#000',
     flex: 1,
     width: '85%',
     marginTop: '11%',

@@ -35,6 +35,8 @@ import { Bundler } from '@biconomy/bundler'
 import { BiconomyPaymaster, PaymasterMode } from '@biconomy/paymaster';
 import { ECDSAOwnershipValidationModule, DEFAULT_ECDSA_OWNERSHIP_MODULE } from "@biconomy/modules";
 import { initSmartWallet } from '../payments/utils';
+import { getTokenBalance } from '../../../utils/alchemy';
+import { getAccountData } from '../../../utils/aave';
 
 let web3;
 const contractAddress = '0xA3C957f5119eF3304c69dBB61d878798B3F239D9';
@@ -68,11 +70,13 @@ const Savings = ({navigation}) => {
   // web3 = this.createProvider(PROJECT_ID, CLIENT_KEY);
   if (global.withAuth) {
     authAddress = global.loginAccount.publicAddress;
+    scwAddress = global.loginAccount.scw;
     console.log('Global Account:', global.loginAccount);
     web3 = this.createProvider();
     //  console.log(web3.eth.getAccounts());
   } else {
     authAddress = global.connectAccount.publicAddress;
+    scwAddress = global.connectAccount.publicAddress;
     console.log('Global Account:', global.connectAccount);
     console.log('Global Wallet Type:', global.walletType);
     web3 = this.createConnectProvider();
@@ -80,18 +84,37 @@ const Savings = ({navigation}) => {
 
   const {getUserPoolBalance} = ethProvider({web3});
   const [balance, setBalance] = useState('0.00');
+
   useEffect(() => {
     async function allLogic() {
+
       const mainnetJSON = await AsyncStorage.getItem('mainnet');
+
+      console.log(mainnetJSON);
+      console.log("-xxxxxxx");
       const _mainnet = JSON.parse(mainnetJSON);
-      console.log('Mainnet', _mainnet);
       setMainnet(_mainnet);
+
+      try{
+        // const tokenBalances = getTokenBalance(mainnet, scwAddress, ['0x625e7708f30ca75bfd92586e17077590c60eb4cd','0xdAC17F958D2ee523a2206206994597C13D831ec7','0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174']);
+        console.log(scwAddress);
+        console.log(_mainnet);
+
+        const aaveBalance = await getAccountData(_mainnet, scwAddress);
+        console.log(aaveBalance);
+        setBalance(aaveBalance);
+
+      }catch(err){
+        console.log(err);
+      }
+
+      console.log('--------------------------------');
 
       if (_mainnet == false) {
         const balance = await getUserPoolBalance();
-        console.log(balance);
+        // console.log(balance);
 
-        setBalance(balance);
+        // setBalance(balance);
 
         fetch(
           `https://api-testnet.polygonscan.com/api?module=account&action=tokentx&contractaddress=${contractAddress}&address=${authAddress}&apikey=${POLYGON_API_KEY}`,
@@ -165,17 +188,16 @@ const Savings = ({navigation}) => {
               return;
             }
           });
+      }else{
+
+        // fetch interest rate earned
+
+        // fetch stable interest rate
       }
     }
     console.log('this is right');
     allLogic();
   }, []);
-
-
-  useEffect(() => {
-
-  },[])
-
 
   const depositToLendingPool = async (_amount="1") => {
     const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
@@ -382,7 +404,8 @@ const Savings = ({navigation}) => {
                 fontSize: 45,
                 fontFamily: 'Sarala-Regular',
               }}>
-              {balance.split('.')[0]}
+                {/* {balance} */}
+              {balance && balance.split('.')[0]}
             </Text>
             <Text
               style={{
@@ -392,7 +415,8 @@ const Savings = ({navigation}) => {
                 marginBottom: 5,
               }}>
               {'.'}
-              {balance.split('.')[1] ? balance.split('.')[1] : '00'}
+              {/* {balance} */}
+              {balance && balance.split('.')[1] ? balance.split('.')[1] : '00'}
             </Text>
           </View>
           <Text
@@ -402,7 +426,7 @@ const Savings = ({navigation}) => {
               fontFamily: 'Sarala-Bold',
               fontWeight: 300,
             }}>
-            Total amount deposited
+            Total balance
           </Text>
         </View>
 
@@ -418,8 +442,8 @@ const Savings = ({navigation}) => {
             style={styles.depWith}
             onPress={() => {
               // depositToLendingPool("1");
-              // navigation.navigate('Deposit');
-              navigation.navigate('ComingSoon')
+              navigation.navigate('Deposit');
+              // navigation.navigate('ComingSoon')
             }}>
             <LinearGradient
               colors={['#222', '#222']}
@@ -443,8 +467,8 @@ const Savings = ({navigation}) => {
           <TouchableOpacity
             style={styles.depWith}
             onPress={() => {
-              // navigation.navigate('Withdraw');
-              navigation.navigate('ComingSoon');
+              navigation.navigate('Withdraw');
+              // navigation.navigate('ComingSoon');
             }}>
             <LinearGradient
               colors={['#222', '#222']}
@@ -512,7 +536,7 @@ const Savings = ({navigation}) => {
         </View>
       </View>
 
-      <View style={styles.transactionContainer}>
+      {/* <View style={styles.transactionContainer}>
         <View style={styles.heading}>
           <Text
             style={{
@@ -523,7 +547,7 @@ const Savings = ({navigation}) => {
             }}>
             Transactions
           </Text>
-          {/* <Text style = {{color: 'grey', fontSize: 20}}>See all</Text> */}
+
         </View>
         {state.length > 0 ? (
           <View>
@@ -538,7 +562,7 @@ const Savings = ({navigation}) => {
             </Text>
           </View>
         )}
-      </View>
+      </View> */}
     </SafeAreaView>
   );
 };

@@ -17,6 +17,9 @@ import RedeemSvg from './navbar-images/cards.svg';
 import HomeSelectedNavIcon from './navbar-images/home-selected';
 import HomeNavIcon from './navbar-images/home';
 
+import InvestmentSvg from './navbar-images/investment.svg';
+import SavingSvg from './navbar-images/saving.svg';
+
 const windowHeight = Dimensions.get('window').height;
 const selectedIcon = '#ffffff';
 const icon = '#696969';
@@ -66,10 +69,10 @@ const BottomNavbar = ({navigation, selected}) => {
             <SvgUri
                 width="28"
                 height="28"
-                svgXmlData={SaveSvg}
+                svgXmlData={SavingSvg}
                 fill={selected == 'Savings' ? selectedIcon : icon}
               />
-              <Text style={selected == 'Savings' ? styles.navItemLabelSelected : styles.navItemLabel}>Save</Text>
+              <Text style={selected == 'Savings' ? styles.navItemLabelSelected : styles.navItemLabel}>Savings</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -79,10 +82,10 @@ const BottomNavbar = ({navigation, selected}) => {
             <SvgUri
                 width="28"
                 height="28"
-                svgXmlData={TradeSvg}
+                svgXmlData={InvestmentSvg}
                 fill={selected == 'Investments' ? selectedIcon : icon}
               />
-              <Text style={selected == 'Investments' ? styles.navItemLabelSelected : styles.navItemLabel}>Trade</Text>
+              <Text style={selected == 'Investments' ? styles.navItemLabelSelected : styles.navItemLabel}>Investing</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -110,7 +113,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   container: {
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    backgroundColor: 'rgba(24, 24, 24, 0.9)',
+    // backgroundColor: 'rgba(0, 0, 0, 0.8)',
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     alignItems: 'center',

@@ -75,6 +75,8 @@ import AddFund from './screens/loggedIn/card/fund/addFund';
 import CardInfo from './screens/loggedIn/card/info/cardInfo';
 import Withdraw from './screens/loggedIn/savings/withdraw/withdraw';
 import Deposit from './screens/loggedIn/savings/deposit/deposit';
+import Trade from './screens/loggedIn/investments/trade';
+import MarketInfo from './screens/loggedIn/investments/marketInfo';
 
 function PreLaunchLoad({navigation}) {
   return (
@@ -253,13 +255,18 @@ function Savings({navigation, route}) {
   );
 }
 
-function Investment({navigation}) {
+function Investment({navigation, route}) {
   return (
     <View style={styles.container}>
-      <SafeAreaView style={styles.container}>
+      {/* <SafeAreaView style={styles.container}>
         <TopBar navigation={navigation} headers={'Investments'} />
         <Investments navigation={navigation} />
-      </SafeAreaView>
+      </SafeAreaView> */}
+      <TopBar navigation={navigation} headers={'Investing'} />
+      <ScrollView style={[styles.content, {zIndex: -1}]}>
+        <Investments navigation={navigation} route={route} />
+      </ScrollView>
+      <BottomNavbar navigation={navigation} selected="Investments" />
     </View>
   );
 }
@@ -458,6 +465,30 @@ function CardInfoScreen({navigation}) {
         <CardInfo navigation={navigation} />
       </ScrollView>
       {/* <BottomNavbar navigation={navigation} selected="Card" /> */}
+    </SafeAreaView>
+  );
+}
+
+function TradeScreen({navigation}) {
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* <TopBar navigation={navigation} headers={'Bank Account'} /> */}
+      <ScrollView style={{height: '100%'}}>
+        <Trade navigation={navigation} />
+      </ScrollView>
+      <BottomNavbar navigation={navigation} selected="Investments" />
+    </SafeAreaView>
+  );
+}
+
+function MarketInfoScreen({route, navigation}) {
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* <TopBar navigation={navigation} headers={''} /> */}
+      <ScrollView style={{height: '100%'}}>
+        <MarketInfo navigation={navigation} item={route.params.item} />
+      </ScrollView>
+      <BottomNavbar navigation={navigation} selected="Investments" />
     </SafeAreaView>
   );
 }
@@ -779,6 +810,18 @@ export default function App({navigation}) {
           navigation={navigation}
           options={{headerShown: false}}
         />
+        <Stack.Screen
+          name="Trade"
+          component={TradeScreen}
+          navigation={navigation}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="MarketInfo"
+          component={MarketInfoScreen}
+          navigation={navigation}
+          options={{headerShown: false}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -866,12 +909,12 @@ const styles = StyleSheet.create({
 
   black: {
     height: windowHeight,
-    backgroundColor: '#0D0D0D',
+    backgroundColor: '#000',
   },
 
   container: {
     flex: 1,
-    backgroundColor: '#0D0D0D',
+    backgroundColor: '#000',
   },
   content: {
     // flex: 1,

@@ -47,15 +47,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import LinearGradient from 'react-native-linear-gradient';
 
-// import Animated, {
-//   Extrapolate,
-//   interpolate,
-//   useAnimatedStyle,
-//   useSharedValue,
-//   withSpring,
-//   withTiming,
-// } from "react-native-reanimated";
-
 import ChipSvg from './card/icon/ChipSvg';
 import { SvgUri } from 'react-native-svg';
 import VisaSvg from './card/icon/VisaSvg';
@@ -175,18 +166,6 @@ const Card = ({navigation}) => {
     },1000)
   }
 
-  // async function getUser() {
-  //   try{ 
-  //     await AsyncStorage.setItem('spritzAPI', 'ak_OWEyNWJhNmUtMTIyZC00NzFlLTlmN2ItNjVlNTA0MjhmYjg3' );
-  //     const api_key = await AsyncStorage.getItem('spritzAPI');
-  //     client.setApiKey('ak_OWEyNWJhNmUtMTIyZC00NzFlLTlmN2ItNjVlNTA0MjhmYjg3');
-  //     const verificationData = await client.user.getUserVerification(); 
-
-  //   }catch (err) {
-  //     console.log(err);
-  //   }
-  // }
-
   async function createVirtualCard() {
     try{
       const virtualCard = await client.virtualCard.create(VirtualCardType.USVirtualDebitCard);
@@ -220,19 +199,13 @@ const Card = ({navigation}) => {
         await AsyncStorage.setItem('spritzAPI', JSON.stringify(user.apiKey));
 
         const object = {
-          email: emailInput.toLowerCase(),
-          phone: 'NULL',
-          name: name,
-          typeOfLogin: 'connect',
-          eoa: address,
-          scw: address,
-          id: uuid,
+          address: address,
           spritzApiKey: user.apiKey
         };
         const json = JSON.stringify(object || {}, null, 2);
         console.log('Request Being Sent:', json);
         
-        await fetch('https://mongo.api.xade.finance/polygon', {
+        await fetch('https://mongo.api.xade.finance/store', {
           method: 'POST',
           body: json,
           headers: {
@@ -263,9 +236,8 @@ const Card = ({navigation}) => {
         }
 
         try{
-
           await fetch(
-            `https://spritz.api.xade.finance/polygon?address=${scwAddress.toLowerCase()}`,
+            `https://mongo.api.xade.finance/spritz?address=${scwAddress.toLowerCase()}`,
             {
               method: 'GET',
             },
@@ -278,15 +250,22 @@ const Card = ({navigation}) => {
           .then(async data => {
             name = data;
             try{
-              await AsyncStorage.setItem('spritzAPI', data);
+              if (data != 'Document not found'){
+                await AsyncStorage.setItem('spritzAPI', data);
+                client.setApiKey(data);
+                setUserExists(true); 
+              }else{
+                setUserExists(false);
+              }
             }catch(e) {
               console.log(e);
+              setUserExists(false);
             }
           });
         }catch(e){
           console.log(e);
+          setUserExists(false);
         }
-        console.log('-------------------------------12');
 
         // try{
         //   await AsyncStorage.setItem('spritzAPI', 'ak_OWEyNWJhNmUtMTIyZC00NzFlLTlmN2ItNjVlNTA0MjhmYjg3');
@@ -294,22 +273,20 @@ const Card = ({navigation}) => {
         //   console.log(e);
         // }
         
-        console.log('-------------------------------');
-        try{
-          const api_key = await AsyncStorage.getItem('spritzAPI');
-          console.log(api_key);
+        // try{
+        //   const api_key = await AsyncStorage.getItem('spritzAPI');
 
-          if (api_key === null) {
-            setUserExists(false);
-          }else{
-            client.setApiKey(api_key);
-            setApiKey(api_key);
-            setUserExists(true);        
-          }
-        }catch(err){
-          console.log(err);
-          setUserExists(false);
-        }
+        //   if (api_key === null) {
+        //     setUserExists(false);
+        //   }else{
+        //     client.setApiKey(api_key);
+        //     setApiKey(api_key);
+        //     setUserExists(true);        
+        //   }
+        // }catch(err){
+        //   console.log(err);
+        //   setUserExists(false);
+        // }
         setLoading(false);
       }catch(e){
         console.log(e);
@@ -770,7 +747,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     margin: 5,
-    borderRadius: 8
+    borderRadius: 8,
+    width: '100%',
+    height: 200
   },
   image: {
     width: 400,

@@ -178,7 +178,7 @@ const PaymentsComponent = ({navigation}) => {
                 fontWeight: 300,
                 marginTop: '1%',
               }}>
-              ${balance.split('.')[0]}
+              { balance && balance.split('.')[0] }
               <Text
                 style={{
                   color: '#fff',
@@ -188,7 +188,7 @@ const PaymentsComponent = ({navigation}) => {
                   marginTop: '1%',
                 }}>
                 {'.'}
-                {balance.split('.')[1] ? balance.split('.')[1] : '00'}
+                {balance && balance.split('.')[1] ? balance.split('.')[1] : '00'}
               </Text>
             </Text>
           </View>
@@ -240,6 +240,7 @@ const PaymentsComponent = ({navigation}) => {
                         global.withAuth
                           ? global.loginAccount.scw
                           : global.connectAccount.publicAddress,
+                        'Payments'
                       );
                 }
               }

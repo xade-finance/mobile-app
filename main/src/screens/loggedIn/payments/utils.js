@@ -23,6 +23,7 @@ import { Bundler } from '@biconomy/bundler';
 import { BiconomyPaymaster, PaymasterMode } from '@biconomy/paymaster';
 import { DEFAULT_ECDSA_OWNERSHIP_MODULE, ECDSAOwnershipValidationModule } from '@biconomy/modules';
 import { BiconomySmartAccount, DEFAULT_ENTRYPOINT_ADDRESS } from '@biconomy/account';
+import Snackbar from 'react-native-snackbar';
 
 const REMMITEX_CONTRACT = '0xf1Ff5c85df29f573003328c783b8c6f8cC326EB7';
 
@@ -201,8 +202,9 @@ export async function txHistoryLoad(eoa) {
   }
 }
 
-export const addXUSD = async (navigation, walletAddress) => {
+export const addXUSD = async (navigation, walletAddress, route3='Payments') => {
   try {
+    console.log(route3);
     const response = await fetch('https://refer.xade.finance/faucet', {
       method: 'POST',
       headers: {
@@ -212,9 +214,15 @@ export const addXUSD = async (navigation, walletAddress) => {
     });
 
     // const data = await response.json();
-    if (response.status === 200) Alert.alert('Test Money Sent');
-    else Alert.alert('Unsuccessful');
-    navigation.push('Payments');
+    // if (response.status === 200) Alert.alert('Test Money Sent');
+    // else Alert.alert('Unsuccessful');
+    if (response.status === 200){
+      Snackbar.show({'text': 'Test Money Sent'});
+    }else{
+      Snackbar.show({'text': 'Unsuccessful'});
+    }
+    console.log(route3);
+    navigation.push(route3);
     return 0;
   } catch (err) {
     console.error(err);
