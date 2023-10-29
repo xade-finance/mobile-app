@@ -69,7 +69,7 @@ const BuyCryptoPage = ({uri, onClose, widget, name, address}) => {
               <TouchableOpacity onPress={handleCloseModal}>
                 <Ionicons name="close-outline" size={24} color="#fff" />
               </TouchableOpacity>
-              <Text style={styles.title}>Buy Crypto</Text>
+              <Text style={styles.title}>Add Funds</Text>
               <TouchableOpacity>
                 <Ionicons name="refresh-outline" size={24} color="#fff" />
               </TouchableOpacity>

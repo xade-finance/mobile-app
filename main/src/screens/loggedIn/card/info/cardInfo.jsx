@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {Icon} from 'react-native-elements';
 import { BankAccountType, BankAccountSubType } from '@spritz-finance/api-client'
-import {SPRITZ_API_KEY, SPRITZ_INTEGRATION_KEY} from '@env';
+import {SPRITZ_API_KEY, SPRITZ_INTEGRATION_KEY_PROD, SPRITZ_INTEGRATION_KEY_STAGING} from '@env';
 import {
     SpritzApiClient,
     Environment,
@@ -21,17 +21,20 @@ const CardInfo = ({navigation}) => {
     const [virtualCardRenderSecret, setVirtualCardRenderSecret] = useState(null);
     const [apiKey, setApiKey] = useState(null);
     const [virtualCardInfo, setVirtualCardInfo] = useState(null);
-  
+    
+    console.log(global.mainnet);
+    console.log(SPRITZ_INTEGRATION_KEY_PROD);
+    console.log(SPRITZ_INTEGRATION_KEY_STAGING);
+    
     const client = SpritzApiClient.initialize({
-        environment: Environment.Staging,
+        environment: global.mainnet ? Environment.Production : Environment.Staging,
         // apiKey: SPRITZ_API_KEY,
-        integrationKey: SPRITZ_INTEGRATION_KEY,
+        integrationKey: global.mainnet ? SPRITZ_INTEGRATION_KEY_PROD : SPRITZ_INTEGRATION_KEY_STAGING,
     });
 
     async function init() {
         try{
           const api_key = await AsyncStorage.getItem('spritzAPI');
-          console.log(api_key);
           if (api_key === null) {
             navigation.push('Card');
           }else{
@@ -48,7 +51,6 @@ const CardInfo = ({navigation}) => {
             
             const virtualCard = await client.virtualCard.fetch();
             setVirtualCardInfo(virtualCard);
-
 
             setLoading(false);
           }
@@ -67,12 +69,13 @@ const CardInfo = ({navigation}) => {
         <View style={styles.container}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                 <View>
-                  <Icon
-                    name={'chevron-left'}
-                    size={24}
-                    color={'#fff'}
-                    type="entypo"
-                  />
+                    <Icon
+                        name={'keyboard-backspace'}
+                        size={30}
+                        color={'#f0f0f0'}
+                        type="materialicons"
+                        onPress={() => navigation.goBack()}
+                    /> 
                 </View>
             </TouchableOpacity>
             <Text style={styles.heading}>Card Details</Text>
@@ -104,7 +107,7 @@ const CardInfo = ({navigation}) => {
                         (verificationStatus === 'ACTIVE') && 
                         <View style={styles.cardDetailContainer}>
                             <LinearGradient
-                                colors={['#1D2426', '#383838']}
+                                colors={['#222', '#222']}
                                 useAngle
                                 angle={45}
                                 angleCenter={{x: 0.5, y: 0.5}} 
@@ -153,7 +156,7 @@ const CardInfo = ({navigation}) => {
                             </LinearGradient>
 
                             <LinearGradient
-                                colors={['#1D2426', '#383838']}
+                                colors={['#222', '#222']}
                                 useAngle
                                 angle={45}
                                 angleCenter={{x: 0.5, y: 0.5}} 
@@ -190,7 +193,7 @@ const CardInfo = ({navigation}) => {
                             </LinearGradient>
 
                             <LinearGradient
-                                colors={['#1D2426', '#383838']}
+                                colors={['#222', '#222']}
                                 useAngle
                                 angle={45}
                                 angleCenter={{x: 0.5, y: 0.5}} 
@@ -288,14 +291,14 @@ const styles = StyleSheet.create({
         left: 10,
         color: 'fff',
         borderRadius: 50,
-        backgroundColor: '#FE2C5E',
+        // backgroundColor: '#FE2C5E',
         padding:5,
     },
     heading: {
         fontSize: 20,
         marginBottom: 20,
         color: '#ffffff',
-        fontFamily: `EuclidCircularA-Medium`,
+        fontFamily: `Sarala-Regular`,
         fontWeight: 500,
         marginLeft: 50
     },
@@ -308,7 +311,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
       },
       verificationStartButton: {
-        backgroundColor: '#FE2C5E',
+        backgroundColor: '#5038E1',
         flexWrap: 'wrap',
         color: '#fff',
         borderRadius: 5,
@@ -323,13 +326,13 @@ const styles = StyleSheet.create({
         width: '70%',
         fontSize: 16, 
         fontWeight: 400,
-        fontFamily: `EuclidCircularA-Medium`,
+        fontFamily: `Sarala-Regular`,
       },
       verificationButtonText: {
         color: '#fff', 
         fontSize: 14,
         width: '30%',
-        fontFamily: `EuclidCircularA-Medium`,
+        fontFamily: `Sarala-Regular`,
       },
 
       cardDetailRow :{
@@ -339,14 +342,14 @@ const styles = StyleSheet.create({
       },
       cardDetailLabel : {
         fontSize: 13,
-        fontFamily : 'EuclidCircularA-Medium',
+        fontFamily : 'Sarala-Regular',
         fontWeight: 500,
         color: '#8f8f8f',
         width: '100%'
       },
       cardDetailValue : {
         fontSize: 16,
-        fontFamily : 'EuclidCircularA-Medium',
+        fontFamily : 'Sarala-Regular',
         fontWeight: 500,
         color: '#fff',
         width: '100%',
@@ -381,10 +384,9 @@ const styles = StyleSheet.create({
         left: 0,
         position: 'absolute',
         top: 0,
-        backgroundColor: 'green',         
+        backgroundColor: '#5038E1',         
         elevation: 100,
         zIndex: 100,
-        backgroundColor: 'green',
         padding: 8,
         borderRadius: 5,       
       },
@@ -392,7 +394,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: 400,
         color: '#fff',
-        fontFamily: `EuclidCircularA-Medium`,
+        fontFamily: `Sarala-Regular`,
       }
 });
 

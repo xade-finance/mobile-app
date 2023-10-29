@@ -37,7 +37,7 @@ import {
   BICONOMY_API_KEY_MUMBAI,
   SECRET_KEY_REMMITEX,
 } from '@env';
-import {paymentsLoad, addXUSD, txHistoryLoad} from './utils';
+import {paymentsLoad, addXUSD, txHistoryLoad, initSmartWallet} from './utils';
 const Web3 = require('web3');
 
 import {IPaymaster, ChainId} from '@biconomy/core-types';
@@ -60,6 +60,8 @@ const windowHeight = Dimensions.get('window').height;
 import {POLYGON_API_KEY} from '@env';
 import {registerFcmToken} from '../../../utils/push';
 import TransactionReceipt from '../transactions/transactionReceipt';
+import Snackbar from 'react-native-snackbar';
+import ExternalLinkModal from '../externalLink/widget';
 const contractAddress = '0xA3C957f5119eF3304c69dBB61d878798B3F239D9';
 const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
 
@@ -95,11 +97,11 @@ const PaymentsComponent = ({navigation}) => {
 
     const {tokenBalance, mainnet} = await paymentsLoad(web3, address);
 
-    if (Number(tokenBalance) > 1000) {
-      setBalance(Number(tokenBalance / 1000).toFixed(3) + ' K');
-    } else {
+    // if (Number(tokenBalance) > 1000) {
+    //   setBalance(Number(tokenBalance / 1000).toFixed(3) + ' K');
+    // } else {
       setBalance(tokenBalance);
-    }
+    // }
 
     setMainnet(mainnet);
 
@@ -115,42 +117,11 @@ const PaymentsComponent = ({navigation}) => {
 
     if (global.withAuth) {
       if (!global.smartAccount) {
-        let options = {
-          activeNetworkId: mainnet
-            ? ChainId.POLYGON_MAINNET
-            : ChainId.POLYGON_MUMBAI,
-          supportedNetworksIds: [
-            ChainId.POLYGON_MAINNET,
-            ChainId.POLYGON_MUMBAI,
-          ],
-
-          networkConfig: [
-            {
-              chainId: ChainId.POLYGON_MAINNET,
-              dappAPIKey: BICONOMY_API_KEY,
-            },
-            {
-              chainId: ChainId.POLYGON_MUMBAI,
-              dappAPIKey: BICONOMY_API_KEY_MUMBAI,
-            },
-          ],
-        };
-
-        const particleProvider = this.getOnlyProvider();
-        const provider = new ethers.providers.Web3Provider(
-          particleProvider,
-          'any',
-        );
-
-        let smartAccount = new SmartAccount(provider, options);
-        smartAccount = await smartAccount.init();
-        global.smartAccount = smartAccount;
+        await initSmartWallet();
       }
     }
   }
 
-
-  
   const [showTxnReceiptModal, setShowTxnReceiptModal] = useState(false);
   const [transactionData, setTransactionData] = useState();
 
@@ -165,102 +136,65 @@ const PaymentsComponent = ({navigation}) => {
   }, []);
 
 
+
   const t = true;
   return (
     <SafeAreaView
       style={{
         width: '100%',
         height: '100%',
-        alignSelf: 'flex-start',
-        backgroundColor: '#000'
+        alignSelf: 'flex-start'
       }}>
-      
-      {/* <View style={styles.remmitexContainer}>
-        <View style={styles.balanceContainer}>
-          <Text
-            style={{
-              color: '#757575',
-              fontFamily: 'Sarala-Regular',
-              fontSize: 16,
-              fontWeight: 400,
-            }}>
-            Your total balance
-          </Text>
-          <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
-            <Text
-              style={{
-                color: '#fff',
-                fontFamily: 'Sarala-Regular',
-                fontSize: 32,
-                fontWeight: 700,
-                marginTop: '1%',
-              }}>
-              ${balance.split('.')[0]}
-              <Text
-                style={{
-                  color: '#fff',
-                  fontFamily: 'Sarala-Regular',
-                  fontSize: 32,
-                  fontWeight: 700,
-                  marginTop: '1%',
-                }}>
-                {'.'}
-                {balance.split('.')[1] ? balance.split('.')[1] : '00'}
-              </Text>
-            </Text>
-          </View>
-          
-        </View>
-      </View> */}
+    
       <View style={{
-        marginHorizontal:30,
-        marginTop: 20
+        marginHorizontal:20,
+        marginTop: 16
       }}>
         <Text
           style={{
             fontFamily: 'Sarala-Bold',
             fontSize: 20,
             color: "#fff",
-            fontWeight: 700,
+            fontWeight: 300,
           }}
         >Accounts</Text>
       </View>
       <View style={styles.balanceContainer}>
         <View>
           <Text style={{
-            fontSize:16,
+            fontSize:15,
             fontWeight:400,
             fontFamily: 'Sarala-Regular',
             color: '#a1a1a1',
           }}>
-            Commodities
+            Checkings
           </Text>
           <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
             <Text
               style={{
                 color: '#fff',
-                fontFamily: 'Sarala-Regular',
+                fontFamily: 'Sarala-Bold',
                 fontSize: 24,
-                fontWeight: 700,
+                fontWeight: 300,
                 marginTop: '1%',
               }}>
-              ${balance.split('.')[0]}
+              { balance && balance.split('.')[0] }
               <Text
                 style={{
                   color: '#fff',
-                  fontFamily: 'Sarala-Regular',
+                  fontFamily: 'Sarala-Bold',
                   fontSize: 24,
-                  fontWeight: 700,
+                  fontWeight: 300,
                   marginTop: '1%',
                 }}>
                 {'.'}
-                {balance.split('.')[1] ? balance.split('.')[1] : '00'}
+                {balance && balance.split('.')[1] ? balance.split('.')[1] : '00'}
               </Text>
             </Text>
           </View>
         </View>
 
-        <View style={{
+        {/* <View style={{
           borderRadius: 50,
           backgroundColor: '#5038E1',
           height: 50,
@@ -268,28 +202,29 @@ const PaymentsComponent = ({navigation}) => {
           justifyContent: 'center',
           alignItems: 'center',
           // padding:10
-        }}>
+        }}> */}
           <FastImage
             source={require('./icon/commodities.png')}
             // resizeMode="cover"
             style={{
-              width: 40,
-              height: 40,
+              width: 52,
+              height: 52,
               // borderRadius: 10, 
               // margin: 5
             }}
           />
-        </View>
+        {/* </View> */}
       </View>
 
-        <View
+      <View
           style={{
             flexDirection: 'row',
             // width: '80%',
             height: 50,
             justifyContent: 'space-evenly',
             flexDirection: 'row',
-            marginTop: '2%'
+            marginTop: '1%',
+            marginHorizontal:10
           }}>
 
             
@@ -305,6 +240,7 @@ const PaymentsComponent = ({navigation}) => {
                         global.withAuth
                           ? global.loginAccount.scw
                           : global.connectAccount.publicAddress,
+                        'Payments'
                       );
                 }
               }
@@ -316,11 +252,11 @@ const PaymentsComponent = ({navigation}) => {
                     // style={styles.tup}
                     name={'arrow-down-circle'}
                     color={'#fff'}
-                    size={18}
+                    size={24}
                     // color={t?'green': 'red'}
                     type="feather"
                   />
-              <Text style={{color: '#fff', fontSize: 14, fontFamily: 'Sarala-Regular', fontWeight: 700}}>
+              <Text style={{color: '#fff', fontSize: 14, paddingLeft:'5%', fontFamily: 'Sarala-Bold', fontWeight: 300}}>
                 Add cash
               </Text>
             </View>
@@ -335,184 +271,18 @@ const PaymentsComponent = ({navigation}) => {
               <Icon
                 // style={styles.tup}
                 name={'arrow-right-circle'}
-                size={18}
+                size={24}
                 color={'#fff'}
                 type="feather"
               />
-              <Text style={{color: '#fff', fontSize: 14, fontFamily: 'Sarala-Regular', fontWeight: 700}}>
+              <Text style={{color: '#fff', fontSize: 14,paddingLeft:'5%', fontFamily: 'Sarala-Bold', fontWeight: 300}}>
                 Transfer
               </Text>
             </View>
           </TouchableOpacity>
 
-        </View>
-
-      {/* <View style={styles.remmitexContainer}>
-        <View style={styles.balanceContainer}>
-          
-          <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
-            <Text
-              style={{
-                color: '#fff',
-                fontFamily: 'Sarala-Regular',
-                fontSize: 40,
-                marginTop: '1%',
-              }}>
-              ${balance.split('.')[0]}
-              <Text
-                style={{
-                  color: '#fff',
-                  fontFamily: 'Sarala-Regular',
-                  fontSize: 37,
-                  marginTop: '1%',
-                }}>
-                {'.'}
-                {balance.split('.')[1] ? balance.split('.')[1] : '00'}
-              </Text>
-            </Text>
-          </View>
-          <Text
-            style={{
-              color: 'grey',
-              fontFamily: 'Sarala-Regular',
-              fontSize: 18,
-            }}>
-            Total Balance in USD
-          </Text>
-        </View>
-        <View style={styles.sendRequest}>
-          <TouchableOpacity
-            style={styles.sendButton}
-            onPress={() => {
-              navigation.push('SendEmail');
-            }}>
-            <Text
-              style={{
-                color: '#0B84FE',
-                fontFamily: 'Sarala-Regular',
-                fontSize: 17,
-              }}>
-              Send
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.depositButton}
-            onPress={() => {
-              {
-                {
-                  global.mainnet
-                    ? navigation.push('FiatRamps')
-                    : addXUSD(
-                        navigation,
-                        global.withAuth
-                          ? global.loginAccount.scw
-                          : global.connectAccount.publicAddress,
-                      );
-                }
-              }
-            }}>
-            <Text
-              style={{
-                color: '#0B84FE',
-                fontFamily: 'Sarala-Regular',
-                fontSize: 17,
-              }}>
-              Deposit
-            </Text>
-          </TouchableOpacity>
-        </View>
       </View>
-      <View style={styles.exploreContainer}>
-        <BreakdownCarousel
-          breakdowns={breakdowns}
-          navigation={navigation}
-          key={breakdowns}
-        />
-      </View>
- 
 
-      <View style={styles.paymentActionContainer}>
-        <TouchableOpacity
-          style={[styles.paymentActionButton, styles.transferButton]}
-          onPress={() => {
-            navigation.push('SendEmail');
-          }}>
-          <View>
-            <FastImage
-              source={require('../../../../assets/transfer.png')}
-              resizeMode="cover"
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 10, 
-                margin: 5
-              }}
-            />
-            <Text style={{
-              color: '#FF6766',
-              fontFamily: 'Sarala-Regular',
-              fontSize: 14,
-            }}>Transfer</Text>
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={[styles.paymentActionButton, styles.depositButton]}
-          onPress={() => {
-            {
-              {
-                global.mainnet
-                  ? navigation.push('FiatRamps')
-                  : addXUSD(
-                      navigation,
-                      global.withAuth
-                        ? global.loginAccount.scw
-                        : global.connectAccount.publicAddress,
-                    );
-              }
-            }
-          }}>
-          <View>
-            <FastImage
-              source={ require('../../../../assets/request.png')}
-              resizeMode="cover"
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 10, 
-                margin:5
-              }}
-            />
-            <Text style={{
-              color: '#66FF88',
-              fontFamily: 'Sarala-Regular',
-              fontSize: 14,
-            }}>Request</Text>
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={[styles.paymentActionButton, styles.scanQRButton]}
-        >
-          <View>
-            <FastImage
-              source={require('../../../../assets/qr.png')}
-              resizeMode="cover"
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 10, 
-                margin:5
-              }}
-            />
-            <Text style={{
-              color: '#FC66FF',
-              fontFamily: 'Sarala-Regular',
-              fontSize: 14,
-            }}>Scan QR</Text>
-          </View>
-        </TouchableOpacity>
-      </View> */}
       <View style={styles.exploreContainer}>
         <EventsCarousel
           images={images}
@@ -525,6 +295,7 @@ const PaymentsComponent = ({navigation}) => {
           key={images}
         />
       </View>
+
       <View style={styles.transactionContainer}>
 
         {showTxnReceiptModal && (
@@ -537,30 +308,23 @@ const PaymentsComponent = ({navigation}) => {
           <Text
             style={{
               color: 'white',
-              fontSize: 22,
+              fontSize: 20,
               fontFamily: 'Sarala-Bold',
-              fontWeight: 700,
-              paddingLeft: '4%',
+              fontWeight: 300,
+              marginLeft: '4%',
             }}>
             Transactions 
-            {/* 💰 */}
           </Text>
           <TouchableOpacity
             onPress={() => {
               navigation.push('TransactionHistory');
-              // Linking.openURL(
-              //   `https://${mainnet ? '' : 'mumbai.'}polygonscan.com/address/${
-              //     global.withAuth
-              //       ? global.loginAccount.scw
-              //       : global.connectAccount.publicAddress
-              //   }`,
-              // );
             }}>
             <Text
               style={{
-                color: '#A38CFF',
-                fontFamily: 'Sarala-Regular',
-                fontSize: 17,
+                color: '#bababa',
+                fontFamily: 'Sarala-Bold',
+                fontWeight: 300,
+                fontSize: 14,
                 marginRight: '5%',
                 paddingTop: 3,
               }}>
@@ -569,44 +333,20 @@ const PaymentsComponent = ({navigation}) => {
           </TouchableOpacity>
         </View>
         {state.length > 0 ? (
-          <Text
-            style={{
-              fontFamily: 'Sarala-Regular',
-              color: '#6f6f6f',
-              fontSize: 17,
-              marginLeft: '5%',
-              marginTop: '2%',
-            }}>
-            {String(state[0].month)}
-          </Text>
-        ) : (
-          ''
-        )}
-        {state.length > 0 ? (
-          state.slice(0, 10).map(json => {
+          state.slice(0, 2).map(json => {
             return (
               <TouchableOpacity
                 keyboardShouldPersistTaps={true}
-                // onPress={() => {
-                //   navigation.push('ViewTransaction', {json: json});
-                // }}
                 onPress={() => {
                   setTransactionData(json);
                   setShowTxnReceiptModal(true);
-
-                  
-                  // Linking.openURL(
-                  //   `https://${mainnet ? '' : 'mumbai.'}polygonscan.com/tx/${
-                  //     json.hash
-                  //   }`,
-                  // );
                 }}
                 style={styles.transactions}
                 key={state.indexOf(json)}>
                 <View style={styles.transactionLeft}>
                   <View style={{
                     borderRadius: 50,
-                    backgroundColor: '#A38CFF',
+                    backgroundColor: '#333333',
                     width: 40, height: 40,
                     justifyContent: 'center',
                     alignItems: 'center',
@@ -627,14 +367,15 @@ const PaymentsComponent = ({navigation}) => {
                       key={json.hash}
                       onPress={() => {
                         Clipboard.setString(json.truth ? json.from : json.to);
-                        Alert.alert('Copied Address To Clipboard');
+                        Snackbar.show({text: 'Copied address to clipboard'});
+                        // Alert.alert('Copied Address To Clipboard');
                       }}>
                       <Text
                         style={{
                           color: '#e9e9e9',
-                          fontFamily: `Sarala-Regular`,
+                          fontFamily: `Sarala-Bold`,
                           fontSize: 16,
-                          fontWeight: 700,
+                          fontWeight: 300,
                         }}>
                         {(json.truth
                           ? json.from ==
@@ -651,8 +392,8 @@ const PaymentsComponent = ({navigation}) => {
 
                     <Text
                       style={{
-                        color: '#7f7f7f',
-                        fontSize: 16,
+                        color: '#a1a1a1',
+                        fontSize: 14,
                         fontWeight: 400,
                         fontFamily: `Sarala-Regular`,
                       }}>
@@ -664,21 +405,17 @@ const PaymentsComponent = ({navigation}) => {
                 <View style={styles.transactionRight}>
                   <Text
                     style={{
-                      color: json.truth ? '#A38CFF' : '#fff',
-                      fontSize: 17,
-                      fontWeight:700,
-                      fontFamily: `Sarala-Regular`,
+                      color: json.truth ? '#fff' : '#fff',
+                      fontSize: 16,
+                      fontWeight:300,
+                      fontFamily: `Sarala-Bold`,
+                      alignItems:'flex-end',
+                      alignSelf:'flex-end',
+                      textAlign: 'right'
                     }}>
                     {json.truth != 0 && json.truth != 2 ? '+' : '-'}$
                     {json.value.toFixed(3)}
                   </Text>
-                  {/* <Icon
-                    // style={styles.tup}
-                    name={'chevron-small-right'}
-                    size={30}
-                    color={'#7f7f7f'}
-                    type="entypo"
-                  /> */}
                 </View>
               </TouchableOpacity>
             );
@@ -686,7 +423,7 @@ const PaymentsComponent = ({navigation}) => {
         ) : (
           <View>
             <Text style={styles.noTransaction}>
-              Your Transactions Appear Here
+              No transaction found
             </Text>
           </View>
         )}

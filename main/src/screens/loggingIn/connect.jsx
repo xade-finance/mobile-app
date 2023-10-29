@@ -24,57 +24,100 @@ walletconnect = WalletType.WalletConnect;
 
 const ChooseConnect = ({navigation}) => {
   return (
-    <ImageBackground source={bg}>
-      <SafeAreaView>
-        <ScrollView>
-          <View style={styles.container}>
-            <View style={styles.topbar}>
-              <Text style={styles.logo}>XADE</Text>
-            </View>
-            <View style={styles.mainContent}>
-              <Text style={styles.mainText}>Choose Wallet Provider:</Text>
-              <View style={styles.buttonContent}>
-                <TouchableOpacity
-                  style={styles.button}
+    <SafeAreaView>
+      <ScrollView>
+        <View style={styles.container}>
+          <View style={styles.topbar}>
+            <TouchableOpacity
+              style={{marginTop: '1%'}}
+              onPress={() => setNetworksVisible(!networksVisible)}>
+              <Icon
+                name={'keyboard-backspace'}
+                size={30}
+                color={'#f0f0f0'}
+                type="materialicons"
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.mainContent}>
+            <Text style={styles.mainText}>Connect</Text>
+            <Text style={styles.subText}>Connect your existing wallet to the Xade mobile app.</Text>
+            <View style={styles.buttonContent}>
+
+              <TouchableOpacity
                   onPress={() =>
                     this.onClickConnect({navigation, walletype: metamask})
-                  }>
-                  <Text style={styles.buttonText}>Connect With MetaMask</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.buttonAlt}
-                  onPress={() =>
-                    this.onClickConnect({navigation, walletype: alpha})
-                  }>
-                  <Text style={styles.buttonTextAlt}>Connect With Alpha</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={() =>
-                    this.onClickConnect({navigation, walletype: trust})
-                  }>
-                  <Text style={styles.buttonText}>Connect With Trust</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.buttonAlt}
-                  onPress={() =>
-                    this.onClickConnect({navigation, walletype: rainbow})
-                  }>
-                  <Text style={styles.buttonTextAlt}>Connect With Rainbow</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={() =>
-                    this.onClickConnect({navigation, walletype: walletconnect})
-                  }>
-                  <Text style={styles.buttonText}>Others</Text>
-                </TouchableOpacity>
-              </View>
+                  }
+                  style={[
+                    styles.optionContainer,
+                    // global.mainnet ? modalStyles.selected : '',
+                    {marginTop: '4%'},
+                  ]}>
+                    <View style={styles.insideText}>
+                      <View style={{flexDirection: 'row'}}>
+                        <Text style={styles.optionText}>Metamask</Text>
+                        {/* <Text style={styles.optionText}>Available</Text> */}
+                      </View>
+                      <View><Text style={[styles.optionText2]}>Available</Text></View>
+                    </View>                    
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.optionContainer}
+                onPress={() =>
+                  this.onClickConnect({navigation, walletype: alpha})
+                }>
+                <View style={styles.insideText}>
+                  <View style={{flexDirection: 'row'}}>
+                    <Text style={styles.optionText}>Alpha Wallet</Text>
+                    {/* <Text style={styles.optionText}>Available</Text> */}
+                  </View>
+                  <View><Text style={[styles.optionText2]}>Available</Text></View>
+                </View>  
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.optionContainer}
+                onPress={() =>
+                  this.onClickConnect({navigation, walletype: trust})
+                }>
+                <View style={styles.insideText}>
+                  <View style={{flexDirection: 'row'}}>
+                    <Text style={styles.optionText}>Trust Wallet</Text>
+                    {/* <Text style={styles.optionText}>Available</Text> */}
+                  </View>
+                  <View><Text style={[styles.optionText2]}>Available</Text></View>
+                </View>  
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.optionContainer}
+                onPress={() =>
+                  this.onClickConnect({navigation, walletype: rainbow})
+                }>
+                <View style={styles.insideText}>
+                  <View style={{flexDirection: 'row'}}>
+                    <Text style={styles.optionText}>Rainbow Wallet</Text>
+                    {/* <Text style={styles.optionText}>Available</Text> */}
+                  </View>
+                  <View><Text style={[styles.optionText2]}>Available</Text></View>
+                </View>  
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.optionContainer}
+                onPress={() =>
+                  this.onClickConnect({navigation, walletype: walletconnect})
+                }>
+                <View style={styles.insideText}>
+                  <View style={{flexDirection: 'row'}}>
+                    <Text style={styles.optionText}>Other Wallets</Text>
+                    {/* <Text style={styles.optionText}>Available</Text> */}
+                  </View>
+                  <View><Text style={[styles.optionText2]}>Available</Text></View>
+                </View>  
+              </TouchableOpacity>
             </View>
           </View>
-        </ScrollView>
-      </SafeAreaView>
-    </ImageBackground>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -89,12 +132,24 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: windowHeight,
+    backgroundColor: '#0D0D0D',
   },
 
   topbar: {
     width: '100%',
     backgroundColor: 'transparent',
+    justifyContent: 'flex-start',
+    flexDirection:'row',
+    marginHorizontal: 20,
+    marginVertical: 10
   },
+
+  subText: {
+    fontSize: 18,
+    fontFamily: 'Sarala-Regular',
+    color: '#707070',
+    width: '80%'
+  },  
 
   logo: {
     fontFamily: 'LemonMilk-Regular',
@@ -107,20 +162,24 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'transparent',
     marginTop: '10%',
+    flexDirection : 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    marginHorizontal: 20
   },
 
   mainText: {
     color: '#fff',
-    fontFamily: 'VelaSans-ExtraBold',
-    fontSize: 25,
+    fontFamily: 'Sarala-Bold',
+    fontSize: 32,
     width: '100%',
-    textAlign: 'center',
+    // textAlign: 'left',
   },
 
   buttonContent: {
-    width: '100%',
+    width: '90%',
     backgroundColor: 'transparent',
-    marginTop: '20%',
+    marginTop: '10%',
   },
 
   button: {
@@ -162,6 +221,48 @@ const styles = StyleSheet.create({
   buttonIcon: {
     marginLeft: '80%',
   },
+
+  optionContainer: {
+    width: '99%',
+    // aspectRatio: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginBottom: 10,
+    borderColor: '#292929', // dark option background color
+    borderWidth: 1,
+    padding: 16,
+    paddingLeft: 12,
+    paddingRight: 12,
+    // height: 50,
+    // textAlign: 'center',
+    borderRadius: 5,
+    // paddingTop:
+    justifyContent: 'space-between',
+  },
+  optionText: {
+    marginLeft: 10,
+    fontSize: 20,
+    fontFamily: `Sarala-Regular`,
+    color: '#fff', // white text color
+  },
+
+  optionText2 :{
+    marginLeft: 10,
+    fontSize: 16,
+    fontFamily: `Sarala-Regular`,
+    color: '#81C849', // white text color
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+  },
+
+  insideText: {
+    color: 'white',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '99%',
+  },
+
 });
 
 export default ChooseConnect;

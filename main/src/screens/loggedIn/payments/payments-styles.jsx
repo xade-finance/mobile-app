@@ -21,11 +21,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // paddingBottom:'2%',
     backgroundColor: '#131313',
-    marginHorizontal:25,
+    marginHorizontal:15,
     marginVertical: 5,
-    borderRadius: 10,
-    padding:20,
-    // paddingHorizontal: 20,
+    borderRadius: 6,
+    paddingVertical:10,
+    paddingHorizontal: 20,
     justifyContent: 'space-between',
     flexDirection: 'row'
   },
@@ -53,17 +53,22 @@ const styles = StyleSheet.create({
   },
 
   exploreContainer: {
-    // marginTop: '5%',
-    width: '100%',
+//    marginTop:32,
+    marginTop: '7%',
+    // marginHorizontal:'5%',
+    // width: '100%',
     flexDirection: 'column',
   },
 
   transactionContainer: {
-    marginTop: '5%',
-    width: '100%',
+    marginTop: '7%',
+    // width: '100%',
+    marginHorizontal:15,
     flexDirection: 'column',
-    paddingBottom: 200,
-    borderRadius: 20,
+    paddingBottom: 10,
+    paddingTop:10,
+    borderRadius: 6,
+    backgroundColor:'#131313'
   },
 
   txHeading: {
@@ -72,27 +77,31 @@ const styles = StyleSheet.create({
   },
 
   transactions: {
-    width: '92%',
-    marginHorizontal: '4%',
+    width: '100%',
+    // marginHorizontal: '4%',
     marginVertical: '2%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 15,
-    paddingVertical: 17,
+    paddingVertical: 5,
     borderRadius: 6,
-    backgroundColor: '#151515',
+    // backgroundColor: '#151515',
   },
 
   transactionLeft: {
     flexDirection: 'row',
+    alignItems:'center'
   },
 
   transactionRight: {
     flexDirection: 'row',
     alignItems: 'center',
     width: '30%',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
+    textAlign: 'center',
+    alignContent: 'flex-end',
+    // alignSelf : 'right',
   },
 
   tup: {
@@ -103,13 +112,13 @@ const styles = StyleSheet.create({
 
   ttext: {
     marginLeft: 15,
-    marginTop: 5,
+    marginTop: 0,
   },
 
   depWith: {
     flexDirection: 'row',
     height: '100%',
-    width: '40%',
+    width: '47%',
     borderRadius: 6,
   },
 
@@ -122,7 +131,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderRadius: 6,
     alignItems: 'center',
-    justifyContent: 'space-evenly',
+    justifyContent: 'center',
     paddingHorizontal: '1%',
     backgroundColor: '#141414',
   },
@@ -131,14 +140,16 @@ const styles = StyleSheet.create({
     color: '#d9d9d9',
     marginTop: '7%',
     textAlign: 'center',
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: 'Sarala-Regular',
+    // fontFamily: `EuclidCircularA-Medium`,
     fontSize: 17,
   },
 
   dates: {
     color: '#6D797D',
     fontSize: 17,
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: 'Sarala-Regular',
+    // fontFamily: `EuclidCircularA-Medium`,
     marginLeft: '5%',
   },
 

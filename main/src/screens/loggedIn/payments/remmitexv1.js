@@ -1,4 +1,5 @@
 import createProvider from '../../../particle-auth';
+import getOnlyProvider from '../../../particle-auth';
 import createConnectProvider from '../../../particle-connect';
 import usdAbi from './USDC';
 import XUSDAbi from './XUSD';
@@ -14,6 +15,7 @@ import BigNumber from 'bignumber.js';
 import * as particleAuth from 'react-native-particle-auth';
 
 import abi from './remmitex';
+import { PaymasterMode } from '@biconomy/paymaster';
 
 const Web3 = require('web3');
 let web3;
@@ -26,6 +28,7 @@ export async function transferUSDC(
   setStatus,
   isAuth,
 ) {
+  console.log("----------------------------------------------------------------");
   const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
   const v1Address = '0xc9DD6D26430e84CDF57eb10C3971e421B17a4B65';
 
@@ -38,6 +41,7 @@ export async function transferUSDC(
     setStatus('Calculating Gas In USDC...');
 
     web3 = this.createProvider();
+    provider = this.getOnlyProvider();
 
     const contractGas = Number('90000');
     const approvalGas = Number('60000');
@@ -61,6 +65,19 @@ export async function transferUSDC(
     setStatus('Creating Transactions...');
 
     try {
+
+      const contract = new ethers.Contract(
+        v1Address,
+        usdAbi,
+        provider,
+      )
+      try {
+        const minTx = await contract.populateTransaction.approve(address);
+        console.log(minTx.data);
+      }catch(e){
+        console.log(e);
+      }
+
       const approveData = usdcAbi.encodeFunctionData('approve', [
         v1Address,
         totalAmount,
@@ -90,13 +107,57 @@ export async function transferUSDC(
 
       setStatus('Waiting For Approval...');
 
-      const txResponse = await smartAccount.sendTransactionBatch({
-        transactions: txs,
-      });
+      try {
+        const userOp = await global.smartAccount.buildUserOp([approveTX, sendTX]);
+
+        const biconomyPaymaster = await global.smartAccount.paymaster;
+
+        console.log(biconomyPaymaster);
+
+        let paymasterServiceData = {
+            mode: PaymasterMode.SPONSORED,
+            // smartAccountInfo: {
+            //   name: 'BICONOMY',
+            //   version: '2.0.0'
+            // },
+        };
+
+        console.log(paymasterServiceData);
+
+        const paymasterAndDataResponse = await biconomyPaymaster.getPaymasterAndData(
+            userOp,
+            paymasterServiceData
+        );
+
+        console.log(paymasterAndDataResponse);
+            
+        userOp.paymasterAndData = paymasterAndDataResponse.paymasterAndData;
+
+        console.log(userOp);
+      
+        const userOpResponse = await global.smartAccount.sendUserOp(userOp);
+
+        console.log(userOpResponse);
+      
+        const transactionDetail = await userOpResponse.wait()
+      
+        console.log("transaction detail below")
+        console.log(transactionDetail)
+
+        // return true;
+      } catch (err) {
+          console.log(err);
+          // return false;
+      } 
+
+
+      // const txResponse = await smartAccount.sendTransactionBatch({
+      //   transactions: txs,
+      // });
 
       setStatus('Approved!');
 
-      console.log(txResponse);
+      // console.log(txResponse);
 
       return {
         status: true,

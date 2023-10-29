@@ -3,8 +3,9 @@ import { Dimensions, SafeAreaView, StyleSheet, Linking, TouchableHighlight, Touc
 import { Icon, Text } from "react-native-elements";
 import FastImage from "react-native-fast-image";
 
-import {paymentsLoad, addXUSD, txHistoryLoad} from '../payments/utils';
+import {paymentsLoad, addXUSD, txHistoryLoad, initSmartWallet} from '../payments/utils';
 import TransactionReceipt from "./transactionReceipt";
+import Snackbar from "react-native-snackbar";
 
 const width = Dimensions.get('window').width;
 
@@ -40,7 +41,6 @@ const TransactionList = ({navigation, route}) => {
   }
 
   async function call() {
-    console.log("----------------------------------------------------------------");
     const address = global.withAuth
       ? global.loginAccount.publicAddress
       : global.connectAccount.publicAddress;
@@ -69,36 +69,7 @@ const TransactionList = ({navigation, route}) => {
 
     if (global.withAuth) {
       if (!global.smartAccount) {
-        let options = {
-          activeNetworkId: mainnet
-            ? ChainId.POLYGON_MAINNET
-            : ChainId.POLYGON_MUMBAI,
-          supportedNetworksIds: [
-            ChainId.POLYGON_MAINNET,
-            ChainId.POLYGON_MUMBAI,
-          ],
-
-          networkConfig: [
-            {
-              chainId: ChainId.POLYGON_MAINNET,
-              dappAPIKey: BICONOMY_API_KEY,
-            },
-            {
-              chainId: ChainId.POLYGON_MUMBAI,
-              dappAPIKey: BICONOMY_API_KEY_MUMBAI,
-            },
-          ],
-        };
-
-        const particleProvider = this.getOnlyProvider();
-        const provider = new ethers.providers.Web3Provider(
-          particleProvider,
-          'any',
-        );
-
-        let smartAccount = new SmartAccount(provider, options);
-        smartAccount = await smartAccount.init();
-        global.smartAccount = smartAccount;
+        await initSmartWallet();
       }
     }
   }
@@ -190,21 +161,11 @@ const TransactionList = ({navigation, route}) => {
                                 <View style={styles.transactionLeft}>
                                 <View style={{
                                   borderRadius: 50,
-                                  backgroundColor: '#A38CFF',
+                                  backgroundColor: '#333333',
                                   width: 40, height: 40,
                                   justifyContent: 'center',
                                   alignItems: 'center',
                                 }}>
-                                  {/* <FastImage
-                                    style={{width: 30, height: 30}}
-                                    source={
-                                      json.truth == 2
-                                        ? require('./icon/pending.png')
-                                        : json.truth == 1
-                                        ? require('./icon/positive.png')
-                                        : require('./icon/negative.png')
-                                    }
-                                  /> */}
                                   <FastImage
                                       style={{width: 20, height: 20, borderRadius: 5}}
                                       source={
@@ -221,12 +182,13 @@ const TransactionList = ({navigation, route}) => {
                                     key={json.hash}
                                     onPress={() => {
                                         Clipboard.setString(json.truth ? json.from : json.to);
-                                        Alert.alert('Copied Address To Clipboard');
+                                        Snackbar.show({text: "Copied address to clipboard"})
+                                        // Alert.alert('Copied Address To Clipboard');
                                     }}>
                                         <Text
                                             style={{
                                             color: '#e9e9e9',
-                                            fontFamily: `Sarala-Regular`,
+                                            fontFamily: `Sarala-Bold`,
                                             fontSize: 16,
                                             }}>
                                             {(json.truth
@@ -255,15 +217,18 @@ const TransactionList = ({navigation, route}) => {
                                 </View>
 
                                 <View style={styles.transactionRight}>
-                                <Text
-                                    style={{
-                                    color: json.truth ? '#A38CFF' : '#fff',
-                                    fontSize: 17,
-                                    fontFamily: `Sarala-Regular`,
-                                    }}>
-                                    {json.truth != 0 && json.truth != 2 ? '+' : '-'}$
-                                    {json.value.toFixed(3)}
-                                </Text>
+                                  <Text
+                                      style={{
+                                        color: json.truth ? '#fff' : '#fff',
+                                        fontSize: 17,
+                                        fontFamily: `Sarala-Bold`,
+                                        textAlign:'right',
+                                        alignSelf:'flex-end',
+                                        alignContent: 'flex-end'
+                                      }}>
+                                      {json.truth != 0 && json.truth != 2 ? '+' : '-'}$
+                                      {json.value.toFixed(3)}
+                                  </Text>
                                 {/* <Icon
                                     // style={styles.tup}
                                     name={'chevron-small-right'}
@@ -278,7 +243,7 @@ const TransactionList = ({navigation, route}) => {
                     ) : (
                     <View>
                         <Text style={styles.noTransaction}>
-                            Your Transactions Appear Here
+                            No transaction found
                         </Text>
                     </View>
                     )}
@@ -293,7 +258,7 @@ const styles = StyleSheet.create({
     heading : { 
         fontSize: 20,
         color: '#ffffff',
-        fontFamily: `Sarala-Regular`,
+        fontFamily: `Sarala-Bold`,
         fontWeight: 500,
         marginLeft: 30
     },
@@ -304,26 +269,29 @@ const styles = StyleSheet.create({
     },
     
   transactions: {
-    width: '92%',
-    marginHorizontal: '4%',
-    marginVertical: '2%',
+    width: width-30,
+    marginHorizontal: 15,
+    marginVertical: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 15,
-    paddingVertical: 17,
+    paddingHorizontal: 10,
+    paddingVertical: 15,
     borderRadius: 6,
-    // backgroundColor: 'red',
+    backgroundColor: 'red',
     backgroundColor: '#151515',
   },
   transactionLeft: {
     flexDirection: 'row',
+    alignItems:'center'
   },
   transactionRight: {
     flexDirection: 'row',
     alignItems: 'center',
     width: '30%',
     justifyContent: 'flex-end',
+    textAlign: 'center',
+    alignContent: 'flex-end',
   },
   noTransaction: {
     color: '#d9d9d9',

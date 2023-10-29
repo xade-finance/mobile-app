@@ -17,10 +17,26 @@ import {Icon} from 'react-native-elements';
 import ethProvider from './integration/ethProvider';
 import createProvider from '../../../particle-auth';
 import createConnectProvider from '../../../particle-connect';
-import {POLYGON_API_KEY, SABEX_LP} from '@env';
+import {POLYGON_API_KEY, SABEX_LP, BICONOMY_API_KEY, BICONOMY_API_KEY_MUMBAI, AAVE_V3_LENDING_POOL_ADDRESS} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
 // import { PROJECT_ID, CLIENT_KEY } from 'react-native-dotenv'
+import '@ethersproject/shims';
+
+import abi from './aave-v3-pool';
+import usdAbi from './USDC';
+import remmitexAbi from '../../../abi/remmitex.json'
+import SmartAccount from '@biconomy/smart-account';
+// import XUSDAbi from './XUSD';
+import { BiconomySmartAccount, BiconomySmartAccountConfig, DEFAULT_ENTRYPOINT_ADDRESS } from "@biconomy/account";
+import { Wallet, providers, ethers } from 'ethers';
+import { ChainId } from '@biconomy/core-types';
+import { Bundler } from '@biconomy/bundler'
+import { BiconomyPaymaster, PaymasterMode } from '@biconomy/paymaster';
+import { ECDSAOwnershipValidationModule, DEFAULT_ECDSA_OWNERSHIP_MODULE } from "@biconomy/modules";
+import { initSmartWallet } from '../payments/utils';
+import { getTokenBalance } from '../../../utils/alchemy';
+import { getAccountData } from '../../../utils/aave';
 
 let web3;
 const contractAddress = '0xA3C957f5119eF3304c69dBB61d878798B3F239D9';
@@ -54,11 +70,13 @@ const Savings = ({navigation}) => {
   // web3 = this.createProvider(PROJECT_ID, CLIENT_KEY);
   if (global.withAuth) {
     authAddress = global.loginAccount.publicAddress;
+    scwAddress = global.loginAccount.scw;
     console.log('Global Account:', global.loginAccount);
     web3 = this.createProvider();
     //  console.log(web3.eth.getAccounts());
   } else {
     authAddress = global.connectAccount.publicAddress;
+    scwAddress = global.connectAccount.publicAddress;
     console.log('Global Account:', global.connectAccount);
     console.log('Global Wallet Type:', global.walletType);
     web3 = this.createConnectProvider();
@@ -66,18 +84,37 @@ const Savings = ({navigation}) => {
 
   const {getUserPoolBalance} = ethProvider({web3});
   const [balance, setBalance] = useState('0.00');
+
   useEffect(() => {
     async function allLogic() {
+
       const mainnetJSON = await AsyncStorage.getItem('mainnet');
+
+      console.log(mainnetJSON);
+      console.log("-xxxxxxx");
       const _mainnet = JSON.parse(mainnetJSON);
-      console.log('Mainnet', _mainnet);
       setMainnet(_mainnet);
+
+      try{
+        // const tokenBalances = getTokenBalance(mainnet, scwAddress, ['0x625e7708f30ca75bfd92586e17077590c60eb4cd','0xdAC17F958D2ee523a2206206994597C13D831ec7','0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174']);
+        console.log(scwAddress);
+        console.log(_mainnet);
+
+        const aaveBalance = await getAccountData(_mainnet, scwAddress);
+        console.log(aaveBalance);
+        setBalance(aaveBalance);
+
+      }catch(err){
+        console.log(err);
+      }
+
+      console.log('--------------------------------');
 
       if (_mainnet == false) {
         const balance = await getUserPoolBalance();
-        console.log(balance);
+        // console.log(balance);
 
-        setBalance(balance);
+        // setBalance(balance);
 
         fetch(
           `https://api-testnet.polygonscan.com/api?module=account&action=tokentx&contractaddress=${contractAddress}&address=${authAddress}&apikey=${POLYGON_API_KEY}`,
@@ -151,11 +188,200 @@ const Savings = ({navigation}) => {
               return;
             }
           });
+      }else{
+
+        // fetch interest rate earned
+
+        // fetch stable interest rate
       }
     }
     console.log('this is right');
     allLogic();
   }, []);
+
+  const depositToLendingPool = async (_amount="1") => {
+    const usdcAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
+    const lendingPoolAddress = AAVE_V3_LENDING_POOL_ADDRESS;
+    const v1Address = '0xc9DD6D26430e84CDF57eb10C3971e421B17a4B65';
+
+    const decimals = 6;
+
+    console.log(123);
+    
+    const amount = ethers.utils.parseUnits(_amount, decimals);
+
+    const isAuth = true;
+
+    // if (global.withAuth) {
+    //   authAddress = global.loginAccount.publicAddress;
+    //   console.log('Global Account:', global.loginAccount);
+    //   web3 = this.createProvider();
+    // } else {
+    //   authAddress = global.connectAccount.publicAddress;
+    //   console.log('Global Account:', global.connectAccount);
+    //   console.log('Global Wallet Type:', global.walletType);
+    //   web3 = this.createConnectProvider();
+    // }  
+
+    console.log(authAddress);
+    const mainnetJSON = await AsyncStorage.getItem('mainnet');
+    const mainnet = JSON.parse(mainnetJSON);
+
+    console.log("Mainnet:", mainnet);
+
+    await initSmartWallet();
+
+    if (global.withAuth) {
+      console.log('Calculating Gas In USDC...');
+  
+      const contractGas = Number('90000');
+      const approvalGas = Number('60000');
+      const gasPrice = await web3.eth.getGasPrice();
+      const gas = (contractGas + approvalGas) * gasPrice;
+      const gasUSDC = Number(String(gas).substring(0, 5) * 1.15).toFixed(0);
+      const totalAmount = Number(amount) + Number(gasUSDC);
+  
+      console.log('Total Gas:', web3.utils.fromWei(String(gas), 'ether'));
+      console.log(
+        'Total Gas In USDC:',
+        web3.utils.fromWei(String(gasUSDC), 'mwei'),
+      );
+      console.log('Total Amount:', totalAmount);
+  
+      const usdcAbi = new ethers.utils.Interface(usdAbi);
+      const contractAbi = new ethers.utils.Interface(abi);
+
+      let txs = [];
+  
+      console.log('Creating Transactions...');
+  
+      try {
+        const approveData = usdcAbi.encodeFunctionData('approve', [
+          lendingPoolAddress,
+          totalAmount,
+        ]);
+  
+        const approveTX = {
+          to: usdcAddress,
+          data: approveData,
+        };
+  
+        txs.push(approveTX);
+
+        const sma = await global.smartAccount.getSmartAccountAddress()
+        console.log(sma);
+
+        const sendData = contractAbi.encodeFunctionData('supply', [
+          usdcAddress,
+          amount,
+          sma,
+          0
+        ]);
+  
+        const sendTX = {
+          to: lendingPoolAddress,
+          data: sendData,
+        };
+
+        txs.push(sendTX);
+
+        console.log(txs);
+  
+        console.log('Created Transactions Successfully...');
+  
+        console.log('Waiting For Approval...');
+
+        const userOp = await global.smartAccount.buildUserOp(txs)
+
+        const biconomyPaymaster = await global.smartAccount.paymaster;
+
+        console.log(biconomyPaymaster);
+
+        let paymasterServiceData = {
+            mode: PaymasterMode.SPONSORED,
+            // smartAccountInfo: {
+            //   name: 'BICONOMY',
+            //   version: '2.0.0'
+            // },
+        };
+
+        console.log(paymasterServiceData);
+
+        const paymasterAndDataResponse = await biconomyPaymaster.getPaymasterAndData(
+            userOp,
+            paymasterServiceData
+        );
+
+        console.log(paymasterAndDataResponse);
+            
+        userOp.paymasterAndData = paymasterAndDataResponse.paymasterAndData;
+
+        // userOp.paymasterAndData = "0x"
+
+        console.log(userOp);
+      
+        const userOpResponse = await global.smartAccount.sendUserOp(userOp);
+
+        console.log(userOpResponse);
+      
+        const transactionDetail = await userOpResponse.wait()
+      
+        console.log("transaction detail below")
+        console.log(transactionDetail)
+
+        // const userOp1 = await global.smartAccount.buildUserOp(txs)
+
+        // const biconomyPaymaster1 = await global.smartAccount.paymaster;
+
+        // console.log(biconomyPaymaster1);
+
+        // let paymasterServiceData1 = {
+        //     mode: PaymasterMode.SPONSORED,
+        //     // smartAccountInfo: {
+        //     //   name: 'BICONOMY',
+        //     //   version: '2.0.0'
+        //     // },
+        // };
+
+        // console.log(paymasterServiceData1);
+
+        // const paymasterAndDataResponse1 = await biconomyPaymaster.getPaymasterAndData(
+        //     userOp1,
+        //     paymasterServiceData1
+        // );
+
+        // console.log(paymasterAndDataResponse1);
+            
+        // userOp1.paymasterAndData = paymasterAndDataResponse1.paymasterAndData;
+
+        // // userOp.paymasterAndData = "0x"
+
+        // console.log(userOp1);
+      
+        // const userOpResponse1 = await global.smartAccount.sendUserOp(userOp1);
+
+        // console.log(userOpResponse1);
+      
+        // const transactionDetail1 = await userOpResponse1.wait()
+      
+        // console.log("transaction detail below")
+        // console.log(transactionDetail1)        
+  
+        console.log('Approved!');
+  
+      } catch (e) {
+        console.error(e);
+
+      }
+    }else{
+      console.log("------");
+    }
+  }
+
+  const withdrawFromLendingPool = (amount) => {
+
+  }
+
   return (
     <SafeAreaView style={{width: '100%', height: '100%'}}>
       {/* <View style={styles.topbar}>
@@ -168,7 +394,7 @@ const Savings = ({navigation}) => {
               style={{
                 color: '#6D797D',
                 fontSize: 45,
-                fontFamily: 'Benzin-Medium',
+                fontFamily: 'Sarala-Regular',
               }}>
               $
             </Text>
@@ -176,28 +402,31 @@ const Savings = ({navigation}) => {
               style={{
                 color: 'white',
                 fontSize: 45,
-                fontFamily: 'Benzin-Medium',
+                fontFamily: 'Sarala-Regular',
               }}>
-              {balance.split('.')[0]}
+                {/* {balance} */}
+              {balance && balance.split('.')[0]}
             </Text>
             <Text
               style={{
                 color: '#6D797D',
                 fontSize: 30,
-                fontFamily: 'Benzin-Medium',
+                fontFamily: 'Sarala-Regular',
                 marginBottom: 5,
               }}>
               {'.'}
-              {balance.split('.')[1] ? balance.split('.')[1] : '00'}
+              {/* {balance} */}
+              {balance && balance.split('.')[1] ? balance.split('.')[1] : '00'}
             </Text>
           </View>
           <Text
             style={{
               color: 'white',
               fontSize: 18,
-              fontFamily: 'VelaSans-Bold',
+              fontFamily: 'Sarala-Bold',
+              fontWeight: 300,
             }}>
-            Total amount deposited
+            Total balance
           </Text>
         </View>
 
@@ -212,10 +441,12 @@ const Savings = ({navigation}) => {
           <TouchableOpacity
             style={styles.depWith}
             onPress={() => {
-              navigation.navigate('ComingSoon');
+              // depositToLendingPool("1");
+              navigation.navigate('Deposit');
+              // navigation.navigate('ComingSoon')
             }}>
             <LinearGradient
-              colors={['#1D2426', '#383838']}
+              colors={['#222', '#222']}
               useAngle
               angle={45}
               angleCenter={{x: 0.5, y: 0.5}}
@@ -227,7 +458,7 @@ const Savings = ({navigation}) => {
                 color={'#86969A'}
                 type="feather"
               />
-              <Text style={{color: '#86969A', fontFamily: 'VelaSans-Bold'}}>
+              <Text style={{color: '#86969A', fontFamily: 'Sarala-Bold', fontWeight:300}}>
                 Deposit
               </Text>
             </LinearGradient>
@@ -236,10 +467,11 @@ const Savings = ({navigation}) => {
           <TouchableOpacity
             style={styles.depWith}
             onPress={() => {
-              navigation.navigate('ComingSoon');
+              navigation.navigate('Withdraw');
+              // navigation.navigate('ComingSoon');
             }}>
             <LinearGradient
-              colors={['#1D2426', '#383838']}
+              colors={['#222', '#222']}
               useAngle
               angle={45}
               angleCenter={{x: 0.5, y: 0.5}}
@@ -252,7 +484,7 @@ const Savings = ({navigation}) => {
                 // color={t?'green': 'red'}
                 type="font-awesome"
               />
-              <Text style={{color: '#86969A', fontFamily: 'VelaSans-Bold'}}>
+              <Text style={{color: '#86969A', fontFamily: 'Sarala-Bold', fontWeight: 300}}>
                 Withdraw
               </Text>
             </LinearGradient>
@@ -304,17 +536,18 @@ const Savings = ({navigation}) => {
         </View>
       </View>
 
-      <View style={styles.transactionContainer}>
+      {/* <View style={styles.transactionContainer}>
         <View style={styles.heading}>
           <Text
             style={{
               color: 'white',
               fontSize: 20,
-              fontFamily: 'VelaSans-Bold',
+              fontFamily: 'Sarala-Bold',
+              fontWeight: 300
             }}>
             Transactions
           </Text>
-          {/* <Text style = {{color: 'grey', fontSize: 20}}>See all</Text> */}
+
         </View>
         {state.length > 0 ? (
           <View>
@@ -329,7 +562,7 @@ const Savings = ({navigation}) => {
             </Text>
           </View>
         )}
-      </View>
+      </View> */}
     </SafeAreaView>
   );
 };
@@ -362,12 +595,12 @@ export default Savings;
                         Alert.alert('Copied Address To Clipboard');
                       }}>
                       <Text
-                        style={{color: 'white', fontFamily: 'VelaSans-Bold'}}>
+                        style={{color: 'white', fontFamily: 'Sarala-Bold'}}>
                         {json.truth ? json.from : json.to}
                       </Text>
                     </TouchableHighlight>
 
-                    <Text style={{color: 'grey', fontFamily: 'VelaSans-Bold'}}>
+                    <Text style={{color: 'grey', fontFamily: 'Sarala-Bold'}}>
                       {json.date}
                     </Text>
                   </View>
@@ -378,7 +611,7 @@ export default Savings;
                     style={{
                       color: json.truth ? '#4EE58B' : 'red',
                       fontSize: 20,
-                      fontFamily: 'VelaSans-Bold',
+                      fontFamily: 'Sarala-Bold',
                     }}>
                     {json.truth ? '+' : '-'}
                     {json.value}

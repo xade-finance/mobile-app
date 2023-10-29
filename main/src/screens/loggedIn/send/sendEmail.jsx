@@ -102,6 +102,7 @@ const SendEmailComponent = ({navigation}) => {
         style={{
           position: 'absolute',
           top: '1%',
+          left:'4%',
           width: width * 0.8,
           alignItems: 'center',
           flexDirection: 'row',
@@ -128,7 +129,7 @@ const SendEmailComponent = ({navigation}) => {
         <Text
           style={{
             fontSize: 30,
-            fontFamily: `EuclidCircularA-Regular`,
+            fontFamily: `Sarala-Regular`,
 
             color: 'white',
             letterSpacing: 0.5,
@@ -158,14 +159,14 @@ const SendEmailComponent = ({navigation}) => {
               width: '100%',
             }}
             labelStyles={{
-              fontFamily: `EuclidCircularA-Regular`,
+              fontFamily: `Sarala-Regular`,
               color: '#fff',
               fontSize: 20,
               width: '100%',
               paddingBottom: 2,
             }}
             inputStyles={{
-              fontFamily: `EuclidCircularA-Regular`,
+              fontFamily: `Sarala-Regular`,
               width: '100%',
               color: 'white',
               fontSize: 20,
@@ -182,7 +183,8 @@ const SendEmailComponent = ({navigation}) => {
           <Text
             style={{
               color: '#000',
-              fontFamily: `EuclidCircularA-Medium`,
+              fontFamily: `Sarala-Bold`,
+              fontWeight:300,
               fontSize: 18,
             }}>
             {submitText}
@@ -194,7 +196,7 @@ const SendEmailComponent = ({navigation}) => {
           <Text
             style={{
               color: 'white',
-              fontFamily: `EuclidCircularA-Regular`,
+              fontFamily: `Sarala-Regular`,
               fontSize: 15,
             }}>
             Send to a mobile number
@@ -213,7 +215,7 @@ const SendEmailComponent = ({navigation}) => {
           <Text
             style={{
               color: 'white',
-              fontFamily: `EuclidCircularA-Regular`,
+              fontFamily: `Sarala-Regular`,
               fontSize: 15,
             }}>
             Send to a digital wallet
@@ -232,7 +234,7 @@ const SendEmailComponent = ({navigation}) => {
           <Text
             style={{
               color: 'white',
-              fontFamily: `EuclidCircularA-Regular`,
+              fontFamily: `Sarala-Regular`,
               fontSize: 15,
             }}>
             Send through QR Code

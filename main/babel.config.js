@@ -19,6 +19,13 @@ module.exports = {
           },
         ],
         [
+          "babel-plugin-inline-import", {
+            "extensions": [
+              ".svg"
+            ]
+          }
+        ],
+        [
           'react-native-reanimated/plugin',
           {
             relativeSourceLocation: true,
@@ -43,12 +50,19 @@ module.exports = {
           },
         ],
         [
+          "babel-plugin-inline-import", {
+            "extensions": [
+              ".svg"
+            ]
+          }
+        ],
+        ['transform-remove-console'],
+        [
           'react-native-reanimated/plugin',
           {
             relativeSourceLocation: true,
           },
         ],
-        ['transform-remove-console'],
       ],
     },
   },

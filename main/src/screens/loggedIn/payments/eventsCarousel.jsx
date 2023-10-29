@@ -15,6 +15,15 @@ import LinearGradient from 'react-native-linear-gradient';
 const DEVICE_WIDTH = Dimensions.get('window').width;
 import Clipboard from '@react-native-clipboard/clipboard';
 import FastImage from 'react-native-fast-image';
+import SvgUri from 'react-native-svg-uri';
+
+import ContributeSvg from './icon/contribute.svg';
+import QuestSvg from './icon/quest.svg';
+import ReferralSvg from './icon/referral.svg';
+import PremiumSvg from './icon/subscribe.svg';
+import QuestIcon from './icon/questIcon';
+import ExternalLinkModal from '../externalLink/widget';
+import Snackbar from 'react-native-snackbar';
 
 class EventsCarousel extends React.Component {
   scrollRef = React.createRef();
@@ -23,14 +32,19 @@ class EventsCarousel extends React.Component {
 
     this.state = {
       selectedIndex: 0,
+      externalLinkHeading : '',
+      externalLinkUri : '',
+      showExternalLinkModal : false
     };
     this.scrollRef = React.createRef();
   }
-  review = () => {
-    Linking.openURL(
-      'https://tally.so/r/w7LEV0',
-    );
-  };
+
+  handleCloseExternalLinkModal = () => {
+    this.setState({
+      showExternalLinkModal: false
+    });
+  }
+
   func = () => {
     Clipboard.setString(
       `
@@ -44,8 +58,11 @@ Download Now: https://bit.ly/xadefinance
 `,
     );
 
-    Alert.alert('Referral link copied');
+    Snackbar.show({'text': 'Referral link copied'});
+
+    // Alert.alert('Referral link copied');
   };
+
   componentDidMount = () => {
     setInterval(() => {
       this.setState(
@@ -77,22 +94,34 @@ Download Now: https://bit.ly/xadefinance
 
   render(navigation) {
     const {images} = this.props;
-    const {selectedIndex} = this.state;
+    const {selectedIndex, showExternalLinkModal, externalLinkUri, externalLinkHeading} = this.state;
     return (
       <ScrollView
         horizontal
         pagingEnabled
         ref={this.scrollRef}
         style={{
-          marginTop: '4%',
+          // marginTop: '4%',
           flexDirection: 'row',
-          width: DEVICE_WIDTH,
+          // width: DEVICE_WIDTH,
         }}>
+          {showExternalLinkModal && (
+            <ExternalLinkModal
+              uri={externalLinkUri}
+              heading={externalLinkHeading}
+              onClose={this.handleCloseExternalLinkModal}
+            />
+          )}
           <View style={styles.depWith}>
             <TouchableOpacity
               style={styles.depFurther}
               onPress={() => {
-                Linking.openURL('https://xadefinance.crew3.xyz/invite/OEL6nx6wDDIxAFsZVHPsv');
+                this.setState({
+                  'externalLinkHeading' : 'Quests',
+                  'externalLinkUri' : 'https://xadefinance.crew3.xyz/invite/OEL6nx6wDDIxAFsZVHPsv',
+                  'showExternalLinkModal' : true
+                })
+                // Linking.openURL('https://xadefinance.crew3.xyz/invite/OEL6nx6wDDIxAFsZVHPsv');
               }}>
               <View style={styles.actionContainer}>
                 <View style={styles.textContainer}>
@@ -103,15 +132,10 @@ Download Now: https://bit.ly/xadefinance
                     To get Xade coins & amazing rewards for free
                   </Text>
                 </View>
-                <FastImage
-                  source={require('./icon/quest.png')}
-                  resizeMode="cover"
-                  style={{
-                    width: 60,
-                    height: 60,
-                    borderRadius: 10, 
-                  }}
-                />
+                <View>
+                  <QuestIcon />
+                </View>
+
               </View>
             </TouchableOpacity>
           </View>
@@ -120,7 +144,12 @@ Download Now: https://bit.ly/xadefinance
             <TouchableOpacity
               style={styles.depFurther}
               onPress={() => {
-                Linking.openURL('https://explorers.xade.finance/');
+                this.setState({
+                  'externalLinkHeading' : 'Explore',
+                  'externalLinkUri' : 'https://explorers.xade.finance/',
+                  'showExternalLinkModal' : true
+                })
+                // Linking.openURL('https://explorers.xade.finance/');
               }}>
               <View style={styles.actionContainer}>
                 <View style={styles.textContainer}>
@@ -131,15 +160,13 @@ Download Now: https://bit.ly/xadefinance
                     To get everything from the new era of banking
                   </Text>
                 </View>
-                <FastImage
-                  source={require('./icon/subscribe.png')}
-                  resizeMode="cover"
-                  style={{
-                    width: 60,
-                    height: 60,
-                    borderRadius: 10, 
-                  }}
-                />
+                <View>
+                  <SvgUri
+                    width="54"
+                    height="54"
+                    svgXmlData={PremiumSvg}
+                  />
+                </View>
               </View>
             </TouchableOpacity>
           </View>
@@ -148,18 +175,30 @@ Download Now: https://bit.ly/xadefinance
             <TouchableOpacity
               style={styles.depFurther}
               onPress={() => {
-               this.review();
-            }}>
+                this.setState({
+                  'externalLinkHeading' : 'Contribute',
+                  'externalLinkUri' : 'https://tally.so/r/w7LEV0',
+                  'showExternalLinkModal' : true
+                })
+                // Linking.openURL(
+                //   'https://tally.so/r/w7LEV0',
+                // );
+              }}>
               <View style={styles.actionContainer}>
                 <View style={styles.textContainer}>
                   <Text style={styles.titleText}>
                     Contribute
                   </Text>
                   <Text style={styles.descriptionText}>
-                    Help Xade community grow and exclusive perks
+                    Help Xade community grow and get exclusive perks
                   </Text>
                 </View>
-                <FastImage
+                <SvgUri
+                  width="54"
+                  height="54"
+                  svgXmlData={ContributeSvg}
+                />
+                {/* <FastImage
                   source={require('./icon/contribute.png')}
                   resizeMode="cover"
                   style={{
@@ -167,7 +206,7 @@ Download Now: https://bit.ly/xadefinance
                     height: 60,
                     borderRadius: 10, 
                   }}
-                />
+                /> */}
               </View>
             </TouchableOpacity>
           </View>
@@ -187,15 +226,11 @@ Download Now: https://bit.ly/xadefinance
                   To become a part of Xade referral program
                 </Text>
               </View>
-              <FastImage
-                source={require('./icon/referral.png')}
-                resizeMode="cover"
-                style={{
-                  width: 60,
-                  height: 60,
-                  borderRadius: 10, 
-                }}
-              />
+              <SvgUri
+                  width="54"
+                  height="54"
+                  svgXmlData={ReferralSvg}
+                />
             </View>
           </TouchableOpacity>
         </View>
@@ -208,31 +243,34 @@ Download Now: https://bit.ly/xadefinance
 const styles = StyleSheet.create({
   depWith: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    width: DEVICE_WIDTH - '40',
-    marginHorizontal: 20,
+    width: DEVICE_WIDTH - '30',
+    marginHorizontal : 15,
     marginVertical: 10,
     paddingVertical: 10,
     backgroundColor:'#131313',
     // borderStyle: 'dashed',
     // borderWidth: 1,
     // borderColor: '#8e8e8e',
-    borderRadius: 20
+    borderRadius: 6
   },
   titleText: {
     fontSize: 16,
     color: '#ffffff',
-    fontFamily: `Sarala-Regular`,
+    fontFamily: 'Sarala-Bold',
+    fontWeight: 300
   },
   descriptionText: {
     fontSize: 14,
-    color: '#b9b9b9',
+    color: '#a1a1a1',
     fontFamily: `Sarala-Regular`,
   },
   actionContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-around',
+    alignItems:'center',
+    width: DEVICE_WIDTH-30
   },
   textContainer: {
     flexDirection: 'column',

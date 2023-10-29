@@ -2,17 +2,20 @@ import * as particleConnect from 'react-native-particle-connect';
 import {PNAccount} from './Models/PNAccount';
 import * as Helper from './helper';
 import {
-  Env,
+  // Env,
   LoginType,
   SupportAuthType,
   WalletType,
 } from 'react-native-particle-connect';
 import {ChainInfo} from 'react-native-particle-connect';
+
+import {Polygon} from '@particle-network/chains';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Web3 from 'web3';
 import {ParticleConnectProvider} from 'react-native-particle-connect';
 import {PROJECT_ID, CLIENT_KEY} from '@env';
+import { Env } from 'react-native-particle-auth';
 
 var DeviceInfo = require('react-native-device-info');
 
@@ -31,38 +34,50 @@ createConnectProvider = () => {
 };
 
 setChainInfo = async () => {
-  const chainInfo = ChainInfo.PolygonMainnet;
+  const chainInfo = Polygon;
   const result = await particleConnect.setChainInfo(chainInfo);
   console.log(result);
 };
 
 connect = async ({walleType}) => {
   console.log('Connect:', walleType);
-  const result = await particleConnect.connect(walleType);
-  // console.log(result);
-  if (result.status) {
-    console.log('connect success');
-    const account = result.data;
-    const email = `${walleType}@${account.publicAddress.toLowerCase()}`;
-    const uuid = DeviceInfo.getUniqueIdSync();
-    console.log(email, uuid);
-    const name = account.name ? account.name : 'Not Set';
-    global.connectAccount = new PNAccount(
-      email,
-      name,
-      account.publicAddress,
-      account.publicAddress,
-      uuid,
-    );
-    console.log(global.connectAccount);
-    await AsyncStorage.setItem('address', account.publicAddress);
-    await AsyncStorage.setItem('isConnected', 'true');
-    global.withAuth = false;
-    const userInfo = result.data;
-    console.log('User Info:', global.connectAccount);
-  } else {
-    const error = result.data;
-    console.log('Error:', error);
+  try{
+    // console.log(particleConnect);
+    // particleConnect.init(
+    //   Polygon,
+    //   Env.Production,
+    //   metadata,
+    //   rpcUrl,
+    // );
+    console.log(particleConnect);
+    const result = await particleConnect.connect(walleType);
+    // console.log(result);
+    if (result.status) {
+      console.log('connect success');
+      const account = result.data;
+      const email = `${walleType}@${account.publicAddress.toLowerCase()}`;
+      const uuid = DeviceInfo.getUniqueIdSync();
+      console.log(email, uuid);
+      const name = account.name ? account.name : 'Not Set';
+      global.connectAccount = new PNAccount(
+        email,
+        name,
+        account.publicAddress,
+        account.publicAddress,
+        uuid,
+      );
+      console.log(global.connectAccount);
+      await AsyncStorage.setItem('address', account.publicAddress);
+      await AsyncStorage.setItem('isConnected', 'true');
+      global.withAuth = false;
+      const userInfo = result.data;
+      console.log('User Info:', global.connectAccount);
+    } else {
+      const error = result.data;
+      console.log('Error:', error);
+    }
+  }catch(e){
+    console.log(e);
   }
 };
 
@@ -105,60 +120,67 @@ onClickConnect = async ({navigation, walletype}) => {
     evm_url: 'https://rpc.ankr.com/polygon_mumbai',
     solana_url: null,
   };
-  particleConnect.init(
-    ChainInfo.PolygonMainnet,
-    Env.Production,
-    metadata,
-    rpcUrl,
-  );
-  global.walletType = walletype;
-  navigation.navigate('Loading');
-  console.log('onClick:', walletype);
 
-  await this.connect({walleType: walletype});
+  console.log("111111");
+  try{
+    particleConnect.init(
+      Polygon,
+      Env.Production,
+      metadata,
+      rpcUrl,
+    );
+    global.walletType = walletype;
+    navigation.navigate('Loading');
+    console.log('onClick:', walletype);
 
-  var result = await particleConnect.isConnected(
-    walletype,
-    global.connectAccount.publicAddress,
-  );
+    await this.connect({walleType: walletype});
 
-  console.log('Account Info:', global.connectAccount);
+    var result = await particleConnect.isConnected(
+      walletype,
+      global.connectAccount.publicAddress,
+    );
 
-  console.log('Result:', result);
-  if (result) {
-    const address = global.connectAccount.publicAddress;
-    const email = global.connectAccount.phoneEmail;
-    const uuid = global.connectAccount.uiud;
+    console.log('Account Info:', global.connectAccount);
 
-    await fetch(
-      `https://user.api.xade.finance/polygon?address=${address.toLowerCase()}`,
-      {
-        method: 'GET',
-      },
-    )
-      .then(response => {
-        console.log(response);
-        if (response.status == 200) {
-          return response.text();
-        } else {
-          navigation.push('EnterName');
-        }
-      })
-      .then(data => {
-        if (
-          data == '' ||
-          data.length == 0 ||
-          data.toLowerCase() == email.toLowerCase() ||
-          data == 'Not Set'
-        ) {
-          navigation.push('EnterName');
-        } else {
-          global.connectAccount.name = data;
-          navigation.push('Payments');
-        }
-      });
-  } else {
-    navigation.navigate('Error');
+    console.log('Result:', result);
+    if (result) {
+      const address = global.connectAccount.publicAddress;
+      const email = global.connectAccount.phoneEmail;
+      const uuid = global.connectAccount.uiud;
+
+      await fetch(
+        `https://user.api.xade.finance/polygon?address=${address.toLowerCase()}`,
+        {
+          method: 'GET',
+        },
+      )
+        .then(response => {
+          console.log(response);
+          if (response.status == 200) {
+            return response.text();
+          } else {
+            navigation.push('EnterName');
+          }
+        })
+        .then(data => {
+          if (
+            data == '' ||
+            data.length == 0 ||
+            data.toLowerCase() == email.toLowerCase() ||
+            data == 'Not Set'
+          ) {
+            navigation.push('EnterName');
+          } else {
+            global.connectAccount.name = data;
+            navigation.push('Payments');
+          }
+        });
+    } else {
+      navigation.navigate('Error');
+    }
+  
+  }catch (e) {
+    console.log(e);
   }
 };
 

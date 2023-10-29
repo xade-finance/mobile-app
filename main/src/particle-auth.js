@@ -4,6 +4,7 @@ import {
   SupportAuthType,
   Env,
 } from 'react-native-particle-auth';
+import {Polygon} from '@particle-network/chains';
 import * as particleAuth from 'react-native-particle-auth';
 import {PNAccount} from './Models/PNAccount';
 import * as Helper from './helper';
@@ -20,6 +21,10 @@ import 'react-native-get-random-values';
 import '@ethersproject/shims';
 import {ethers} from 'ethers';
 import Login from './screens/loggingIn/login';
+import { Bundler } from '@biconomy/bundler';
+import { BiconomyPaymaster } from '@biconomy/paymaster';
+import { DEFAULT_ECDSA_OWNERSHIP_MODULE, ECDSAOwnershipValidationModule } from '@biconomy/modules';
+import { BiconomySmartAccount, DEFAULT_ENTRYPOINT_ADDRESS } from '@biconomy/account';
 
 const projectId = PROJECT_ID;
 const clientKey = CLIENT_KEY;
@@ -35,25 +40,79 @@ getOnlyProvider = () => {
   return provider;
 };
 
-async function createSCW() {
-  let options = {
-    activeNetworkId: ChainId.POLYGON_MAINNET,
-    supportedNetworksIds: [ChainId.POLYGON_MAINNET],
+// async function createSCW() {
+//   let options = {
+//     activeNetworkId: ChainId.POLYGON_MAINNET,
+//     supportedNetworksIds: [ChainId.POLYGON_MAINNET],
 
-    networkConfig: [
-      {
-        chainId: ChainId.POLYGON_MAINNET,
-        dappAPIKey: BICONOMY_API_KEY,
-      },
-    ],
-  };
-  const particleProvider = this.getOnlyProvider();
-  const provider = new ethers.providers.Web3Provider(particleProvider, 'any');
-  let smartAccount = new SmartAccount(provider, options);
-  smartAccount = await smartAccount.init();
-  global.smartAccount = smartAccount;
-  return global.smartAccount.address;
-}
+//     networkConfig: [
+//       {
+//         chainId: ChainId.POLYGON_MAINNET,
+//         dappAPIKey: BICONOMY_API_KEY,
+//       },
+//     ],
+//   };
+//   const particleProvider = this.getOnlyProvider();
+//   const provider = new ethers.providers.Web3Provider(particleProvider, 'any');
+//   let smartAccount = new SmartAccount(provider, options);
+//   smartAccount = await smartAccount.init();
+//   global.smartAccount = smartAccount;
+//   return global.smartAccount.address;
+// };
+
+async function createSCW() {
+  try{
+    const particleProvider = this.getOnlyProvider();
+    const provider = new ethers.providers.Web3Provider(
+      particleProvider,
+      'any',
+    );
+
+    const bundlerUrl = 'https://bundler.biconomy.io/api/v2/' 
+                        + `${mainnet ? ChainId.POLYGON_MAINNET : ChainId.POLYGON_MUMBAI}` 
+                        + '/' + `${mainnet ? BICONOMY_API_KEY : BICONOMY_API_KEY_MUMBAI}`
+
+    const bundler = new Bundler({
+      bundlerUrl: bundlerUrl,     
+      chainId: mainnet ? ChainId.POLYGON_MAINNET : ChainId.POLYGON_MUMBAI,
+      entryPointAddress: DEFAULT_ENTRYPOINT_ADDRESS,
+    })
+
+    const paymaster = new BiconomyPaymaster({
+      paymasterUrl: 'https://paymaster.biconomy.io/api/v1/'
+                    + `${mainnet ? ChainId.POLYGON_MAINNET : ChainId.POLYGON_MUMBAI}` 
+                    + '/' + `${mainnet ? BICONOMY_API_KEY : BICONOMY_API_KEY_MUMBAI}`
+    })
+
+    const addre = await provider.getSigner().getAddress();
+    const signer = provider.getSigner();
+
+    const module = await ECDSAOwnershipValidationModule.create({
+      signer: signer,
+      moduleAddress: DEFAULT_ECDSA_OWNERSHIP_MODULE
+    })
+
+    const biconomySmartAccountConfig = {
+      signer: signer,
+      chainId: mainnet ? ChainId.POLYGON_MAINNET : ChainId.POLYGON_MUMBAI,
+      bundler: bundler,
+      paymaster: paymaster, 
+      entryPointAddress: DEFAULT_ENTRYPOINT_ADDRESS,
+      defaultValidationModule: module,
+      activeValidationModule: module
+    }
+
+    let biconomySmartAccount = new BiconomySmartAccount(biconomySmartAccountConfig)
+    biconomySmartAccount =  await biconomySmartAccount.create()
+    console.log("owner: ", biconomySmartAccount.owner)
+    console.log("address: ", await biconomySmartAccount.getSmartAccountAddress())
+
+    global.smartAccount = biconomySmartAccount;
+
+  }catch (err) {
+    console.log(err);
+  }
+};
 
 web3_getAccounts = async () => {
   const accounts = await web3.eth.getAccounts();
@@ -61,13 +120,13 @@ web3_getAccounts = async () => {
 };
 
 init = async () => {
-  const chainInfo = ChainInfo.PolygonMainnet;
+  const chainInfo = Polygon;
   const env = Env.Production;
   particleAuth.init(chainInfo, env);
 };
 
 setChainInfo = async () => {
-  const chainInfo = ChainInfo.PolygonMainnet;
+  const chainInfo = Polygon;
   const result = await particleAuth.setChainInfo(chainInfo);
   console.log(result);
 };

@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {Icon} from 'react-native-elements';
 import { BankAccountType, BankAccountSubType } from '@spritz-finance/api-client'
-import {SPRITZ_API_KEY, SPRITZ_INTEGRATION_KEY} from '@env';
+import {SPRITZ_API_KEY, SPRITZ_INTEGRATION_KEY_PROD, SPRITZ_INTEGRATION_KEY_TEST} from '@env';
 import {
     SpritzApiClient,
     Environment,
@@ -47,10 +47,10 @@ const ListBankAccounts = ({navigation}) => {
     };
 
     const client = SpritzApiClient.initialize({
-        environment: Environment.Staging,
-        // apiKey: SPRITZ_API_KEY,
-        integrationKey: SPRITZ_INTEGRATION_KEY,
+        environment: mainnet ? Environment.Production : Environment.Staging, 
+        integrationKey: mainnet ?  SPRITZ_INTEGRATION_KEY_PROD : SPRITZ_INTEGRATION_KEY_TEST,
     });
+
 
     const fetchBankAccounts = async (api_key) => {
         try{
@@ -96,7 +96,7 @@ const ListBankAccounts = ({navigation}) => {
 
     const renderCard = ({ item }) => (
         
-            <LinearGradient colors={['#1D2426', '#383838']} style={styles.linearGradient}>
+            <LinearGradient colors={['#222', '#222']} style={styles.linearGradient}>
             {/* <LinearGradient colors={['#C3338A', '#FE2C5E']} style={styles.linearGradient}> */}
                 <View style={styles.bankAccountSubTypeContainer}>
                     <Text style={styles.actionText}>{item.bankAccountSubType}</Text>
@@ -134,12 +134,13 @@ const ListBankAccounts = ({navigation}) => {
         <View style={styles.container}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                 <View>
-                  <Icon
-                    name={'chevron-left'}
-                    size={24}
-                    color={'#fff'}
-                    type="entypo"
-                  />
+                    <Icon
+                        name={'keyboard-backspace'}
+                        size={30}
+                        color={'#f0f0f0'}
+                        type="materialicons"
+                        onPress={() => navigation.goBack()}
+                    /> 
                 </View>
             </TouchableOpacity>
             <Text style={styles.heading}>My bank accounts</Text>
@@ -192,7 +193,7 @@ const styles = StyleSheet.create({
         left: 10,
         color: 'fff',
         borderRadius: 50,
-        backgroundColor: '#FE2C5E',
+        // backgroundColor: '#FE2C5E',
         padding:5,
     },
     heading: {
@@ -299,7 +300,7 @@ const styles = StyleSheet.create({
         top: 0,
         elevation: 100,
         zIndex: 100,
-        backgroundColor: 'green',
+        backgroundColor: '#5038E1',
         padding: 8,
         borderRadius: 5,
         // transform: [{ rotate: '-14deg' }]

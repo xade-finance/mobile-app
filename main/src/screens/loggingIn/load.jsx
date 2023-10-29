@@ -15,7 +15,7 @@ import {
 import {Text} from '@rneui/themed';
 
 import {PNAccount} from '../../Models/PNAccount';
-
+import { Polygon } from '@particle-network/chains';
 import * as particleAuth from 'react-native-particle-auth';
 import * as particleConnect from 'react-native-particle-connect';
 
@@ -74,10 +74,15 @@ const LoginCheck = async ({navigation, setLoadingText}) => {
 
     global.mainnet = mainnet;
 
+    console.log(Polygon);
+
     particleAuth.init(
-      particleAuth.ChainInfo.PolygonMainnet,
+      Polygon,
+      // particleAuth.ChainInfo.PolygonMainnet,
       particleAuth.Env.Production,
     );
+
+    console.log("--------------------------------");
 
     console.log('Device ID:', DeviceInfo.getUniqueIdSync());
 
@@ -188,6 +193,33 @@ const LoginCheck = async ({navigation, setLoadingText}) => {
                 );
                 global.withAuth = true;
 
+                try{
+                  await fetch(
+                    `https://mongo.api.xade.finance/spritz?address=${scwAddress.toLowerCase()}`,
+                    {
+                      method: 'GET',
+                    },
+                  )
+                  .then(response => {
+                    if (response.status == 200) {
+                      return response.text();
+                    } else return '';
+                  })
+                  .then(async data => {
+                    name = data;
+                    try{
+                      if (data !== ''){
+                        await AsyncStorage.setItem('spritzAPI', data);
+                      }
+                    }catch(e) {
+                      console.log(e);
+                    }
+                  });
+                }catch(e){
+                  console.log(e);
+                }
+        
+
                 console.log('Logged In:', global.loginAccount);
                 navigation.push('Payments');
                 console.log('Navigating To Payments');
@@ -287,6 +319,32 @@ const LoginCheck = async ({navigation, setLoadingText}) => {
         );
         global.withAuth = true;
 
+        try{
+          await fetch(
+            `https://mongo.api.xade.finance/spritz?address=${scwAddress.toLowerCase()}`,
+            {
+              method: 'GET',
+            },
+          )
+          .then(response => {
+            if (response.status == 200) {
+              return response.text();
+            } else return '';
+          })
+          .then(async data => {
+            name = data;
+            try{
+              if (data !== ''){
+                await AsyncStorage.setItem('spritzAPI', data);
+              }
+            }catch(e) {
+              console.log(e);
+            }
+          });
+        }catch(e){
+          console.log(e);
+        }
+
         console.log('Logged In:', global.loginAccount);
         navigation.push('Payments');
         console.log('Navigating To Payments');
@@ -337,7 +395,7 @@ const LoginCheck = async ({navigation, setLoadingText}) => {
                   };
 
                   particleConnect.init(
-                    ChainInfo.PolygonMainnet,
+                    Polygon,
                     Env.Production,
                     metadata,
                     rpcUrl,
@@ -395,6 +453,30 @@ const LoginCheck = async ({navigation, setLoadingText}) => {
                                     'Logged In:',
                                     global.connectAccount,
                                   );
+
+                                  try{
+                                    await fetch(
+                                      `https://mongo.api.xade.finance/spritz?address=${address.toLowerCase()}`,
+                                      {
+                                        method: 'GET',
+                                      },
+                                    )
+                                    .then(response => {
+                                      if (response.status == 200) {
+                                        return response.text();
+                                      } else return '';
+                                    })
+                                    .then(async data => {
+                                      name = data;
+                                      try{
+                                        await AsyncStorage.setItem('spritzAPI', data);
+                                      }catch(e) {
+                                        console.log(e);
+                                      }
+                                    });
+                                  }catch(e){
+                                    console.log(e);
+                                  }
                                   navigation.push('Payments');
                                   console.log('Navigating To Payments');
                                 })
@@ -422,6 +504,33 @@ const LoginCheck = async ({navigation, setLoadingText}) => {
                           global.withAuth = false;
                           global.walletType = types[i];
                           console.log('Logged In:', global.connectAccount);
+
+                          try{
+                            await fetch(
+                              `https://mongo.api.xade.finance/spritz?address=${address.toLowerCase()}`,
+                              {
+                                method: 'GET',
+                              },
+                            )
+                            .then(response => {
+                              if (response.status == 200) {
+                                return response.text();
+                              } else return '';
+                            })
+                            .then(async data => {
+                              name = data;
+                              try{
+                                if (data !== ''){
+                                  await AsyncStorage.setItem('spritzAPI', data);
+                                }
+                              }catch(e) {
+                                console.log(e);
+                              }
+                            });
+                          }catch(e){
+                            console.log(e);
+                          }
+                  
                           navigation.push('Payments');
                           console.log('Navigating To Payments');
                         }

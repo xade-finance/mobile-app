@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Icon} from 'react-native-elements';
 import {Picker} from '@react-native-picker/picker';
 import { BankAccountType, BankAccountSubType } from '@spritz-finance/api-client'
-import {SPRITZ_API_KEY, SPRITZ_INTEGRATION_KEY} from '@env';
+import {SPRITZ_INTEGRATION_KEY_PROD, SPRITZ_INTEGRATION_KEY_TEST} from '@env';
 import {
     SpritzApiClient,
     Environment,
@@ -14,11 +14,17 @@ import Snackbar from 'react-native-snackbar';
 
 const AddBankAccount = ({navigation}) => {
 
+    // const client = SpritzApiClient.initialize({
+    //     environment: Environment.Production,
+    //     // apiKey: SPRITZ_API_KEY,
+    //     integrationKey: SPRITZ_INTEGRATION_KEY_PROD,
+    // });
+
     const client = SpritzApiClient.initialize({
-        environment: Environment.Staging,
-        // apiKey: SPRITZ_API_KEY,
-        integrationKey: SPRITZ_INTEGRATION_KEY,
+        environment: mainnet ? Environment.Production : Environment.Staging, 
+        integrationKey: mainnet ?  SPRITZ_INTEGRATION_KEY_PROD : SPRITZ_INTEGRATION_KEY_TEST,
     });
+
 
     const [ownedByUser, setOwnedByUser] = useState(true);
     const [loading, setLoading] = useState(false);
@@ -122,12 +128,13 @@ const AddBankAccount = ({navigation}) => {
         <View style={styles.container}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                 <View>
-                  <Icon
-                    name={'chevron-left'}
-                    size={24}
-                    color={'#fff'}
-                    type="entypo"
-                  />
+                    <Icon
+                        name={'keyboard-backspace'}
+                        size={30}
+                        color={'#f0f0f0'}
+                        type="materialicons"
+                        onPress={() => navigation.goBack()}
+                    /> 
                 </View>
             </TouchableOpacity>
             <Text style={styles.heading}>Add new bank account</Text>
@@ -247,7 +254,7 @@ const styles = StyleSheet.create({
         left: 10,
         color: 'white',
         borderRadius: 50,
-        backgroundColor: '#FE2C5E',
+        // backgroundColor: '#FE2C5E',
         padding:5
     },
     heading: {
@@ -288,7 +295,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     submitButton: {
-        backgroundColor: '#FE2C5E',
+        backgroundColor: '#5038E1',
         padding: 10,
         borderRadius: 10,
         width: '50%',
