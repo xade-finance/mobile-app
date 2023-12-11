@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Web3 from 'web3';
 import {ParticleProvider} from 'react-native-particle-auth';
 import {PROJECT_ID, CLIENT_KEY} from '@env';
-import {BICONOMY_API_KEY} from '@env';
+import {BICONOMY_API_KEY, BICONOMY_API_KEY_MUMBAI} from '@env';
 
 import {IPaymaster, ChainId} from '@biconomy/core-types';
 import SmartAccount from '@biconomy/smart-account';

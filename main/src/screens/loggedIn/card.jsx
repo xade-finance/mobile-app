@@ -250,7 +250,7 @@ const Card = ({navigation}) => {
           .then(async data => {
             name = data;
             try{
-              if (data != 'Document not found'){
+              if (data != 'Document not found' && data != ''){
                 await AsyncStorage.setItem('spritzAPI', data);
                 client.setApiKey(data);
                 setUserExists(true); 

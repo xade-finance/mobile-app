@@ -52,6 +52,7 @@ export async function getUserInvestmentPortfolio(mainnet, authAddress){
             return parseInt(token.tokenBalance, 16) !== 0;
         });
 
+            console.log(ownerAddress);
         // Counter for SNo of final output
         let i = 1;
         // Loop through all tokens with non-zero balance
@@ -70,9 +71,8 @@ export async function getUserInvestmentPortfolio(mainnet, authAddress){
             // console.log(`${i++}. ${metadata.name}: ${balance} ${metadata.symbol}`);
 
             try{
-                
+                console.log(token);
                 const id = metadata.name.toLowerCase().replaceAll(' ','-');
-
                 const element = COINS.find(x => (x.id === id || x.symbol.toLowerCase() === metadata.symbol.toLowerCase()));
 
                 const element_id = element.id;

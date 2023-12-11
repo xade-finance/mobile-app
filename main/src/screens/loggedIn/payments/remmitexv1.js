@@ -59,29 +59,32 @@ export async function transferUSDC(
 
     const usdcAbi = new ethers.utils.Interface(usdAbi);
     const contractAbi = new ethers.utils.Interface(abi);
+    console.log("-----3");
 
     let txs = [];
 
     setStatus('Creating Transactions...');
 
     try {
-
-      const contract = new ethers.Contract(
-        v1Address,
-        usdAbi,
-        provider,
-      )
-      try {
-        const minTx = await contract.populateTransaction.approve(address);
-        console.log(minTx.data);
-      }catch(e){
-        console.log(e);
-      }
+      console.log(provider);
+      // const contract = new ethers.Contract(
+      //   v1Address,
+      //   usdAbi,
+      //   provider,
+      // )
+      // try {
+      //   const minTx = await contract.populateTransaction.approve(address);
+      //   console.log(minTx.data);
+      // }catch(e){
+      //   console.log(e);
+      // }
+      // console.log("-----1");
 
       const approveData = usdcAbi.encodeFunctionData('approve', [
         v1Address,
         totalAmount,
       ]);
+      console.log("-----7");
 
       const approveTX = {
         to: usdcAddress,
@@ -107,8 +110,10 @@ export async function transferUSDC(
 
       setStatus('Waiting For Approval...');
 
+      console.log("-------4");
       try {
         const userOp = await global.smartAccount.buildUserOp([approveTX, sendTX]);
+        console.log("-------5");
 
         const biconomyPaymaster = await global.smartAccount.paymaster;
 

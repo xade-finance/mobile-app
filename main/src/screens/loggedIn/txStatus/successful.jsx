@@ -126,7 +126,8 @@ export default function Component({navigation, route}) {
       setMainnet(_mainnet);
       console.log('Mainnet', _mainnet);
       if (_mainnet == true) {
-        try {
+        try { 
+          const transactionAmount = route.params.amount;
           const newPoints = Math.ceil(
             Number(
               await addPoints(_address.toLowerCase(), route.params.amount),
@@ -196,7 +197,7 @@ export default function Component({navigation, route}) {
             <Text
               style={{
                 color: 'white',
-                fontFamily: `EuclidCircularA-Medium`,
+                fontFamily: `Sarala-Regular`,
               }}>
               {route.params.walletAddress.slice(0, 10)}...
             </Text>{' '}
@@ -219,13 +220,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     // justifyContent: 'center',
-    backgroundColor: '#0c0c0c',
-    fontFamily: `EuclidCircularA-Medium`,
+    backgroundColor: '#000',
+    fontFamily: `Sarala-Regular`,
   },
   content: {
     alignItems: 'center',
-    fontFamily: `EuclidCircularA-Medium`,
-    marginTop: '30%',
+    fontFamily: `Sarala-Regular`,
+    marginTop: '10%',
   },
   coinImage: {
     width: 150,
@@ -235,7 +236,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     // fontWeight: 'bold',
     color: '#2FBE6A',
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `Sarala-Regular`,
     marginBottom: 20,
     marginTop: '10%',
   },
@@ -244,20 +245,20 @@ const styles = StyleSheet.create({
     color: 'grey',
     textAlign: 'center',
     marginHorizontal: 20,
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `Sarala-Regular`,
   },
   earnedCoinsText2: {
     fontSize: 20,
     color: 'grey',
     textAlign: 'center',
     // marginHorizontal: 20,
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `Sarala-Regular`,
     marginTop: 20,
     paddingHorizontal: 20,
   },
   backButton: {
     position: 'absolute',
-    top: 50,
+    top: 10,
     left: 20,
   },
   backButtonText: {
@@ -266,10 +267,10 @@ const styles = StyleSheet.create({
     color: 'blue',
   },
   amountText: {
-    fontSize: 50,
+    fontSize: 36,
     color: 'white',
     textAlign: 'center',
     marginHorizontal: 20,
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `Sarala-Regular`,
   },
 });

@@ -28,7 +28,7 @@ export default function Component({navigation, route}) {
           fontSize: 30,
           marginTop: '20%',
           textAlign: 'center',
-          fontFamily: `EuclidCircularA-Bold`,
+          fontFamily: `Sarala-Bold`,
         }}>
         Transaction Unsuccessful
       </Text>
@@ -54,7 +54,7 @@ export default function Component({navigation, route}) {
           fontSize: 20,
           marginTop: '20%',
           textAlign: 'center',
-          fontFamily: `EuclidCircularA-Medium`,
+          fontFamily: `Sarala-Regular`,
         }}>
         {JSON.stringify(error)}
       </Text>
@@ -65,7 +65,7 @@ export default function Component({navigation, route}) {
             fontSize: 22,
             marginTop: '10%',
             textAlign: 'center',
-            fontFamily: `EuclidCircularA-Medium`,
+            fontFamily: `Sarala-Regular`,
           }}>
           Return Home
         </Text>

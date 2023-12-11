@@ -446,7 +446,7 @@ const Savings = ({navigation}) => {
               // navigation.navigate('ComingSoon')
             }}>
             <LinearGradient
-              colors={['#222', '#222']}
+              colors={['#141414', '#141414']}
               useAngle
               angle={45}
               angleCenter={{x: 0.5, y: 0.5}}
@@ -471,7 +471,7 @@ const Savings = ({navigation}) => {
               // navigation.navigate('ComingSoon');
             }}>
             <LinearGradient
-              colors={['#222', '#222']}
+              colors={['#141414', '#141414']}
               useAngle
               angle={45}
               angleCenter={{x: 0.5, y: 0.5}}
@@ -484,7 +484,7 @@ const Savings = ({navigation}) => {
                 // color={t?'green': 'red'}
                 type="font-awesome"
               />
-              <Text style={{color: '#86969A', fontFamily: 'Sarala-Bold', fontWeight: 300}}>
+              <Text style={{color: '#86969A', fontFamily: 'Sarala-Bold', fontWeight: 500}}>
                 Withdraw
               </Text>
             </LinearGradient>
@@ -501,7 +501,7 @@ const Savings = ({navigation}) => {
           }}>
           <TouchableOpacity style={styles.depWith}>
             <LinearGradient
-              colors={['#1D2426', '#383838']}
+              colors={['#141414', '#141414']}
               useAngle
               angle={45}
               angleCenter={{x: 0.5, y: 0.5}}
@@ -518,7 +518,7 @@ const Savings = ({navigation}) => {
 
           <TouchableOpacity style={styles.depWith}>
             <LinearGradient
-              colors={['#1D2426', '#383838']}
+              colors={['#141414', '#141414']}
               useAngle
               angle={45}
               angleCenter={{x: 0.5, y: 0.5}}
@@ -535,6 +535,7 @@ const Savings = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </View>
+      <View style={{margin:40}} />
 
       {/* <View style={styles.transactionContainer}>
         <View style={styles.heading}>
