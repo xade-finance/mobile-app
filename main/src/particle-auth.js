@@ -103,12 +103,15 @@ async function createSCW() {
     }
 
     let biconomySmartAccount = new BiconomySmartAccount(biconomySmartAccountConfig)
-    biconomySmartAccount =  await biconomySmartAccount.create()
+    biconomySmartAccount =  await biconomySmartAccount.init()
     console.log("owner: ", biconomySmartAccount.owner)
     console.log("address: ", await biconomySmartAccount.getSmartAccountAddress())
 
     global.smartAccount = biconomySmartAccount;
 
+    let biconomySmartAccountAddress = await biconomySmartAccount.getSmartAccountAddress();
+    return biconomySmartAccountAddress;
+    
   }catch (err) {
     console.log(err);
   }
