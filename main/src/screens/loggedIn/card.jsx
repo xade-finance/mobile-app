@@ -109,12 +109,31 @@ const Card = ({navigation}) => {
 
       // call api to store spritz api key in the backend
       try{
-        if(global.withAuth){
-          const name = global.loginAccount.name;
-          const address = global.loginAccount.publicAddress;
-          const scw = global.loginAccount.scw;
-          const email = global.loginAccount.phoneEmail;
-          const uuid = global.loginAccount.uiud;
+        var name;
+        var address;
+        var email;
+        var scw;
+        var uuid;
+
+        if (global.withAuth){
+          name = global.loginAccount.name;
+          address = global.loginAccount.publicAddress;
+          scw = global.loginAccount.scw;
+          email = global.loginAccount.phoneEmail;
+          uuid = global.loginAccount.uiud;
+        }else{
+          name = global.connectAccount.name;
+          address = global.connectAccount.publicAddress;
+          scw = global.connectAccount.scw;
+          email = global.connectAccount.phoneEmail;
+          uuid = global.connectAccount.uiud;
+        }
+
+        if (!email.includes('@')) {
+          console.log(email);
+          // ask user for email address
+          toggleEmailModal();
+        }else{
 
           const user = await client.user.createUser({
             email: email,
@@ -128,7 +147,7 @@ const Card = ({navigation}) => {
             email: email.toLowerCase(),
             phone: 'NULL',
             name: name,
-            typeOfLogin: 'login',
+            typeOfLogin: global.withAuth ? 'login' : 'connect',
             eoa: scw,
             scw: scw,
             id: uuid,
@@ -144,14 +163,28 @@ const Card = ({navigation}) => {
               'Content-Type': 'application/json',
             },
           });
+
+          const object1 = {
+            address: address,
+            spritzApiKey: user.apiKey
+          };
+          const json1 = JSON.stringify(object1 || {}, null, 2);
+          console.log('Request Being Sent:', json1);
+          
+          await fetch('https://mongo.api.xade.finance/store', {
+            method: 'POST',
+            body: json1,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
           setUserExists(true);
 
-        }else{
-          // ask user for email address
-          toggleEmailModal();
         }
       }catch(e){
+        console.log("----1");
         console.log(e);
+        Snackbar.show({text: e.message.toString()});
       } 
       setLoading(false);
 
@@ -184,13 +217,13 @@ const Card = ({navigation}) => {
   };
 
   async function createUserForConnectAccount () {
+
     try{
-      if(global.withConnect){
         setLoading(true);
-        const name = global.connectAccount.name;
-        const address = global.connectAccount.publicAddress;
+        const address = global.withAuth ? global.loginAccount.publicAddress : global.connectAccount.publicAddress;
         const email = emailInput;
-        const uuid = global.connectAccount.uiud;
+
+        // TODO : store email in user data 
 
         const user = await client.user.createUser({
           email: email,
@@ -214,13 +247,15 @@ const Card = ({navigation}) => {
         });
         setUserExists(true);
 
-      }
-    }catch(e) {
-      console.log(e);
-    }
-    setLoading(false);
-    toggleEmailModal();
+        toggleEmailModal(); 
 
+    }catch(e) {
+      console.log("----");
+      setLoading(false);
+      // toggleEmailModal();
+      console.log(e.message);
+      Snackbar.show({text : e.message.toString()});
+    }
   }
 
   useEffect(() => {
@@ -273,20 +308,6 @@ const Card = ({navigation}) => {
         //   console.log(e);
         // }
         
-        // try{
-        //   const api_key = await AsyncStorage.getItem('spritzAPI');
-
-        //   if (api_key === null) {
-        //     setUserExists(false);
-        //   }else{
-        //     client.setApiKey(api_key);
-        //     setApiKey(api_key);
-        //     setUserExists(true);        
-        //   }
-        // }catch(err){
-        //   console.log(err);
-        //   setUserExists(false);
-        // }
         setLoading(false);
       }catch(e){
         console.log(e);

@@ -60,7 +60,7 @@ getOnlyProvider = () => {
 //   return global.smartAccount.address;
 // };
 
-async function createSCW() {
+export async function createSCW() {
   try{
     const particleProvider = this.getOnlyProvider();
     const provider = new ethers.providers.Web3Provider(
