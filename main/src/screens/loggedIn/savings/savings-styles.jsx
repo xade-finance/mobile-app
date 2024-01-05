@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   logo: {
-    fontFamily: 'VelaSans-ExtraBold',
+    fontFamily: 'Sarala-Bold',
     color: '#fff',
     fontSize: 25,
     marginLeft: '8%',
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
 
   subText: {
     color: '#999',
-    fontFamily: 'VelaSans-Bold',
+    fontFamily: 'Sarala-Bold',
     textAlign: 'center',
     fontSize: 17,
     marginTop: '30%',
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
 
   buttonText: {
     color: '#fff',
-    fontFamily: 'VelaSans-Medium',
+    fontFamily: 'Sarala-Regular',
     fontSize: 15,
     textAlign: 'center',
   },
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    fontFamily: 'VelaSans-Bold',
+    fontFamily: 'Sarala-Bold',
     padding: 20,
   },
 
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
   },
 
   amountText: {
-    fontFamily: 'VelaSans-Bold',
+    fontFamily: 'Sarala-Bold',
     fontSize: 18,
     alignSelf: 'center',
     color: '#FFFFFF',
@@ -235,18 +235,20 @@ const styles = StyleSheet.create({
   },
 
   amountText2: {
-    fontFamily: 'VelaSans-Bold',
+    fontFamily: 'Sarala-Bold',
     fontSize: 13,
     alignSelf: 'center',
     color: '#85969A',
     marginTop: '2%',
+    paddingBottom: '5%'
   },
 
   noTransaction: {
     color: '#d9d9d9',
     marginTop: '7%',
     textAlign: 'center',
-    fontFamily: `EuclidCircularA-Medium`,
+    fontFamily: `Sarala-Bold`,
+    fontWeight: 500,
     fontSize: 15,
   },
 });

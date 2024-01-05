@@ -29,6 +29,7 @@ import 'react-native-get-random-values';
 import '@ethersproject/shims';
 import {ethers} from 'ethers';
 import {err} from 'react-native-svg/lib/typescript/xml';
+import { createSCW } from '../../particle-auth';
 
 var DeviceInfo = require('react-native-device-info');
 // const TextEncodingPolyfill = require('text-encoding');
@@ -161,12 +162,13 @@ const LoginCheck = async ({navigation, setLoadingText}) => {
                         return response.text();
                       } else return 0;
                     })
-                    .then(data => {
+                    .then(async data => {
                       console.log('SCW:', data);
                       if (data == 0) {
-                        navigation.push('LoggedOutHome');
-                      }
-                      scwAddress = data;
+                        // navigation.push('LoggedOutHome');
+                        // TODO : Create SCW
+                        scwAddress = await createSCW();
+                      }else {scwAddress = data;}
                     });
                 }
                 await fetch(
@@ -254,7 +256,6 @@ const LoginCheck = async ({navigation, setLoadingText}) => {
         await AsyncStorage.setItem('address', address);
 
         setLoadingText('Fetching User Info...');
-
         if (email.includes('@')) {
           await fetch(
             `https://emailfind.api.xade.finance/polygon?email=${email.toLowerCase()}`,
@@ -267,12 +268,14 @@ const LoginCheck = async ({navigation, setLoadingText}) => {
                 return response.text();
               } else return 0;
             })
-            .then(data => {
+            .then(async data => {
               console.log('SCW:', data);
               if (data == 0) {
-                navigation.push('LoggedOutHome');
+                // navigation.push('LoggedOutHome');
+                scwAddress = await createSCW();
+              }else{
+                scwAddress = data;
               }
-              scwAddress = data;
             });
         } else {
           email = email.slice(1);
@@ -287,14 +290,18 @@ const LoginCheck = async ({navigation, setLoadingText}) => {
                 return response.text();
               } else return 0;
             })
-            .then(data => {
+            .then(async data => {
               console.log('SCW:', data);
-              if (data == 0) {
-                navigation.push('LoggedOutHome');
+              if (data == 0) { 
+                // navigation.push('LoggedOutHome');
+                scwAddress = await createSCW();
+                console.log(scwAddress);
+              }else{
+                scwAddress = data;
               }
-              scwAddress = data;
             });
         }
+        console.log(scwAddress);
         await fetch(
           `https://user.api.xade.finance/polygon?address=${scwAddress.toLowerCase()}`,
           {
@@ -318,7 +325,7 @@ const LoginCheck = async ({navigation, setLoadingText}) => {
           uuid,
         );
         global.withAuth = true;
-
+        
         try{
           await fetch(
             `https://mongo.api.xade.finance/spritz?address=${scwAddress.toLowerCase()}`,

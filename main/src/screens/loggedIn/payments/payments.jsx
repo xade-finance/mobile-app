@@ -178,7 +178,7 @@ const PaymentsComponent = ({navigation}) => {
                 fontWeight: 300,
                 marginTop: '1%',
               }}>
-              { balance && balance.split('.')[0] }
+              $ { balance && balance.split('.')[0] }
               <Text
                 style={{
                   color: '#fff',

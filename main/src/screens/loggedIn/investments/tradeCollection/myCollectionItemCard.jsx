@@ -11,7 +11,8 @@ import { Icon } from 'react-native-elements';
 import FastImage from 'react-native-fast-image';
 
 const MyCollectionItemCard = ({navigation, item}) => {
-
+    console.log(item);
+    console.log('----');
     return (
         <TouchableOpacity
             onPress={ (e) => {
@@ -38,21 +39,22 @@ const MyCollectionItemCard = ({navigation, item}) => {
                     alignItems: 'center',
                     // backgroundColor: 'red',
                 }}>
-                    <View style={{paddingHorizontal: 10}}>
+                    {/* <View style={{paddingHorizontal: 10}}>
                         <FastImage 
                             style={{width: 42, height: 42}}
                             source={{
-                                uri: `${item.image}`,
+                                uri: `${item.media.thumbnail}`,
                             }}
                          />
-                    </View>
+                    </View> */}
 
                     <View style={{paddingHorizontal: 10}}>
+                        
                         <View>
-                            <Text style={styles.text1}>{item.symbol.toUpperCase()}</Text>
+                            <Text style={styles.text1}>{item.title}</Text>
                         </View>
                         <View>
-                            <Text style={styles.text2}>{item.name}</Text>
+                            <Text style={styles.text2}>{item.tokenType && item.tokenType.toUpperCase()}</Text>
                         </View>
                     </View>
                 </View>
@@ -66,16 +68,16 @@ const MyCollectionItemCard = ({navigation, item}) => {
                     // backgroundColor: 'red'
                 }}>
                     <View>
-                        <Text style={styles.text1}>${item.current_price}</Text>
+                        <Text style={styles.text1}>{item.balance}</Text>
                     </View>
-                    <View>
+                    {/* <View>
                         {
                             item.price_change_percentage_24h >= 0 && <Text style={styles.text3}>{item.price_change_percentage_24h.toFixed(2)}</Text>
                         }
                         {
                             item.price_change_percentage_24h < 0 && <Text style={styles.text4}>{item.price_change_percentage_24h.toFixed(2)} %</Text>
                         }
-                    </View>
+                    </View> */}
                 </View>
             </View>
         </TouchableOpacity>

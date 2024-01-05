@@ -2800,26 +2800,9 @@
   integrity sha512-He3LieZ1pP2TNt5JbkPA4PNT9WC3gOTOlDcFGJW4Le4QKqwmiNJCRt44APfxMxvq7OugU/cqYuPcSBzOw38DAg==
 
 "@particle-network/chains@^1.0.1":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@particle-network/chains/-/chains-1.0.7.tgz#ccf340aea3c8cfc57cef31d4368d47b5682f0bb8"
-  integrity sha512-EfxoUy5WElW9NQ9f6rnEpDH8QZ1LpLQpEBREd5PQ5RkV1osZUsGb9leSv+EGOwFET8iAVI3G5nB/YVZyG8/eAQ==
-
-"@particle-network/rn-auth-core@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@particle-network/rn-auth-core/-/rn-auth-core-1.0.1.tgz#60faa43f3a1e848a7b1f6b154e6bd0511875ecbe"
-  integrity sha512-9gst3rn6tkwHaeS9wyeZeYMNaFprXDXxIODb7HxX5jODA94NY2/0W6dFOLUmhinDKvMxk51Q/YB8A4LagelYag==
-  dependencies:
-    "@particle-network/rn-auth" "^1.0.6"
-
-"@particle-network/rn-auth@^1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@particle-network/rn-auth/-/rn-auth-1.0.6.tgz#e95e03d7f653494d25bacfc23d8e42072db4241b"
-  integrity sha512-r7tvU5lwkm5DiTZDrpDxcaFihGe31YAVffxmRDiqeFzb/9oj5rGvEHfmU0a1/edai5VXReSBZlPU5G2I4g4ceQ==
-  dependencies:
-    "@particle-network/chains" "^1.0.1"
-    axios "^1.3.4"
-    bignumber.js "^9.1.0"
-    events "^3.3.0"
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/@particle-network/chains/-/chains-1.3.3.tgz#c35d5ec2eae7d98c445ab8060c5efb5ed79c5a54"
+  integrity sha512-M/h5YwvtEJ4zk3ssF6fAUl0jRGFNhdN+K6YgxVbswJgFVD1pKNYMQgN+5hkV6YNUzuhqgTb0y9a4ol+tVZeVIQ==
 
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"

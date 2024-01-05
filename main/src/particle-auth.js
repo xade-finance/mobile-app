@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Web3 from 'web3';
 import {ParticleProvider} from 'react-native-particle-auth';
 import {PROJECT_ID, CLIENT_KEY} from '@env';
-import {BICONOMY_API_KEY} from '@env';
+import {BICONOMY_API_KEY, BICONOMY_API_KEY_MUMBAI} from '@env';
 
 import {IPaymaster, ChainId} from '@biconomy/core-types';
 import SmartAccount from '@biconomy/smart-account';
@@ -60,7 +60,7 @@ getOnlyProvider = () => {
 //   return global.smartAccount.address;
 // };
 
-async function createSCW() {
+export async function createSCW() {
   try{
     const particleProvider = this.getOnlyProvider();
     const provider = new ethers.providers.Web3Provider(
@@ -103,12 +103,15 @@ async function createSCW() {
     }
 
     let biconomySmartAccount = new BiconomySmartAccount(biconomySmartAccountConfig)
-    biconomySmartAccount =  await biconomySmartAccount.create()
+    biconomySmartAccount =  await biconomySmartAccount.init()
     console.log("owner: ", biconomySmartAccount.owner)
     console.log("address: ", await biconomySmartAccount.getSmartAccountAddress())
 
     global.smartAccount = biconomySmartAccount;
 
+    let biconomySmartAccountAddress = await biconomySmartAccount.getSmartAccountAddress();
+    return biconomySmartAccountAddress;
+    
   }catch (err) {
     console.log(err);
   }

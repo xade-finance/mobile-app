@@ -318,7 +318,7 @@ export default function EnterAmountComponent({navigation, route}) {
               style={{
                 color: '#000',
                 fontFamily: `Sarala-Bold`,
-                fontStyle:300,
+                // fontStyle:300,
                 fontSize: 18,
               }}>
               Send money
@@ -332,7 +332,7 @@ export default function EnterAmountComponent({navigation, route}) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#0C0C0C',
+    // backgroundColor: '#0C0C0C',
     flex: 1,
     width: '85%',
     marginTop: '11%',

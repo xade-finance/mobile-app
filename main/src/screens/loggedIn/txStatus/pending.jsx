@@ -62,9 +62,11 @@ const Component = ({route, navigation}) => {
       const mainnet = JSON.parse(mainnetJSON);
       let status;
       console.log('Is Auth:', global.withAuth);
+      console.log(type);
+
       if (type !== 'v2') {
         if (mainnet) {
-          try {
+          try { 
             const {status, fees} = await transferUSDC(
               global.smartAccount,
               amount,
@@ -72,8 +74,7 @@ const Component = ({route, navigation}) => {
               navigation,
               setStatus,
               global.withAuth,
-            );
-            console.log(fees);
+            ); 
             if (status)
               navigation.push('Successful', {
                 status,
@@ -180,7 +181,7 @@ const Component = ({route, navigation}) => {
       style={{
         width: '100%',
         height: '100%',
-        backgroundColor: '#0C0C0C',
+        backgroundColor: '#000',
         flex: 1,
       }}
       contentContainerStyle={{
@@ -192,9 +193,9 @@ const Component = ({route, navigation}) => {
         style={{
           color: '#fff',
           fontSize: 30,
-          marginTop: '20%',
+          marginTop: '10%',
           textAlign: 'center',
-          fontFamily: `EuclidCircularA-Bold`,
+          fontFamily: `Sarala-Bold`,
         }}>
         Transaction Pending...
       </Text>
@@ -222,14 +223,14 @@ const Component = ({route, navigation}) => {
         <Text
           style={{
             fontSize: 20,
-            fontFamily: `EuclidCircularA-Regular`,
+            fontFamily: `Sarala-Regular`,
             color: '#898989',
           }}>
           Amount:{' '}
           <Text
             style={{
               fontSize: 20,
-              fontFamily: `EuclidCircularA-Regular`,
+              fontFamily: `Sarala-Regular`,
               color: 'white',
             }}>
             {'\n' + route.params.amount + ' '}USDC
@@ -238,7 +239,7 @@ const Component = ({route, navigation}) => {
         <Text
           style={{
             fontSize: 20,
-            fontFamily: `EuclidCircularA-Regular`,
+            fontFamily: `Sarala-Regular`,
             color: '#898989',
             marginTop: '5%',
           }}>
@@ -246,7 +247,7 @@ const Component = ({route, navigation}) => {
           <Text
             style={{
               fontSize: 20,
-              fontFamily: `EuclidCircularA-Regular`,
+              fontFamily: `Sarala-Regular`,
               color: 'white',
             }}>
             {'\n' + route.params.walletAddress.slice(0, 20)}...
@@ -255,7 +256,7 @@ const Component = ({route, navigation}) => {
         <Text
           style={{
             fontSize: 20,
-            fontFamily: `EuclidCircularA-Regular`,
+            fontFamily: `Sarala-Regular`,
             color: '#898989',
             marginTop: '5%',
           }}>
@@ -263,7 +264,7 @@ const Component = ({route, navigation}) => {
           <Text
             style={{
               fontSize: 20,
-              fontFamily: `EuclidCircularA-Regular`,
+              fontFamily: `Sarala-Regular`,
               color: 'white',
             }}>
             {'\n'}
@@ -276,7 +277,7 @@ const Component = ({route, navigation}) => {
         <Text
           style={{
             fontSize: 20,
-            fontFamily: `EuclidCircularA-Medium`,
+            fontFamily: `Sarala-Bold`,
             color: '#fff',
             textAlign: 'center',
             marginTop: '2%',

@@ -394,7 +394,7 @@ const Savings = ({navigation}) => {
               style={{
                 color: '#6D797D',
                 fontSize: 45,
-                fontFamily: 'Sarala-Regular',
+                fontFamily: 'Benzin-Medium',
               }}>
               $
             </Text>
@@ -402,7 +402,7 @@ const Savings = ({navigation}) => {
               style={{
                 color: 'white',
                 fontSize: 45,
-                fontFamily: 'Sarala-Regular',
+                fontFamily: 'Benzin-Medium',
               }}>
                 {/* {balance} */}
               {balance && balance.split('.')[0]}
@@ -411,7 +411,7 @@ const Savings = ({navigation}) => {
               style={{
                 color: '#6D797D',
                 fontSize: 30,
-                fontFamily: 'Sarala-Regular',
+                fontFamily: 'Benzin-Medium',
                 marginBottom: 5,
               }}>
               {'.'}
@@ -446,7 +446,7 @@ const Savings = ({navigation}) => {
               // navigation.navigate('ComingSoon')
             }}>
             <LinearGradient
-              colors={['#222', '#222']}
+              colors={['#141414', '#141414']}
               useAngle
               angle={45}
               angleCenter={{x: 0.5, y: 0.5}}
@@ -471,7 +471,7 @@ const Savings = ({navigation}) => {
               // navigation.navigate('ComingSoon');
             }}>
             <LinearGradient
-              colors={['#222', '#222']}
+              colors={['#141414', '#141414']}
               useAngle
               angle={45}
               angleCenter={{x: 0.5, y: 0.5}}
@@ -484,7 +484,7 @@ const Savings = ({navigation}) => {
                 // color={t?'green': 'red'}
                 type="font-awesome"
               />
-              <Text style={{color: '#86969A', fontFamily: 'Sarala-Bold', fontWeight: 300}}>
+              <Text style={{color: '#86969A', fontFamily: 'Sarala-Bold', fontWeight: 500}}>
                 Withdraw
               </Text>
             </LinearGradient>
@@ -495,20 +495,19 @@ const Savings = ({navigation}) => {
           style={{
             flexDirection: 'row',
             width: '90%',
-            height: 232,
             justifyContent: 'space-around',
             marginTop: '10%',
           }}>
           <TouchableOpacity style={styles.depWith}>
             <LinearGradient
-              colors={['#1D2426', '#383838']}
+              colors={['#141414', '#141414']}
               useAngle
               angle={45}
               angleCenter={{x: 0.5, y: 0.5}}
               style={styles.innerDep2}>
               {/* <Image source={require('./img/dollar-dollar-color.png')} /> */}
               <FastImage
-                style={{width: '100%', height: 170}}
+                style={{width: '100%', height: 170, marginBottom:'-20%'}}
                 source={require('./img/dollar-dollar-color.png')}
               />
               <Text style={styles.amountText}>$0.00</Text>
@@ -518,23 +517,24 @@ const Savings = ({navigation}) => {
 
           <TouchableOpacity style={styles.depWith}>
             <LinearGradient
-              colors={['#1D2426', '#383838']}
+              colors={['#141414', '#141414']}
               useAngle
               angle={45}
               angleCenter={{x: 0.5, y: 0.5}}
               style={styles.innerDep2}>
               <FastImage
-                style={{width: '100%', height: 170}}
+                style={{width: '100%', height: 170, marginBottom:'-20%'}}
                 source={require('./img/chart-dynamics.png')}
               />
-              <Text style={styles.amountText}>0%</Text>
+              <Text style={styles.amountText}>5%</Text>
               <Text style={styles.amountText2}>
-                APY on {month} {date}
+                Savings Rate today
               </Text>
             </LinearGradient>
           </TouchableOpacity>
         </View>
       </View>
+      <View style={{margin:40}} />
 
       {/* <View style={styles.transactionContainer}>
         <View style={styles.heading}>
