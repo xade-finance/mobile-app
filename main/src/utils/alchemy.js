@@ -20,7 +20,8 @@ export async function getTokenBalance(mainnet, authAddress, tokens){
 
         data = await alchemy.core.getTokenBalances(
             ownerAddress,
-            tokenContractAddresses
+            'erc20'
+            // tokenContractAddresses
         );
 
         // console.log("Token balance for Address");

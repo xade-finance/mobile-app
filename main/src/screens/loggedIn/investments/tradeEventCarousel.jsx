@@ -115,8 +115,8 @@ Download Now: https://bit.ly/xadefinance
               style={styles.depFurther}
               onPress={() => {
                 this.setState({
-                  'externalLinkHeading' : 'Quests',
-                  'externalLinkUri' : 'https://xadefinance.crew3.xyz/invite/OEL6nx6wDDIxAFsZVHPsv',
+                  'externalLinkHeading' : 'Trade',
+                  'externalLinkUri' : 'https://trade.xade.finance',
                   'showExternalLinkModal' : true
                 })
                 // Linking.openURL('https://xadefinance.crew3.xyz/invite/OEL6nx6wDDIxAFsZVHPsv');
@@ -125,14 +125,14 @@ Download Now: https://bit.ly/xadefinance
                 <View style={styles.textContainer}>
                   <View flexDirection='row' alignItems='center'>
                     <Text style={styles.titleText}>
-                      Go on a quest
+                      Experience Xade Pro
                     </Text>
                     <View style={{paddingLeft:10}}>
                       <QuestIcon />
                     </View>
                   </View>
                   <Text style={styles.descriptionText}>
-                    Get crypto by completing easy-to-do daily tasks
+                    The best trading experience is now on the Xade Pro webapp
                   </Text>
                 </View>
                 {/* <View>
@@ -147,20 +147,20 @@ Download Now: https://bit.ly/xadefinance
             <TouchableOpacity
               style={styles.depFurther}
               onPress={() => {
-                // this.setState({
-                //   'externalLinkHeading' : 'Explore',
-                //   'externalLinkUri' : 'https://explorers.xade.finance/',
-                //   'showExternalLinkModal' : true
-                // })
-                // Linking.openURL('https://explorers.xade.finance/');
+                this.setState({
+                  'externalLinkHeading' : 'Docs',
+                  'externalLinkUri' : 'https://docs.xade.finance/',
+                  'showExternalLinkModal' : true
+                })
+                Linking.openURL('https://docs.xade.finance/');
               }}>
               <View style={styles.actionContainer}>
                 <View style={styles.textContainer}>
                   <Text style={styles.titleText}>
-                    Complete verification
+                    Learn more
                   </Text>
                   <Text style={styles.descriptionText}>
-                    Confirm your identity right now and get a bonus in return
+                    Understand and learn everything about trading and Xade
                   </Text>
                 </View>
                 <View>

@@ -240,6 +240,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     color: '#85969A',
     marginTop: '2%',
+    paddingBottom: '5%'
   },
 
   noTransaction: {

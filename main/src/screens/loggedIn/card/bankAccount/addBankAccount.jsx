@@ -117,6 +117,7 @@ const AddBankAccount = ({navigation}) => {
             }catch(err){
                 console.log(13132);
               console.log(err);
+              Snackbar.show({text : err.message.toString()});
               navigation.push('Card');
             }
         }

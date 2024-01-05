@@ -5,8 +5,8 @@ const windowHeight = Dimensions.get('window').height;
 const styles = StyleSheet.create({
   black: {
     backgroundColor: '#000',
-    width: '100%',
-    height: '100%',
+    // width: '100%',
+    // height: '100%',
   },
 
   logo: {

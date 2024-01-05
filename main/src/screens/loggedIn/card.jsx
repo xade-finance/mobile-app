@@ -265,7 +265,7 @@ const Card = ({navigation}) => {
         let scwAddress = ''
 
         if(global.withAuth){
-          scwAddress = global.loginAccount.scw;
+          scwAddress = global.loginAccount.publicAddress;
         }else{
           scwAddress = global.connectAccount.publicAddress;
         }
